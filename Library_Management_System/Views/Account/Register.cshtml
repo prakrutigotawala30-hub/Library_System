@@ -1,0 +1,439 @@
+﻿@model Library_Management_System.ViewModels.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+<style>
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        min-height: 100vh;
+        background: linear-gradient(135deg,#4b0082,#6a0dad,#9b30ff);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 18px;
+        font-family: 'Segoe UI',sans-serif;
+        overflow-x: hidden;
+    }
+
+    /* MAIN WRAPPER */
+
+    .register-wrapper {
+        width: 100%;
+        max-width: 1050px;
+    }
+
+    /* GLASS CARD */
+
+    .glass-card {
+        display: flex;
+        width: 100%;
+        min-height: 620px;
+        border-radius: 24px;
+        overflow: hidden;
+        background: rgba(255,255,255,0.10);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(255,255,255,0.12);
+        box-shadow: 0 20px 45px rgba(0,0,0,0.28);
+    }
+
+    /* ======================
+               LEFT PANEL
+        ====================== */
+
+    .left-panel {
+        width: 42%;
+        padding: 42px 36px;
+        background: linear-gradient( 135deg, rgba(75,0,130,0.95), rgba(155,48,255,0.82) );
+        color: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        position: relative;
+    }
+
+        .left-panel::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient( circle at top right, rgba(255,255,255,0.14), transparent 42% );
+        }
+
+    .left-panel-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .logo {
+        font-size: 38px;
+        margin-bottom: 10px;
+    }
+
+    .left-panel h2 {
+        font-size: 30px;
+        font-weight: 700;
+        margin-bottom: 16px;
+    }
+
+    .left-panel p {
+        font-size: 14px;
+        line-height: 1.7;
+        opacity: 0.92;
+    }
+
+    .feature-list {
+        margin-top: 22px;
+        padding-left: 18px;
+    }
+
+        .feature-list li {
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+    .quote {
+        margin-top: 24px;
+        font-style: italic;
+        font-size: 13px;
+        opacity: 0.9;
+    }
+
+    /* ======================
+               RIGHT PANEL
+        ====================== */
+
+    .right-panel {
+        width: 58%;
+        padding: 38px 36px;
+        background: rgba(255,255,255,0.06);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        color: white;
+    }
+
+    .title {
+        text-align: center;
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 24px;
+    }
+
+    label {
+        font-size: 13px;
+        margin-bottom: 7px;
+        color: #f8fafc;
+        font-weight: 500;
+    }
+
+    .form-control {
+        height: 48px;
+        border: none;
+        border-radius: 12px;
+        background: rgba(255,255,255,0.12);
+        color: white;
+        padding: 12px 15px;
+        font-size: 14px;
+        border: 1px solid rgba(255,255,255,0.12);
+        transition: 0.3s;
+    }
+
+        .form-control:focus {
+            background: rgba(255,255,255,0.16);
+            border-color: #d8b4fe;
+            box-shadow: 0 0 0 4px rgba(216,180,254,0.22);
+            color: white;
+        }
+
+        .form-control::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+
+    .btn-register {
+        height: 48px;
+        border: none;
+        border-radius: 12px;
+        background: linear-gradient(135deg,#a855f7,#7e22ce);
+        color: white;
+        font-size: 15px;
+        font-weight: 600;
+        margin-top: 10px;
+        transition: 0.3s;
+    }
+
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 22px rgba(168,85,247,0.35);
+        }
+
+    a {
+        color: #f5d0fe;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+
+        a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+
+    .small-text {
+        font-size: 13px;
+    }
+
+    .text-danger {
+        font-size: 12px;
+    }
+
+    /* ======================
+               TABLET
+        ====================== */
+
+    @@media(max-width:992px) {
+
+        .register-wrapper {
+            max-width: 850px;
+        }
+
+        .left-panel {
+            padding: 34px 28px;
+        }
+
+        .right-panel {
+            padding: 34px 28px;
+        }
+
+        .left-panel h2 {
+            font-size: 26px;
+        }
+
+        .title {
+            font-size: 25px;
+        }
+    }
+
+    /* ======================
+               MOBILE
+        ====================== */
+
+    @@media(max-width:768px) {
+
+        body {
+            padding: 14px;
+            align-items: center;
+        }
+
+        .glass-card {
+            flex-direction: column;
+            min-height: auto;
+            border-radius: 22px;
+        }
+
+        .left-panel,
+        .right-panel {
+            width: 100%;
+        }
+
+        .left-panel {
+            padding: 34px 24px;
+            text-align: center;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+            .feature-list li {
+                margin-bottom: 8px;
+            }
+
+        .right-panel {
+            padding: 34px 22px;
+        }
+
+        .left-panel h2 {
+            font-size: 26px;
+        }
+
+        .title {
+            font-size: 26px;
+            margin-bottom: 22px;
+        }
+
+        .form-control,
+        .btn-register {
+            height: 46px;
+        }
+    }
+
+</style>
+
+<div class="register-wrapper">
+
+    <div class="glass-card">
+
+        <!-- LEFT PANEL -->
+
+        <div class="left-panel">
+
+            <div class="left-panel-content">
+
+                <div class="logo">📚</div>
+
+                <h2>Create Account</h2>
+
+                <p>
+                    Join the modern digital library platform
+                    to manage books, borrowing and secure access.
+                </p>
+
+                <ul class="feature-list">
+                    <li>Easy Registration</li>
+                    <li>Secure Authentication</li>
+                    <li>Issue & Return Tracking</li>
+                    <li>Modern Library Dashboard</li>
+                </ul>
+
+                <p class="quote">
+                    “Reading is dreaming with open eyes.”
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- RIGHT PANEL -->
+
+        <div class="right-panel">
+
+            <h2 class="title">Register</h2>
+
+            <form asp-action="Register" method="post">
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3 small-text">
+                </div>
+
+                <div class="mb-3">
+
+                    <label asp-for="FullName"></label>
+
+                    <input asp-for="FullName"
+                           class="form-control"
+                           placeholder="Enter full name" />
+
+                    <span asp-validation-for="FullName"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label asp-for="Email"></label>
+
+                    <input asp-for="Email"
+                           class="form-control"
+                           placeholder="Enter email address" />
+
+                    <span asp-validation-for="Email"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label asp-for="PhoneNumber"></label>
+
+                    <input asp-for="PhoneNumber"
+                           class="form-control"
+                           placeholder="Enter phone number" />
+
+                    <span asp-validation-for="PhoneNumber"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label asp-for="Address"></label>
+
+                    <input asp-for="Address"
+                           class="form-control"
+                           placeholder="Enter address" />
+
+                    <span asp-validation-for="Address"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label asp-for="Password"></label>
+
+                    <input asp-for="Password"
+                           type="password"
+                           class="form-control"
+                           placeholder="Enter password" />
+
+                    <span asp-validation-for="Password"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label asp-for="ConfirmPassword"></label>
+
+                    <input asp-for="ConfirmPassword"
+                           type="password"
+                           class="form-control"
+                           placeholder="Confirm password" />
+
+                    <span asp-validation-for="ConfirmPassword"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+                <button type="submit"
+                        class="btn btn-register w-100">
+
+                    Create Account
+
+                </button>
+
+                <div class="text-center mt-3 small-text">
+
+                    Already have an account?
+
+                    <a asp-action="Login">
+                        Login
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+}

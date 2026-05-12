@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>@ViewData["Title"] - Library Management System</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+
+<body>
+
+    @{
+        var isAuthPage =
+        ViewContext.RouteData.Values["controller"]?.ToString() == "Account";
+    }
+
+    @if (User.Identity != null && User.Identity.IsAuthenticated && !isAuthPage)
+    {
+        <!-- ================= DASHBOARD LAYOUT ================= -->
+
+        <header class="bg-white border-bottom shadow-sm">
+            <nav class="navbar navbar-expand-sm navbar-light container">
+
+                <a class="navbar-brand fw-bold" asp-controller="Home" asp-action="Index">
+                    📚 Library Management
+                </a>
+
+                <div class="ms-auto d-flex gap-2">
+
+                    <a class="nav-link" asp-controller="Home" asp-action="Index">
+                        Dashboard
+                    </a>
+
+                    <a class="btn btn-danger btn-sm"
+                       asp-controller="Account"
+                       asp-action="Logout">
+                        Logout
+                    </a>
+
+                </div>
+
+            </nav>
+        </header>
+
+        <div class="container py-4">
+            @RenderBody()
+        </div>
+
+        <footer class="border-top bg-white text-center py-3">
+            © 2026 - Library Management System
+        </footer>
+    }
+    else
+    {
+        <div style="
+            min-height:100vh;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            background:linear-gradient(135deg,#4b0082,#6a0dad,#9333ea);
+            padding:20px;
+        ">
+
+            @RenderBody()
+
+        </div>
+    }
+
+    <!-- SCRIPTS (ONLY ONCE) -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@4.0.0/dist/jquery.validate.unobtrusive.min.js"></script>
+
+    @RenderSection("Scripts", required: false)
+
+</body>
+</html>

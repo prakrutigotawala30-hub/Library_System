@@ -1,0 +1,178 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<style>
+    body {
+        background: #f5f3ff;
+    }
+
+    /* HERO SECTION */
+    .hero {
+        background: linear-gradient(135deg,#4b0082,#6a0dad,#9333ea);
+        color: white;
+        padding: 60px 30px;
+        border-radius: 24px;
+        box-shadow: 0 15px 40px rgba(106,13,173,0.25);
+        position: relative;
+        overflow: hidden;
+    }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: -80px;
+            right: -80px;
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 50%;
+        }
+
+        .hero h1 {
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            font-size: 16px;
+            opacity: 0.9;
+            max-width: 600px;
+        }
+
+    .hero-btn {
+        margin-top: 20px;
+        display: inline-block;
+        background: white;
+        color: #6a0dad;
+        padding: 10px 22px;
+        border-radius: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+
+        .hero-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+
+    /* CARDS */
+    .dashboard-cards {
+        margin-top: 30px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+        gap: 20px;
+    }
+
+    .card-box {
+        background: white;
+        border-radius: 18px;
+        padding: 20px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+        transition: 0.3s;
+        border-left: 5px solid #7e22ce;
+    }
+
+        .card-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.10);
+        }
+
+        .card-box h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+            color: #4b0082;
+        }
+
+        .card-box p {
+            font-size: 13px;
+            color: #666;
+            margin: 0;
+        }
+
+    .icon {
+        font-size: 28px;
+        margin-bottom: 10px;
+        color: #7e22ce;
+    }
+
+    /* QUICK LINKS */
+    .quick-links {
+        margin-top: 35px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+        .quick-links a {
+            background: #ede9fe;
+            color: #4b0082;
+            padding: 10px 16px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+            .quick-links a:hover {
+                background: #7e22ce;
+                color: white;
+            }
+</style>
+
+<!-- HERO -->
+<div class="hero">
+
+    <h1>📚 Library Management System</h1>
+
+    <p>
+        Welcome to your smart digital library dashboard.
+        Manage books, members, borrowing and returns with ease and efficiency.
+    </p>
+
+    <a class="hero-btn" asp-controller="Books" asp-action="Index">
+        Explore Books →
+    </a>
+
+</div>
+
+<!-- DASHBOARD CARDS -->
+<div class="dashboard-cards">
+
+    <div class="card-box">
+        <div class="icon">📖</div>
+        <h3>Books</h3>
+        <p>Manage all library books efficiently.</p>
+    </div>
+
+    <div class="card-box">
+        <div class="icon">👥</div>
+        <h3>Members</h3>
+        <p>Track registered library users.</p>
+    </div>
+
+    <div class="card-box">
+        <div class="icon">🔄</div>
+        <h3>Borrow System</h3>
+        <p>Handle issue & return records.</p>
+    </div>
+
+    <div class="card-box">
+        <div class="icon">📊</div>
+        <h3>Reports</h3>
+        <p>View analytics and statistics.</p>
+    </div>
+
+</div>
+
+<!-- QUICK LINKS -->
+<div class="quick-links">
+
+    <a asp-controller="Books" asp-action="Index">Books</a>
+    <a asp-controller="Borrow" asp-action="Index">Borrow</a>
+    <a asp-controller="Members" asp-action="Index">Members</a>
+    <a asp-controller="Categories" asp-action="Index">Categories</a>
+
+</div>
