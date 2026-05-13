@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Login";
 }
+<body>
 
 <link rel="stylesheet" href="~/css/auth.css" />
 
@@ -85,11 +86,30 @@
     </div>
 
 </div>
+</body>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
 <style>
+
+    html, body {
+        background: #000 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        min-height: 100vh !important;
+    }
+
+    /* REMOVE LAYOUT BACKGROUND */
+    main,
+    .container,
+    .container-fluid,
+    .content-wrapper,
+    .page,
+    .wrapper {
+        background: transparent !important;
+    }
+
     * {
         box-sizing: border-box;
     }
@@ -97,11 +117,11 @@
     body {
         margin: 0;
         min-height: 100vh;
-        background: linear-gradient(135deg,#4b0082,#6a0dad,#9b30ff);
+        background: #000000 !important;
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 18px;
+        padding: 20px;
         font-family: 'Segoe UI', sans-serif;
         overflow-x: hidden;
     }
@@ -109,39 +129,40 @@
     /* WRAPPER */
     .login-wrapper {
         width: 100%;
-        max-width: 940px;
+        max-width: 980px;
     }
 
-    /* GLASS CARD */
+    /* MAIN CARD */
     .glass-card {
         display: flex;
         width: 100%;
-        min-height: 500px;
-        border-radius: 24px;
+        min-height: 540px;
+        border-radius: 28px;
         overflow: hidden;
-        background: rgba(255,255,255,0.10);
-        backdrop-filter: blur(16px);
-        border: 1px solid rgba(255,255,255,0.12);
-        box-shadow: 0 20px 45px rgba(0,0,0,0.28);
+        /* background: linear-gradient( 135deg, #4c1d95, #6d28d9, #7c3aed ); */
+        border: 1px solid rgba(255,255,255,0.08);
+        backdrop-filter: blur(14px);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.55), 0 0 35px rgba(168,85,247,0.18);
     }
 
-    /* LEFT */
+    /* LEFT PANEL */
     .left-panel {
         width: 42%;
-        padding: 42px 36px;
-        background: linear-gradient(135deg, rgba(75,0,130,0.95), rgba(155,48,255,0.82));
+        padding: 48px 38px;
         color: white;
         display: flex;
         flex-direction: column;
         justify-content: center;
         position: relative;
+        background: rgba(0,0,0,0.28);
+        backdrop-filter: blur(8px);
     }
 
         .left-panel::before {
             content: "";
             position: absolute;
             inset: 0;
-            background: radial-gradient(circle at top right, rgba(255,255,255,0.14), transparent 42%);
+            background: radial-gradient(circle at top right, rgba(255,255,255,0.10), transparent 45%);
         }
 
     .left-panel-content {
@@ -150,108 +171,130 @@
     }
 
     .logo {
-        font-size: 38px;
-        margin-bottom: 10px;
+        font-size: 42px;
+        margin-bottom: 14px;
     }
 
     .left-panel h2 {
-        font-size: 30px;
+        font-size: 34px;
         font-weight: 700;
-        margin-bottom: 16px;
+        margin-bottom: 18px;
     }
 
     .left-panel p {
-        font-size: 14px;
-        line-height: 1.7;
+        font-size: 15px;
+        line-height: 1.8;
         opacity: 0.92;
     }
 
     .feature-list {
-        margin-top: 22px;
-        padding-left: 18px;
+        margin-top: 24px;
+        padding-left: 20px;
     }
 
         .feature-list li {
-            margin-bottom: 10px;
-            font-size: 14px;
+            margin-bottom: 12px;
+            font-size: 15px;
         }
 
     .quote {
-        margin-top: 24px;
+        margin-top: 30px;
         font-style: italic;
-        font-size: 13px;
+        font-size: 14px;
         opacity: 0.9;
     }
 
-    /* RIGHT */
+    /* RIGHT PANEL */
     .right-panel {
         width: 58%;
-        padding: 42px 38px;
-        background: rgba(255,255,255,0.06);
+        padding: 50px 42px;
+        color: white;
         display: flex;
         flex-direction: column;
         justify-content: center;
-        color: white;
+        background: rgba(255,255,255,0.10);
+        backdrop-filter: blur(10px);
     }
 
     .title {
         text-align: center;
-        font-size: 28px;
+        font-size: 34px;
         font-weight: 700;
-        margin-bottom: 26px;
+        margin-bottom: 30px;
     }
 
-    .subtitle {
-        text-align: center;
-        font-size: 13px;
-        color: rgba(255,255,255,0.75);
-        margin-bottom: 20px;
-    }
-
+    /* INPUTS */
     .form-control {
-        height: 48px;
-        border-radius: 12px;
-        background: rgba(255,255,255,0.12);
+        height: 52px;
+        border-radius: 14px;
+        background: rgba(255,255,255,0.14);
         color: white;
         border: 1px solid rgba(255,255,255,0.12);
-        padding: 12px 15px;
+        padding: 12px 16px;
+        transition: 0.3s;
     }
 
         .form-control:focus {
-            background: rgba(255,255,255,0.16);
+            background: rgba(255,255,255,0.18);
             border-color: #d8b4fe;
-            box-shadow: 0 0 0 4px rgba(216,180,254,0.22);
+            box-shadow: 0 0 0 4px rgba(216,180,254,0.18);
             color: white;
         }
 
         .form-control::placeholder {
-            color: rgba(255,255,255,0.7);
+            color: rgba(255,255,255,0.65);
         }
 
+    /* BUTTON */
     .btn-login {
-        height: 48px;
-        border-radius: 12px;
-        background: linear-gradient(135deg,#a855f7,#7e22ce);
+        height: 52px;
+        border-radius: 14px;
+        background: linear-gradient( 135deg, #c084fc, #9333ea, #6b21a8 );
         color: white;
-        font-weight: 600;
+        font-weight: 700;
         border: none;
+        transition: all 0.3s ease;
     }
 
         .btn-login:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 22px rgba(168,85,247,0.35);
+            box-shadow: 0 12px 24px rgba(147,51,234,0.35);
+            color: #f3f4f6;
         }
 
+    /* LINKS */
+    a {
+        color: #ffffff !important;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+
+        a:hover {
+            color: #e9d5ff !important;
+        }
+
+    /* CHECKBOX */
+    .form-check-input {
+        background-color: rgba(255,255,255,0.15);
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .form-check-label {
+        color: white;
+    }
+
+    /* TEXT */
     .small-text {
         font-size: 13px;
     }
 
     .text-danger {
         font-size: 12px;
+        color: #fecaca !important;
     }
 
     /* MOBILE */
-    @@media(max - width:768px) {
+    @@media (max-width:768px) {
 
         .glass-card {
             flex-direction: column;
@@ -262,13 +305,17 @@
             width: 100%;
         }
 
-        .right-panel {
-            padding: 34px 22px;
+        .left-panel {
+            padding: 34px 26px;
+            text-align: center;
         }
 
-        .left-panel {
-            text-align: center;
-            padding: 34px 24px;
+        .right-panel {
+            padding: 36px 24px;
+        }
+
+        .title {
+            font-size: 28px;
         }
     }
 </style>

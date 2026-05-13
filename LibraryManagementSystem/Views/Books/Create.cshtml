@@ -1,0 +1,113 @@
+﻿@model LibraryManagementSystem.Models.Book
+
+@{
+    ViewData["Title"] = "Add New Book";
+}
+
+<div class="container mt-4">
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">📚 Add New Book</h4>
+        </div>
+
+        <div class="card-body">
+
+            <form asp-action="Create" method="post">
+
+                <!-- VALIDATION -->
+                <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                <!-- Title -->
+                <div class="mb-3">
+                    <label asp-for="Title"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+
+                <!-- ISBN -->
+                <div class="mb-3">
+                    <label asp-for="ISBN"></label>
+                    <input asp-for="ISBN" class="form-control" />
+                    <span asp-validation-for="ISBN" class="text-danger"></span>
+                </div>
+
+                <!-- Author -->
+                <div class="mb-3">
+                    <label asp-for="AuthorId">Author</label>
+                    <select asp-for="AuthorId" class="form-select" asp-items="ViewBag.AuthorList">
+                        <option value="0">-- Select Author --</option>
+                    </select>
+                    <span asp-validation-for="AuthorId" class="text-danger"></span>
+                </div>
+
+                <!-- Category -->
+                <div class="mb-3">
+                    <label asp-for="CategoryId">Category</label>
+                    <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.CategoryList">
+                        <option value="0">-- Select Category --</option>
+                    </select>
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                </div>
+
+                <!-- Department -->
+                <div class="mb-3">
+                    <label asp-for="DepartmentId">Department</label>
+
+                    <select asp-for="DepartmentId"
+                            class="form-select"
+                            asp-items="ViewBag.DepartmentList">
+
+                        <option value="">-- Select Department --</option>
+
+                    </select>
+
+                    <span asp-validation-for="DepartmentId"
+                          class="text-danger"></span>
+                </div>
+
+                <!-- Total Copies -->
+                <div class="mb-3">
+                    <label asp-for="TotalCopies"></label>
+                    <input asp-for="TotalCopies" class="form-control" id="TotalCopies" />
+                    <span asp-validation-for="TotalCopies" class="text-danger"></span>
+                </div>
+
+                <!-- Available Copies (Auto + Readonly) -->
+                <div class="mb-3">
+                    <label asp-for="AvailableCopies"></label>
+                    <input asp-for="AvailableCopies" class="form-control" id="AvailableCopies" readonly />
+                </div>
+
+                <div class="form-check mb-3">
+                    <input asp-for="IsFeatured" class="form-check-input" />
+                    <label asp-for="IsFeatured" class="form-check-label">
+                        Editor's Pick
+                    </label>
+                </div>
+
+                <!-- Buttons -->
+                <div class="d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-secondary">⬅ Back</a>
+                    <button type="submit" class="btn btn-success">💾 Save Book</button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <!-- Auto-fill AvailableCopies -->
+    <script>
+        document.getElementById("TotalCopies").addEventListener("input", function () {
+            document.getElementById("AvailableCopies").value = this.value;
+        });
+    </script>
+}

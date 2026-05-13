@@ -1,0 +1,293 @@
+﻿@model IEnumerable<dynamic>
+
+@{
+    ViewData["Title"] = "Most Popular Books";
+}
+
+<style>
+
+    /* =========================
+           UNIVERSAL POPULAR BOOKS
+           LIGHT + DARK MODE
+        ========================= */
+
+    .popular-card {
+        background: var(--bs-body-bg);
+        border: 1px solid rgba(128,128,128,0.15);
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+
+    /* HEADER */
+
+    .popular-header {
+        background: linear-gradient(135deg, #f59e0b, #f97316);
+        padding: 22px 25px;
+        color: white;
+    }
+
+        .popular-header h4 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: 0.4px;
+        }
+
+        .popular-header p {
+            margin: 6px 0 0;
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+    /* TABLE */
+
+    .popular-table {
+        margin-bottom: 0;
+    }
+
+        .popular-table thead {
+            background: rgba(128,128,128,0.08);
+        }
+
+            .popular-table thead th {
+                border: none;
+                padding: 16px;
+                font-size: 13px;
+                font-weight: 700;
+                color: var(--bs-body-color);
+                letter-spacing: 0.5px;
+            }
+
+        .popular-table tbody td {
+            padding: 16px;
+            vertical-align: middle;
+            border-top: 1px solid rgba(128,128,128,0.12);
+            color: var(--bs-body-color);
+        }
+
+        .popular-table tbody tr {
+            transition: 0.25s ease;
+        }
+
+            .popular-table tbody tr:hover {
+                background: rgba(128,128,128,0.05);
+            }
+
+    /* RANK */
+
+    .rank-badge {
+        width: 38px;
+        height: 38px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #f59e0b, #f97316);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 14px;
+    }
+
+    /* BOOK TITLE */
+
+    .book-title {
+        font-weight: 700;
+        font-size: 15px;
+    }
+
+    /* ISBN */
+
+    .isbn-text {
+        opacity: 0.75;
+        font-size: 14px;
+    }
+
+    /* BORROW BADGE */
+
+    .borrow-badge {
+        display: inline-block;
+        padding: 8px 16px;
+        border-radius: 30px;
+        background: rgba(34,197,94,0.15);
+        color: #16a34a;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    /* EMPTY STATE */
+
+    .empty-card {
+        background: var(--bs-body-bg);
+        border: 1px solid rgba(128,128,128,0.15);
+        border-radius: 20px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+    }
+
+    /* RESPONSIVE */
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    @@media (max-width:768px) {
+
+        .popular-table {
+            min-width: 650px;
+        }
+
+            .popular-table th,
+            .popular-table td {
+                white-space: nowrap;
+            }
+
+        .popular-header h4 {
+            font-size: 18px;
+        }
+    }
+
+</style>
+
+<div class="container mt-4">
+
+    <!-- PAGE HEADER -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h3 class="fw-bold">
+                🔥 Most Popular Books
+            </h3>
+
+            <p class="text-muted mb-0">
+                Most borrowed books in your library
+            </p>
+
+        </div>
+
+        <a asp-action="Index"
+           class="btn btn-outline-secondary">
+
+            ⬅ Back
+
+        </a>
+
+    </div>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="card empty-card p-4 text-center">
+
+            <h5 class="mb-1">
+                No data available
+            </h5>
+
+            <p class="text-muted mb-0">
+                No books have been borrowed yet.
+            </p>
+
+        </div>
+    }
+    else
+    {
+
+        <!-- CARD -->
+
+        <div class="card popular-card">
+
+            <!-- HEADER -->
+
+            <div class="popular-header">
+
+                <h4>
+                    📚 Popular Books Ranking
+                </h4>
+
+                <p>
+                    Based on total borrowing activity
+                </p>
+
+            </div>
+
+            <!-- TABLE -->
+
+            <div class="table-responsive">
+
+                <table class="table popular-table align-middle">
+
+                    <thead>
+                        <tr>
+                            <th width="90">Rank</th>
+                            <th>Book Title</th>
+                            <th width="220">ISBN</th>
+                            <th width="220">Total Borrows</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @{
+                            int count = 1;
+                        }
+
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+
+                                <!-- RANK -->
+
+                                <td>
+
+                                    <div class="rank-badge">
+                                        #@count
+                                    </div>
+
+                                </td>
+
+                                <!-- BOOK -->
+
+                                <td>
+
+                                    <div class="book-title">
+                                        @item.Title
+                                    </div>
+
+                                </td>
+
+                                <!-- ISBN -->
+
+                                <td>
+
+                                    <div class="isbn-text">
+                                        @item.ISBN
+                                    </div>
+
+                                </td>
+
+                                <!-- BORROWS -->
+
+                                <td>
+
+                                    <span class="borrow-badge">
+                                        📖 @item.TotalBorrows Times
+                                    </span>
+
+                                </td>
+
+                            </tr>
+
+                            count++;
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    }
+
+</div>

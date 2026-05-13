@@ -1,0 +1,45 @@
+﻿@{
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString();
+    var action = ViewContext.RouteData.Values["action"]?.ToString();
+}
+@{
+    var title = ViewData["Title"] ?? "Dashboard";
+}
+
+<div class="breadcrumb-wrapper mb-4">
+
+    <nav aria-label="breadcrumb">
+
+        <ol class="breadcrumb custom-breadcrumb mb-0">
+
+            <li class="breadcrumb-item">
+                <a asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-house-door-fill"></i>
+                    Dashboard
+                </a>
+            </li>
+
+            @if (!string.IsNullOrEmpty(controller) && controller != "Home")
+            {
+                <li class="breadcrumb-item">
+
+                    <a asp-controller="@controller" asp-action="Index">
+                        @controller
+                    </a>
+
+                </li>
+            }
+
+            @if (!string.IsNullOrEmpty(action)
+                        && action != "Index")
+            {
+                <li class="breadcrumb-item active">
+                    @action
+                </li>
+            }
+
+        </ol>
+
+    </nav>
+
+</div>

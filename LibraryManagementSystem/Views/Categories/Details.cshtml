@@ -1,0 +1,59 @@
+﻿@model LibraryManagementSystem.Models.Category
+
+@{
+    ViewData["Title"] = "Category Details";
+}
+
+<div class="container mt-4">
+
+    <!-- Category Info -->
+    <div class="card mb-3">
+        <div class="card-header bg-dark text-white">
+            <h4>📂 Category Details</h4>
+        </div>
+
+        <div class="card-body">
+            <h5>Name: @Model.Name</h5>
+        </div>
+    </div>
+
+    <!-- Books -->
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h5>📚 Books in this Category</h5>
+        </div>
+
+        <div class="card-body">
+
+            @if (!Model.Books.Any())
+            {
+                <p>No books found.</p>
+            }
+            else
+            {
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>ISBN</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var book in Model.Books)
+                        {
+                            <tr>
+                                <td>@book.Title</td>
+                                <td>@book.ISBN</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+
+        </div>
+    </div>
+
+    <a asp-action="Index" class="btn btn-secondary mt-3">⬅ Back</a>
+
+</div>

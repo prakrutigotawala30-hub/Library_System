@@ -1,0 +1,409 @@
+﻿@model IEnumerable<LibraryManagementSystem.Models.BorrowRecord>
+
+@{
+    ViewData["Title"] = "Borrow Records";
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+    /* TABLE RESPONSIVE */
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border-radius: 16px;
+    }
+
+    .table {
+        min-width: 1100px;
+    }
+
+        /* TABLE HEADER */
+
+        .table thead th {
+            font-family: 'Poppins', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        /* TABLE BODY */
+
+        .table tbody td {
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+    /* ACTION BUTTONS */
+
+    .action-buttons {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: nowrap;
+    }
+
+        .action-buttons form {
+            margin: 0;
+        }
+
+    /* MOBILE */
+
+    @@media (max-width: 768px) {
+
+        .table th,
+        .table td {
+            font-size: 14px;
+            padding: 12px;
+        }
+
+        .table {
+            min-width: 1000px;
+        }
+    }
+
+</style>
+
+<div class="container mt-4">
+
+    <!-- HEADER -->
+
+    <div class="row align-items-center mb-3">
+
+        <div class="col-md-6">
+            <h2 class="m-0">📚 Borrow Records</h2>
+        </div>
+
+        <div class="col-md-6 text-end">
+
+            <a class="btn btn-success"
+               asp-controller="Borrow"
+               asp-action="ExportExcel">
+
+                Export Excel
+
+            </a>
+
+            <a class="btn btn-primary"
+               asp-action="Issue">
+
+                + Issue Book
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- FILTER -->
+
+    <div class="row mb-3">
+
+        <div class="col-md-4 mb-2">
+
+            <input type="text"
+                   id="searchBox"
+                   class="form-control"
+                   placeholder="Search book or member..." />
+
+        </div>
+
+        <div class="col-md-4 mb-2">
+
+            <select id="statusFilter"
+                    class="form-select">
+
+                <option value="">All Status</option>
+                <option value="Issued">Issued</option>
+                <option value="Returned">Returned</option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+    <!-- TABLE -->
+
+    <div class="table-responsive">
+
+        <table class="table table-bordered table-striped table-hover align-middle"
+               id="borrowTable">
+
+            <thead class="table-dark">
+
+                <tr>
+
+                    <th>Book</th>
+                    <th>Member</th>
+                    <th>Issued</th>
+                    <th>Due</th>
+                    <th>Returned</th>
+                    <th>Days Late</th>
+                    <th>Fine/Day</th>
+                    <th>Total Fine</th>
+                    <th>Status</th>
+                    <th>Renewed</th>
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @foreach (var item in Model)
+                {
+                    var isOverdue =
+                    item.ReturnedOn == null
+                    && item.DueDate < DateTime.Now;
+
+                    <tr data-status="@item.Status">
+
+                        <!-- BOOK -->
+
+                        <td>
+                            @item.Book?.Title
+                        </td>
+
+                        <!-- MEMBER -->
+
+                        <td>
+                            @item.Member?.Name
+                        </td>
+
+                        <!-- ISSUE DATE -->
+
+                        <td>
+                            @item.IssuedOn.ToShortDateString()
+                        </td>
+
+                        <!-- DUE DATE -->
+
+                        <td>
+                            @item.DueDate.ToShortDateString()
+                        </td>
+
+                        <!-- RETURN DATE -->
+
+                        <td>
+
+                            @(item.ReturnedOn != null
+                                                    ? item.ReturnedOn.Value.ToShortDateString()
+                                                    : "-")
+
+                        </td>
+
+                        <!-- DAYS LATE -->
+
+                        <td>
+
+                            @(item.DaysLate > 0
+                                                    ? item.DaysLate
+                                                    : 0)
+
+                        </td>
+
+                        <!-- FINE PER DAY -->
+
+                        <td>
+
+                            @if (item.DaysLate > 0)
+                            {
+                                <span>
+                                    ₹ @item.FinePerDay
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="text-success">
+                                    No Fine
+                                </span>
+                            }
+
+                        </td>
+
+                        <!-- TOTAL FINE -->
+
+                        <td>
+
+                            ₹ @(item.FineAmount > 0
+                                                    ? item.FineAmount
+                                                    : 0)
+
+                        </td>
+
+                        <!-- STATUS -->
+
+                        <td>
+
+                            @if (item.Status == "Issued")
+                            {
+                                if (isOverdue)
+                                {
+                                    <span class="badge bg-danger">
+                                        Overdue
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning text-dark">
+                                        Issued
+                                    </span>
+                                }
+                            }
+                            else
+                            {
+                                <span class="badge bg-success">
+                                    Returned
+                                </span>
+                            }
+
+                        </td>
+
+                        <!-- RENEW COUNT -->
+
+                        <td>
+
+                            @item.RenewCount / 2
+
+                        </td>
+
+                        <!-- ACTIONS -->
+
+                        <td class="text-nowrap">
+
+                            <div class="d-flex align-items-center gap-1 flex-nowrap">
+
+                                @if (item.Status == "Issued")
+                                {
+                                    <!-- RETURN -->
+                                    <a asp-action="Return"
+                                       asp-route-id="@item.Id"
+                                       class="btn btn-sm btn-primary"
+                                       title="Return">
+
+                                        <i class="bi bi-arrow-return-left"></i>
+
+                                    </a>
+
+                                    <!-- RENEW -->
+                                    @if (item.DueDate.Date >= DateTime.Now.Date
+                                                                && item.RenewCount < 2)
+                                    {
+                                        <form asp-action="Renew"
+                                              asp-route-id="@item.Id"
+                                              method="post"
+                                              class="m-0">
+
+                                            @Html.AntiForgeryToken()
+
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-warning"
+                                                    title="Renew">
+
+                                                <i class="bi bi-arrow-repeat"></i>
+
+                                            </button>
+
+                                        </form>
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success">
+                                        <i class="bi bi-check-circle-fill"></i>
+                                    </span>
+                                }
+
+                                <!-- PDF -->
+                                <a asp-action="DownloadReceipt"
+                                   asp-route-id="@item.Id"
+                                   class="btn btn-sm btn-danger"
+                                   title="Download PDF">
+
+                                    <i class="bi bi-file-earmark-pdf-fill"></i>
+
+                                </a>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<!-- FILTER SCRIPT -->
+
+<script>
+
+    const statusFilter =
+        document.getElementById("statusFilter");
+
+    const searchBox =
+        document.getElementById("searchBox");
+
+    function filterTable() {
+
+        let statusValue =
+            statusFilter.value.toLowerCase();
+
+        let searchValue =
+            searchBox.value.toLowerCase();
+
+        let rows =
+            document.querySelectorAll(
+                "#borrowTable tbody tr"
+            );
+
+        rows.forEach(row => {
+
+            let status =
+                row.getAttribute("data-status")
+                    .toLowerCase();
+
+            let text =
+                row.innerText.toLowerCase();
+
+            let statusMatch =
+                statusValue === ""
+                || status === statusValue;
+
+            let searchMatch =
+                text.includes(searchValue);
+
+            row.style.display =
+                (statusMatch && searchMatch)
+                ? ""
+                : "none";
+
+        });
+
+    }
+
+    statusFilter.addEventListener(
+        "change",
+        filterTable
+    );
+
+    searchBox.addEventListener(
+        "keyup",
+        filterTable
+    );
+
+</script>

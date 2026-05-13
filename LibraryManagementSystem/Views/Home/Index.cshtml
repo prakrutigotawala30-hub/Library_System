@@ -1,0 +1,1123 @@
+﻿@model LibraryManagementSystem.ViewModels.DashboardViewModel
+
+<div class="container-fluid py-4">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">📊 Dashboard</h2>
+            <p class="text-muted mb-0">
+                Library Management System Overview
+            </p>
+        </div>
+
+        <div>
+            <a asp-controller="Membership"
+               asp-action="Index"
+               class="btn btn-dark shadow-sm px-4">
+                <i class="bi bi-card-checklist"></i>
+                Memberships
+            </a>
+        </div>
+    </div>
+
+    <!-- STATISTICS -->
+    <div class="row g-4">
+
+        <!-- TOTAL BOOKS -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card dashboard-card bg-primary text-white border-0">
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="small mb-1">Total Books</p>
+                            <h2 class="fw-bold">@Model.TotalBooks</h2>
+                        </div>
+
+                        <div class="icon-box">
+                            <i class="bi bi-book"></i>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ISSUED BOOKS -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card dashboard-card bg-success text-white border-0">
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="small mb-1">Issued Books</p>
+                            <h2 class="fw-bold">@Model.IssuedBooks</h2>
+                        </div>
+
+                        <div class="icon-box">
+                            <i class="bi bi-journal-arrow-down"></i>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- OVERDUE -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card dashboard-card bg-danger text-white border-0">
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="small mb-1">Overdue Books</p>
+                            <h2 class="fw-bold">@Model.OverdueBooks</h2>
+                        </div>
+
+                        <div class="icon-box">
+                            <i class="bi bi-exclamation-triangle"></i>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- MEMBERS -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card dashboard-card bg-dark text-white border-0">
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="small mb-1">Total Members</p>
+                            <h2 class="fw-bold">@Model.TotalMembers</h2>
+                        </div>
+
+                        <div class="icon-box">
+                            <i class="bi bi-people"></i>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ACTIVE MEMBERSHIPS -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card dashboard-card membership-active border-0 text-white">
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="small mb-1">Active Memberships</p>
+                            <h2 class="fw-bold">@Model.ActiveMemberships</h2>
+                        </div>
+
+                        <div class="icon-box">
+                            <i class="bi bi-patch-check"></i>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- EXPIRED MEMBERSHIPS -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card dashboard-card membership-expired border-0 text-white">
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="small mb-1">Expired Memberships</p>
+                            <h2 class="fw-bold">@Model.ExpiredMemberships</h2>
+                        </div>
+
+                        <div class="icon-box">
+                            <i class="bi bi-patch-exclamation"></i>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <partial name="_ActivityFeed"
+             model="(List<LibraryManagementSystem.Models.BorrowRecord>)ViewBag.RecentBorrows" />
+
+    <!-- MEMBERSHIP SECTION -->
+    <div class="card border-0 shadow-sm mt-5 membership-banner">
+
+        <div class="card-body p-4">
+
+            <div class="row align-items-center">
+
+                <div class="col-lg-8">
+
+                    <h3 class="fw-bold text-white mb-3">
+                        🎫 Library Membership System
+                    </h3>
+
+                    <p class="text-light mb-3">
+                        Members must have active membership to issue books.
+                    </p>
+
+                    <div class="row g-3">
+
+                        <div class="col-md-4">
+                            <div class="membership-type-card">
+                                <i class="bi bi-mortarboard-fill"></i>
+                                <h6 class="mt-3">Student</h6>
+
+                                <small>
+                                    3 Months - ₹400 <br />
+                                    6 Months - ₹600 <br />
+                                    1 Year - ₹1000
+                                </small>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="membership-type-card">
+                                <i class="bi bi-person-badge-fill"></i>
+                                <h6 class="mt-3">Regular</h6>
+
+                                <small>
+                                    6 Months - ₹800 <br />
+                                    1 Year - ₹1500
+                                </small>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="membership-type-card">
+                                <i class="bi bi-award-fill"></i>
+                                <h6 class="mt-3">Premium</h6>
+
+                                <small>
+                                    1 Year - ₹2500 <br />
+                                    Unlimited Borrow
+                                </small>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-lg-4 text-center mt-4 mt-lg-0">
+
+                    <a asp-controller="Membership"
+                       asp-action="Create"
+                       class="btn btn-light btn-lg px-5 py-3 shadow">
+
+                        <i class="bi bi-plus-circle"></i>
+                        Add Membership
+
+                    </a>
+
+                    <div class="mt-3">
+                        <a asp-controller="Membership"
+                           asp-action="Index"
+                           class="text-white text-decoration-none">
+                            View Membership Records →
+                        </a>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- QUICK ACTIONS -->
+
+    <div class="card border-0 shadow-sm mt-5 quick-action-card">
+
+        <div class="card-body p-4">
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+
+                <div>
+                    <h4 class="fw-bold mb-1">
+                        ⚡ Quick Actions
+                    </h4>
+
+                    <p class="text-muted mb-0">
+                        Frequently used library operations
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="row g-4">
+
+                <!-- ISSUE BOOK -->
+
+                <div class="col-lg-3 col-md-6">
+
+                    <a asp-controller="Borrow"
+                       asp-action="Issue"
+                       class="text-decoration-none">
+
+                        <div class="quick-box issue-box">
+
+                            <div class="quick-icon">
+                                <i class="bi bi-journal-plus"></i>
+                            </div>
+
+                            <h5>Issue Book</h5>
+
+                            <p>
+                                Borrow books for members
+                            </p>
+
+                        </div>
+
+                    </a>
+
+                </div>
+
+                <!-- ADD MEMBER -->
+
+                <div class="col-lg-3 col-md-6">
+
+                    <a asp-controller="Members"
+                       asp-action="Create"
+                       class="text-decoration-none">
+
+                        <div class="quick-box member-box">
+
+                            <div class="quick-icon">
+                                <i class="bi bi-person-plus"></i>
+                            </div>
+
+                            <h5>Add Member</h5>
+
+                            <p>
+                                Register new library member
+                            </p>
+
+                        </div>
+
+                    </a>
+
+                </div>
+
+                <!-- ADD BOOK -->
+
+                <div class="col-lg-3 col-md-6">
+
+                    <a asp-controller="Books"
+                       asp-action="Create"
+                       class="text-decoration-none">
+
+                        <div class="quick-box book-box">
+
+                            <div class="quick-icon">
+                                <i class="bi bi-book-half"></i>
+                            </div>
+
+                            <h5>Add Book</h5>
+
+                            <p>
+                                Add new books to library
+                            </p>
+
+                        </div>
+
+                    </a>
+
+                </div>
+
+                <!-- MEMBERSHIPS -->
+
+                <div class="col-lg-3 col-md-6">
+
+                    <a asp-controller="Membership"
+                       asp-action="Create"
+                       class="text-decoration-none">
+
+                        <div class="quick-box membership-box">
+
+                            <div class="quick-icon">
+                                <i class="bi bi-patch-check"></i>
+                            </div>
+
+                            <h5>Membership</h5>
+
+                            <p>
+                                Create member subscription
+                            </p>
+
+                        </div>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- RECENT BORROWS -->
+    <div class="card border-0 shadow-sm mt-5">
+
+        <div class="card-header bg-white border-0 pt-4 pb-0">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <h5 class="fw-bold mb-0">
+                    📚 Recent Borrow Activity
+                </h5>
+
+                <a asp-controller="Borrow"
+                   asp-action="Index"
+                   class="btn btn-sm btn-outline-dark">
+                    View All
+                </a>
+
+            </div>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table class="table align-middle">
+
+                    <thead class="table-light">
+                        <tr>
+                            <th>Book</th>
+                            <th>Member</th>
+                            <th>Issued Date</th>
+                            <th>Due Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var item in (List<LibraryManagementSystem.Models.BorrowRecord>)ViewBag.RecentBorrows)
+                        {
+                            <tr>
+
+                                <td class="fw-semibold">
+                                    @item.Book?.Title
+                                </td>
+
+                                <td>
+                                    @item.Member?.Name
+                                </td>
+
+                                <td>
+                                    @item.IssuedOn.ToShortDateString()
+                                </td>
+
+                                <td>
+                                    @item.DueDate.ToShortDateString()
+                                </td>
+
+                                <td>
+
+                                    @if (item.ReturnedOn == null)
+                                    {
+                                        if (item.DueDate < DateTime.Now)
+                                        {
+                                            <span class="badge bg-danger px-3 py-2">
+                                                Overdue
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-warning text-dark px-3 py-2">
+                                                Borrowed
+                                            </span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success px-3 py-2">
+                                            Returned
+                                        </span>
+                                    }
+
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- FEATURED BOOKS -->
+    <div class="card border-0 shadow-sm mt-5">
+
+        <div class="card-header bg-warning text-dark">
+            <h5 class="mb-0">⭐ Editor's Pick Books</h5>
+        </div>
+
+        <div class="card-body">
+
+            @if (ViewBag.FeaturedBooks != null &&
+                        ((List<LibraryManagementSystem.Models.Book>)ViewBag.FeaturedBooks).Any())
+            {
+                <div class="row">
+
+                    @foreach (var book in (List<LibraryManagementSystem.Models.Book>)ViewBag.FeaturedBooks)
+                    {
+                        <div class="col-md-4 mb-3">
+
+                            <div class="card h-100 border-0 shadow-sm">
+
+                                <div class="card-body">
+
+                                    <h5 class="fw-bold text-primary">
+                                        @book.Title
+                                    </h5>
+
+                                    <p class="mb-1">
+                                        <strong>ISBN:</strong> @book.ISBN
+                                    </p>
+
+                                    <p class="mb-1">
+                                        <strong>Available:</strong>
+                                        @book.AvailableCopies / @book.TotalCopies
+                                    </p>
+
+                                    <span class="badge bg-warning text-dark mt-2">
+                                        Editor's Pick
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    }
+
+                </div>
+            }
+            else
+            {
+                <div class="text-muted">
+                    No featured books available.
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+    <!-- =========================
+            ANALYTICS SECTION
+    ========================= -->
+
+    <div class="container-fluid py-4">
+
+        <!-- SECTION HEADER -->
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4">
+
+            <div>
+                <h3 class="fw-bold mb-1">
+                    📊 Analytics Overview
+                </h3>
+
+                <p class="text-muted mb-0">
+                    Borrow statistics, categories and fine collection
+                </p>
+            </div>
+
+        </div>
+
+        <div class="row g-4">
+
+            <!-- BORROW CHART -->
+            <div class="col-12 col-xl-7">
+
+                <div class="card dashboard-card analytics-card h-100">
+
+                    <div class="card-body p-4">
+
+                        <div class="chart-header">
+
+                            <div>
+                                <h5 class="chart-title mb-1">
+                                    📈 Borrows Over Time
+                                </h5>
+
+                                <small class="text-muted">
+                                    Weekly borrow activity
+                                </small>
+                            </div>
+
+                            <div class="chart-badge">
+                                Trend
+                            </div>
+
+                        </div>
+
+                        <div class="chart-container large-chart">
+                            <canvas id="borrowChart"></canvas>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- CATEGORY DONUT -->
+            <div class="col-12 col-xl-5">
+
+                <div class="card dashboard-card analytics-card h-100">
+
+                    <div class="card-body p-4">
+
+                        <div class="chart-header">
+
+                            <div>
+                                <h5 class="chart-title mb-1">
+                                    🍩 Books By Category
+                                </h5>
+
+                                <small class="text-muted">
+                                    Category distribution
+                                </small>
+                            </div>
+
+                        </div>
+
+                        <div class="chart-container donut-chart">
+                            <canvas id="categoryChart"></canvas>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- FINE COLLECTION -->
+            <div class="col-12">
+
+                <div class="card dashboard-card analytics-card">
+
+                    <div class="card-body p-4">
+
+                        <div class="chart-header">
+
+                            <div>
+                                <h5 class="chart-title mb-1">
+                                    📊 Monthly Fine Collection
+                                </h5>
+
+                                <small class="text-muted">
+                                    Monthly fine income report
+                                </small>
+                            </div>
+
+                            <div class="chart-badge success-badge">
+                                Revenue
+                            </div>
+
+                        </div>
+
+                        <div class="chart-container bar-chart">
+                            <canvas id="fineChart"></canvas>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+    // DATA FROM DATABASE
+
+    const borrowLabels =
+    @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.BorrowLabels));
+
+    const borrowData =
+    @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.BorrowData));
+
+    const categoryLabels =
+    @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.CategoryLabels));
+
+    const categoryData =
+    @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.CategoryData));
+
+    const fineLabels =
+    @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.FineLabels));
+
+    const fineData =
+    @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.FineData));
+
+    // BORROW CHART
+
+    new Chart(document.getElementById('borrowChart'), {
+
+        type: 'line',
+
+        data: {
+
+            labels: borrowLabels,
+
+            datasets: [{
+
+                label: 'Books Borrowed',
+
+                data: borrowData,
+
+                borderWidth: 3,
+                tension: 0.4,
+                fill: true
+
+            }]
+
+        },
+
+        options: {
+
+            responsive: true
+
+        }
+
+    });
+
+    // CATEGORY CHART
+
+    new Chart(document.getElementById('categoryChart'), {
+
+        type: 'doughnut',
+
+        data: {
+
+            labels: categoryLabels,
+
+            datasets: [{
+
+                data: categoryData
+
+            }]
+
+        },
+
+        options: {
+
+            responsive: true
+
+        }
+
+    });
+
+    // FINE CHART
+
+    new Chart(document.getElementById('fineChart'), {
+
+        type: 'bar',
+
+        data: {
+
+            labels: fineLabels,
+
+            datasets: [{
+
+                label: 'Fine Collection ₹',
+
+                data: fineData
+
+            }]
+
+        },
+
+        options: {
+
+            responsive: true
+
+        }
+
+    });
+
+</script>
+
+<style>
+
+    body {
+        background: #f4f7fb;
+    }
+
+    .dashboard-card {
+        border-radius: 18px;
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+
+        .dashboard-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+    .icon-box {
+        width: 65px;
+        height: 65px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+    }
+
+    .membership-active {
+        background: linear-gradient(135deg,#0891b2,#06b6d4) !important;
+        color: #ffffff !important;
+    }
+
+        .membership-active p,
+        .membership-active h2,
+        .membership-active i {
+            color: #ffffff !important;
+        }
+
+    .membership-expired {
+        background: linear-gradient(135deg,#6b7280,#4b5563) !important;
+        color: #ffffff !important;
+    }
+
+        .membership-expired p,
+        .membership-expired h2,
+        .membership-expired i {
+            color: #ffffff !important;
+        }
+
+    .membership-banner {
+        border-radius: 24px;
+        background: linear-gradient(135deg,#0f172a,#1e293b);
+    }
+
+    .membership-type-card {
+        background: rgba(255,255,255,0.08);
+        border-radius: 16px;
+        padding: 20px;
+        text-align: center;
+        color: white;
+        backdrop-filter: blur(10px);
+        transition: 0.3s;
+    }
+
+        .membership-type-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255,255,255,0.15);
+        }
+
+        .membership-type-card i {
+            font-size: 40px;
+        }
+
+    table tbody tr:hover {
+        background: #f8fafc;
+    }
+
+    .table {
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .dashboard-card {
+        border: none;
+        border-radius: 22px;
+        background: var(--bs-body-bg);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+
+    .chart-title {
+        font-weight: 700;
+        margin-bottom: 20px;
+    }
+
+    /* DARK MODE SUPPORT */
+
+    [data-bs-theme="dark"] .dashboard-card {
+        background: #1e293b;
+        border: 1px solid #334155;
+    }
+
+    canvas {
+        width: 100% !important;
+        max-height: 320px;
+    }
+    /* QUICK ACTION PANEL */
+
+    .quick-action-card {
+        border-radius: 24px;
+        background: #ffffff;
+        transition: 0.3s ease;
+    }
+
+    .quick-box {
+        border-radius: 20px;
+        padding: 30px 20px;
+        text-align: center;
+        transition: all 0.3s ease;
+        color: white;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .quick-box::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(255,255,255,0.05);
+            opacity: 0;
+            transition: 0.3s;
+        }
+
+        .quick-box:hover::before {
+            opacity: 1;
+        }
+
+        .quick-box:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.18);
+        }
+
+    .quick-icon {
+        width: 70px;
+        height: 70px;
+        margin: auto;
+        border-radius: 18px;
+        background: rgba(255,255,255,0.18);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+        margin-bottom: 18px;
+        backdrop-filter: blur(8px);
+    }
+
+    .issue-box {
+        background: linear-gradient(135deg,#2563eb,#3b82f6);
+    }
+
+    .member-box {
+        background: linear-gradient(135deg,#059669,#10b981);
+    }
+
+    .book-box {
+        background: linear-gradient(135deg,#ea580c,#f97316);
+    }
+
+    .membership-box {
+        background: linear-gradient(135deg,#7c3aed,#8b5cf6);
+    }
+
+    .quick-box h5 {
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: white;
+    }
+
+    .quick-box p {
+        margin-bottom: 0;
+        opacity: 0.95;
+        font-size: 14px;
+        color: rgba(255,255,255,0.9);
+    }
+
+
+    /* =========================
+       DARK MODE SUPPORT
+    ========================= */
+
+    [data-bs-theme="dark"] .quick-action-card {
+        background: #0f172a;
+        border: 1px solid #1e293b;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
+
+    [data-bs-theme="dark"] .quick-box {
+        box-shadow: none;
+    }
+
+        [data-bs-theme="dark"] .quick-box:hover {
+            box-shadow: 0 15px 35px rgba(0,0,0,0.45);
+        }
+
+    [data-bs-theme="dark"] .quick-icon {
+        background: rgba(255,255,255,0.12);
+    }
+
+    [data-bs-theme="dark"] .quick-box p {
+        color: rgba(255,255,255,0.82);
+    }
+
+
+    /* =========================
+       LIGHT MODE HOVER EFFECT
+    ========================= */
+
+    [data-bs-theme="light"] .quick-action-card,
+    body:not([data-bs-theme="dark"]) .quick-action-card {
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+
+    /* =========================
+       ANALYTICS SECTION
+    ========================= */
+
+    .analytics-card {
+        border: none;
+        border-radius: 24px;
+        overflow: hidden;
+        background: #ffffff;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+    }
+
+        .analytics-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 18px 40px rgba(0,0,0,0.12);
+        }
+
+    /* HEADER */
+
+    .chart-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 15px;
+        margin-bottom: 25px;
+        flex-wrap: wrap;
+    }
+
+    .chart-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: #0f172a;
+    }
+
+    .chart-badge {
+        padding: 8px 16px;
+        border-radius: 30px;
+        background: rgba(37,99,235,0.12);
+        color: #2563eb;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .success-badge {
+        background: rgba(16,185,129,0.12);
+        color: #059669;
+    }
+
+    /* CHART AREA */
+
+    .chart-container {
+        position: relative;
+        width: 100%;
+    }
+
+    .large-chart {
+        height: 360px;
+    }
+
+    .donut-chart {
+        height: 360px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .bar-chart {
+        height: 380px;
+    }
+
+    .chart-container canvas {
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    /* =========================
+       DARK MODE
+    ========================= */
+
+    [data-bs-theme="dark"] .analytics-card {
+        background: #1e293b;
+        border: 1px solid #334155;
+        box-shadow: 0 10px 35px rgba(0,0,0,0.35);
+    }
+
+    [data-bs-theme="dark"] .chart-title {
+        color: #f8fafc;
+    }
+
+    [data-bs-theme="dark"] .chart-badge {
+        background: rgba(59,130,246,0.18);
+        color: #93c5fd;
+    }
+
+    [data-bs-theme="dark"] .success-badge {
+        background: rgba(16,185,129,0.15);
+        color: #6ee7b7;
+    }
+
+    /* =========================
+       MOBILE
+    ========================= */
+
+    @@media(max-width:768px) {
+
+        .analytics-card {
+            border-radius: 20px;
+        }
+
+        .chart-title {
+            font-size: 17px;
+        }
+
+        .large-chart,
+        .donut-chart,
+        .bar-chart {
+            height: 300px;
+        }
+
+        .chart-header {
+            margin-bottom: 18px;
+        }
+
+        .chart-badge {
+            font-size: 12px;
+            padding: 6px 12px;
+        }
+    }
+
+</style>

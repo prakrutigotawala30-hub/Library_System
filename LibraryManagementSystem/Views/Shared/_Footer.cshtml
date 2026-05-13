@@ -1,0 +1,268 @@
+﻿   <!-- FULL WIDTH FOOTER -->
+    <footer class="library-footer">
+
+        <div class="footer-container">
+
+            <!-- LEFT -->
+            <div class="footer-brand">
+
+                <div class="footer-logo">
+                    📚
+                </div>
+
+                <div>
+                    <h5 class="footer-title">
+                        Library Management System
+                    </h5>
+
+                    <p class="footer-subtitle">
+                        Smart Digital Library Dashboard
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- CENTER -->
+            <div class="footer-links">
+
+                <a asp-controller="Home" asp-action="Index">
+                    Dashboard
+                </a>
+
+                <a asp-controller="Home" asp-action="Privacy">
+                    Privacy
+                </a>
+
+                <a asp-controller="Contact" asp-action="Index">
+                    Contact
+                </a>
+
+            </div>
+
+            <!-- RIGHT -->
+            <div class="footer-dev">
+
+                <span class="dev-label">
+                    Developed By
+                </span>
+
+                <div class="dev-buttons">
+
+                    <a href="https://github.com/"
+                       target="_blank"
+                       class="dev-btn">
+
+                        <i class="bi bi-github"></i>
+                        Janvi
+
+                    </a>
+
+                    <a href="https://github.com/"
+                       target="_blank"
+                       class="dev-btn">
+
+                        <i class="bi bi-github"></i>
+                        Prakruti
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            © 2026 Library Management System • All Rights Reserved
+        </div>
+
+    </footer>
+
+
+<style>
+
+    /* PAGE FIX */
+    html {
+        height: 100%;
+    }
+
+    body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .main-content {
+        flex: 1;
+        padding-bottom: 120px;
+    }
+
+    /* FOOTER */
+    .library-footer {
+        background: linear-gradient(135deg, #0f172a, #111827);
+        color: white;
+        margin-top: auto;
+        width: 100%;
+        border-top: 1px solid rgba(255,255,255,0.08);
+        box-shadow: 0 -5px 20px rgba(0,0,0,0.2);
+    }
+
+    /* CONTAINER */
+    .footer-container {
+        max-width: 1400px;
+        margin: auto;
+        padding: 22px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 30px;
+        flex-wrap: wrap;
+    }
+
+    /* BRAND */
+    .footer-brand {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .footer-logo {
+        width: 55px;
+        height: 55px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, #2563eb, #38bdf8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 26px;
+        box-shadow: 0 10px 20px rgba(37,99,235,0.3);
+    }
+
+    .footer-title {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .footer-subtitle {
+        margin: 0;
+        color: #94a3b8;
+        font-size: 13px;
+    }
+
+    /* LINKS */
+    .footer-links {
+        display: flex;
+        gap: 25px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+        .footer-links a {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.3s;
+            position: relative;
+        }
+
+            .footer-links a:hover {
+                color: #38bdf8;
+            }
+
+    /* DEVELOPERS */
+    .footer-dev {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 10px;
+    }
+
+    .dev-label {
+        font-size: 13px;
+        color: #94a3b8;
+    }
+
+    .dev-buttons {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .dev-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 16px;
+        border-radius: 12px;
+        text-decoration: none;
+        color: white;
+        background: rgba(255,255,255,0.07);
+        border: 1px solid rgba(255,255,255,0.08);
+        transition: 0.3s ease;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+        .dev-btn:hover {
+            background: linear-gradient(135deg, #2563eb, #38bdf8);
+            transform: translateY(-2px);
+            color: white;
+            box-shadow: 0 10px 25px rgba(37,99,235,0.35);
+        }
+
+    /* BOTTOM */
+    .footer-bottom {
+        text-align: center;
+        padding: 14px;
+        border-top: 1px solid rgba(255,255,255,0.08);
+        color: #94a3b8;
+        font-size: 13px;
+    }
+
+    /* MOBILE */
+    @@media (max-width: 992px) {
+
+        .footer-container {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .footer-brand {
+            justify-content: center;
+        }
+
+        .footer-dev {
+            align-items: center;
+        }
+
+        .footer-links {
+            justify-content: center;
+        }
+    }
+
+    @@media (max-width: 576px) {
+
+        .footer-container {
+            padding: 20px 15px;
+        }
+
+        .footer-title {
+            font-size: 16px;
+        }
+
+        .footer-subtitle {
+            font-size: 12px;
+        }
+
+        .dev-buttons {
+            justify-content: center;
+        }
+
+        .dev-btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+</style>

@@ -1,0 +1,220 @@
+﻿@model IEnumerable<LibraryManagementSystem.Models.Book>
+@{
+    ViewData["Title"] = "Books";
+}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    /* =========================
+       MOBILE TABLE RESPONSIVE
+    ========================= */
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border-radius: 16px;
+    }
+
+    .table {
+        min-width: 700px;
+    }
+        /* TABLE HEADING FONT */
+        .table thead th {
+            font-family: 'Poppins', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        /* TABLE BODY FONT */
+        .table tbody td {
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+    @@media (max-width: 768px) {
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .table th,
+        .table td {
+            white-space: nowrap;
+            font-size: 14px;
+            padding: 12px;
+        }
+
+        .table {
+            min-width: 650px;
+        }
+    }
+</style>
+<div class="container mt-4">
+
+    <!-- Header -->
+    <div class="row align-items-center mb-3">
+
+        <!-- Left Title -->
+        <div class="col-md-6">
+            <h2 class="m-0">📚 Books List</h2>
+        </div>
+
+        <!-- Right Buttons -->
+        <div class="col-md-6 text-end">
+
+            <a class="btn btn-success" asp-controller="Books" asp-action="ExportExcel">
+                Export Excel
+            </a>
+
+            <a asp-action="Import"
+               class="btn btn-dark me-2">
+                ⬆️ Bulk Import
+            </a>
+
+            <a class="btn btn-primary"
+               asp-action="Create">
+                + Add Book
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- ✅ SUCCESS MESSAGE HERE -->
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    <!-- Filters -->
+    <div class="row mb-3">
+
+        <!-- Search Box -->
+        <div class="col-md-6 mb-2">
+            <input type="text" id="searchBox" class="form-control" placeholder="Search by title or ISBN..." />
+        </div>
+
+        <!-- Category Filter -->
+        <div class="col-md-6 mb-2">
+            <select id="categoryFilter" class="form-select">
+                <option value="">All Categories</option>
+                @foreach (var item in Model.Select(x => x.Category?.Name).Distinct())
+                {
+                    <option value="@item">@item</option>
+                }
+            </select>
+        </div>
+
+    </div>
+
+    <!-- Table -->
+    <div class="table-responsive">
+
+                <div class="card-body">
+
+            <table class="table table-bordered table-striped table-hover align-middle" id="booksTable">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Title</th>
+                                <th>ISBN</th>
+                                <th>Author</th>
+                                <th>Category</th>
+                                <th>Total</th>
+                                <th>Available</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.Title</td>
+                                    <td>@item.ISBN</td>
+                                    <td>@item.Author?.Name</td>
+                                    <td class="category">@item.Category?.Name</td>
+                                    <td>@item.TotalCopies</td>
+                                    <td>@item.AvailableCopies</td>
+
+                                    <!-- FIX: Actions must be inside TD -->
+                                    <td class="text-nowrap">
+
+                                        <!-- VIEW -->
+                                        <a asp-action="Details"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-primary me-1"
+                                           title="View">
+
+                                            <i class="bi bi-eye-fill"></i>
+
+                                        </a>
+
+                                        <!-- EDIT -->
+                                        <a asp-action="Edit"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-warning me-1"
+                                           title="Edit">
+
+                                            <i class="bi bi-pencil-square"></i>
+
+                                        </a>
+
+                                        <!-- DELETE -->
+                                        <a asp-action="Delete"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-danger"
+                                           title="Delete">
+
+                                            <i class="bi bi-trash-fill"></i>
+
+                                        </a>
+
+                                    </td>
+
+                                </tr>
+                            }
+                        </tbody>
+
+                    </table>
+
+                </div>
+            </div>
+
+    
+</div>
+
+@section Scripts {
+    <script>
+        $(function () {
+
+            // 🔍 Search filter
+            $("#searchBox").on("keyup", function () {
+                let value = $(this).val().toLowerCase();
+
+                $("#booksTable tbody tr").each(function () {
+                    let rowText = $(this).text().toLowerCase();
+                    $(this).toggle(rowText.includes(value));
+                });
+            });
+
+            // 📂 Category filter
+            $("#categoryFilter").on("change", function () {
+                let value = $(this).val().toLowerCase();
+
+                $("#booksTable tbody tr").each(function () {
+                    if (!value) {
+                        $(this).show();
+                    } else {
+                        let category = $(this).find(".category").text().toLowerCase();
+                        $(this).toggle(category.includes(value));
+                    }
+                });
+            });
+        });
+    </script>
+}

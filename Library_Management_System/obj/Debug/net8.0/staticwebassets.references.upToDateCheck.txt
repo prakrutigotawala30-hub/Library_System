@@ -1,9 +1,0 @@
-C:\Users\Jai Ambe\source\repos\Library_System\LibraryManagementSystem\obj\Debug\net8.0\staticwebassets.build.json
-C:\Users\Jai Ambe\source\repos\Library_System\LibraryManagementSystem\obj\Debug\net8.0\staticwebassets.build.json
-C:\Users\Jai Ambe\source\repos\Library_System\LibraryManagementSystem\obj\Debug\net8.0\staticwebassets.build.json
-C:\Users\Jai Ambe\source\repos\Library_System\LibraryManagementSystem\obj\Debug\net8.0\staticwebassets.build.json
-C:\Users\Jai Ambe\source\repos\Library_System\LibraryManagementSystem\obj\Debug\net8.0\staticwebassets.build.json
-C:\Users\Jai Ambe\source\repos\Library_System\LibraryManagementSystem\obj\Debug\net8.0\staticwebassets.build.json
-C:\Users\Jai Ambe\source\repos\Library_System\LibraryManagementSystem\obj\Debug\net8.0\staticwebassets.build.json
-C:\Users\Jai Ambe\source\repos\Library_System\LibraryManagementSystem\obj\Debug\net8.0\staticwebassets.build.json
-C:\Users\Jai Ambe\source\repos\Library_System\LibraryManagementSystem\obj\Debug\net8.0\staticwebassets.build.json
