@@ -87,16 +87,10 @@ namespace LibraryManagementSystem.Controllers
                 .Select(m => new DateTime(DateTime.Now.Year, m, 1).ToString("MMM"))
                 .ToList();
 
-            var currentYear = DateTime.Now.Year;
-            var fineRows = await context.BorrowRecords
-                .Where(x => x.IssuedOn.Year == currentYear)
-                .Select(x => new { x.IssuedOn.Month, x.FineAmount })
-                .ToListAsync();
-
             ViewBag.FineData = months
-                .Select(month => fineRows
-                    .Where(f => f.Month == month)
-                    .Sum(f => f.FineAmount))
+                .Select(month => context.BorrowRecords
+                    .Where(x => x.IssuedOn.Month == month)
+                    .Sum(x => (decimal?)x.FineAmount) ?? 0)
                 .ToList();
 
             return View(model);

@@ -1,32 +1,33 @@
-﻿using Library_Management_System.Models;
+﻿using LibraryManagementSystem.Models;
 using Library_Management_System.ViewModels;
+using Library_Management_System.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace LibraryManagementSystem.Controllers
 {
     public class AccountController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
-
         private readonly SignInManager<ApplicationUser> _signInManager;
-
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly EmailService _emailService;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager,
+            EmailService emailService)
         {
             _userManager = userManager;
-
             _signInManager = signInManager;
-
             _roleManager = roleManager;
+            _emailService = emailService;
         }
 
-        // REGISTER
+        // ================= REGISTER =================
 
         [HttpGet]
         [AllowAnonymous]
@@ -42,23 +43,16 @@ namespace LibraryManagementSystem.Controllers
         {
             if (ModelState.IsValid)
             {
-                // CREATE MEMBER ROLE
                 if (!await _roleManager.RoleExistsAsync("Member"))
                 {
-                    await _roleManager.CreateAsync(
-                        new IdentityRole("Member"));
+                    await _roleManager.CreateAsync(new IdentityRole("Member"));
                 }
 
-                // CHECK EMAIL ALREADY EXISTS
-                var existingUser =
-                    await _userManager.FindByEmailAsync(model.Email);
+                var existingUser = await _userManager.FindByEmailAsync(model.Email);
 
                 if (existingUser != null)
                 {
-                    ModelState.AddModelError(
-                        "Email",
-                        "Email already registered.");
-
+                    ModelState.AddModelError("", "Email already registered.");
                     return View(model);
                 }
 
@@ -67,39 +61,75 @@ namespace LibraryManagementSystem.Controllers
                     FullName = model.FullName,
                     UserName = model.Email,
                     Email = model.Email,
-                    PhoneNumber = model.PhoneNumber,
-                    Address = model.Address
+                    PhoneNumber = model.PhoneNumber
                 };
 
-                var result =
-                    await _userManager.CreateAsync(
-                        user,
-                        model.Password);
+                var result = await _userManager.CreateAsync(user, model.Password);
 
                 if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(
-                        user,
-                        "Member");
+                    await _userManager.AddToRoleAsync(user, "Member");
 
-                    TempData["success"] =
-                        "Registration successful. Please login.";
+                    // ================= EMAIL CONFIRMATION =================
+                    var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+                    var confirmationLink = Url.Action(
+                        "ConfirmEmail",
+                        "Account",
+                        new { userId = user.Id, token },
+                        Request.Scheme
+                    );
+
+                    string subject = "Confirm Your Email";
+                    string body = $@"
+                        <h3>Welcome to Library System</h3>
+                        <p>Click below to confirm your email:</p>
+                        <a href='{confirmationLink}'>Confirm Email</a>
+                    ";
+
+                    await _emailService.SendEmailAsync(user.Email, subject, body);
+
+                    TempData["success"] = "Registration successful. Please confirm your email.";
 
                     return RedirectToAction("Login");
                 }
 
                 foreach (var error in result.Errors)
                 {
-                    ModelState.AddModelError(
-                        "",
-                        error.Description);
+                    ModelState.AddModelError("", error.Description);
                 }
             }
 
             return View(model);
         }
 
-        // LOGIN
+        // ================= EMAIL CONFIRM =================
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            if (userId == null || token == null)
+                return RedirectToAction("Login");
+
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+                return RedirectToAction("Login");
+
+            var result = await _userManager.ConfirmEmailAsync(user, token);
+
+            if (result.Succeeded)
+            {
+                TempData["success"] = "Email confirmed successfully.";
+                return View();
+            }
+
+            TempData["error"] = "Email confirmation failed.";
+            return RedirectToAction("Login");
+        }
+
+        // ================= LOGIN =================
 
         [HttpGet]
         [AllowAnonymous]
@@ -115,61 +145,50 @@ namespace LibraryManagementSystem.Controllers
         {
             if (ModelState.IsValid)
             {
-                // CHECK USER EXISTS
-                var user =
-                    await _userManager.FindByEmailAsync(
-                        model.Email);
+                var user = await _userManager.FindByEmailAsync(model.Email);
 
                 if (user == null)
                 {
-                    ModelState.AddModelError(
-                        "Email",
-                        "Account not found. Please register first.");
-
+                    ModelState.AddModelError("", "Account not found.");
                     return View(model);
                 }
 
-                var result =
-                    await _signInManager.PasswordSignInAsync(
-                        model.Email,
-                        model.Password,
-                        model.RememberMe,
-                        false);
+                // 🔒 EMAIL NOT CONFIRMED CHECK
+                if (!user.EmailConfirmed)
+                {
+                    ModelState.AddModelError("", "Please confirm your email before login.");
+                    return View(model);
+                }
+
+                var result = await _signInManager.PasswordSignInAsync(
+                    user.UserName,
+                    model.Password,
+                    model.RememberMe,
+                    false);
 
                 if (result.Succeeded)
                 {
-                    TempData["success"] =
-                        "Login successful.";
-
-                    // REDIRECT HOME
-                    return RedirectToAction(
-                        "Index",
-                        "Home");
+                    TempData["success"] = "Login successful.";
+                    return RedirectToAction("Index", "Home");
                 }
 
-                // WRONG PASSWORD
-                ModelState.AddModelError(
-                    "Password",
-                    "Incorrect password.");
+                ModelState.AddModelError("", "Invalid login attempt.");
             }
 
             return View(model);
         }
 
-        // LOGOUT
+        // ================= LOGOUT =================
 
         [Authorize]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-
-            TempData["success"] =
-                "Logged out successfully.";
-
+            TempData["success"] = "Logged out successfully.";
             return RedirectToAction("Login");
         }
 
-        // FORGOT PASSWORD
+        // ================= FORGOT PASSWORD =================
 
         [HttpGet]
         [AllowAnonymous]
@@ -181,43 +200,41 @@ namespace LibraryManagementSystem.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ForgotPassword(
-            ForgotPasswordViewModel model)
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var user =
-                    await _userManager.FindByEmailAsync(
-                        model.Email);
+                var user = await _userManager.FindByEmailAsync(model.Email);
 
                 if (user == null)
                 {
-                    TempData["error"] =
-                        "User not found.";
-
+                    TempData["error"] = "User not found.";
                     return View(model);
                 }
 
-                var token =
-                    await _userManager
-                        .GeneratePasswordResetTokenAsync(user);
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
-                var resetLink =
-                    Url.Action(
-                        "ResetPassword",
-                        "Account",
-                        new
-                        {
-                            token,
-                            email = user.Email
-                        },
-                        Request.Scheme);
+                var resetLink = Url.Action(
+                    "ResetPassword",
+                    "Account",
+                    new
+                    {
+                        token = WebUtility.UrlEncode(token),
+                        email = user.Email
+                    },
+                    Request.Scheme
+                );
 
-                TempData["success"] =
-                    "Reset link generated.";
+                string subject = "Password Reset Link";
+                string body = $@"
+                    <h3>Password Reset Request</h3>
+                    <p>Click below to reset your password:</p>
+                    <a href='{resetLink}'>Reset Password</a>
+                ";
 
-                // TEMP DISPLAY
-                ViewBag.ResetLink = resetLink;
+                await _emailService.SendEmailAsync(user.Email, subject, body);
+
+                TempData["success"] = "Reset link sent to email.";
 
                 return View();
             }
@@ -225,62 +242,50 @@ namespace LibraryManagementSystem.Controllers
             return View(model);
         }
 
-        // RESET PASSWORD
+        // ================= RESET PASSWORD =================
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult ResetPassword(
-            string token,
-            string email)
+        public IActionResult ResetPassword(string token, string email)
         {
-            var model = new ResetPasswordViewModel
+            return View(new ResetPasswordViewModel
             {
                 Token = token,
                 Email = email
-            };
-
-            return View(model);
+            });
         }
 
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ResetPassword(
-            ResetPasswordViewModel model)
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var user =
-                    await _userManager.FindByEmailAsync(
-                        model.Email);
+                var user = await _userManager.FindByEmailAsync(model.Email);
 
                 if (user == null)
                 {
-                    TempData["error"] =
-                        "User not found.";
-
+                    TempData["error"] = "User not found.";
                     return RedirectToAction("Login");
                 }
 
-                var result =
-                    await _userManager.ResetPasswordAsync(
-                        user,
-                        model.Token,
-                        model.Password);
+                model.Token = WebUtility.UrlDecode(model.Token);
+
+                var result = await _userManager.ResetPasswordAsync(
+                    user,
+                    model.Token,
+                    model.Password);
 
                 if (result.Succeeded)
                 {
-                    TempData["success"] =
-                        "Password reset successful.";
-
+                    TempData["success"] = "Password reset successful.";
                     return RedirectToAction("Login");
                 }
 
                 foreach (var error in result.Errors)
                 {
-                    ModelState.AddModelError(
-                        "",
-                        error.Description);
+                    ModelState.AddModelError("", error.Description);
                 }
             }
 

@@ -8,6 +8,8 @@ namespace Library_Management_System.ViewModels
         [EmailAddress(ErrorMessage = "Invalid email")]
         public string Email { get; set; }
 
+        public string Token { get; set; }
+
         [Required(ErrorMessage = "Password is required")]
         [StringLength(100,
             MinimumLength = 6,
@@ -21,6 +23,5 @@ namespace Library_Management_System.ViewModels
             ErrorMessage = "Passwords do not match")]
         public string ConfirmPassword { get; set; }
 
-        public string Token { get; set; }
     }
 }

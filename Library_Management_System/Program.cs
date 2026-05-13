@@ -1,5 +1,7 @@
 using Library_Management_System.Data;
 using Library_Management_System.Models;
+using Library_Management_System.Services;
+using LibraryManagementSystem.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,21 +16,15 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     ));
 
 // IDENTITY
-
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
-    // PASSWORD
     options.Password.RequireDigit = true;
     options.Password.RequiredLength = 6;
     options.Password.RequireUppercase = true;
     options.Password.RequireLowercase = true;
-    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequireNonAlphanumeric = false;
 
-    // USER
     options.User.RequireUniqueEmail = true;
-
-    // EMAIL CONFIRMATION
-    options.SignIn.RequireConfirmedEmail = false;
 })
 .AddEntityFrameworkStores<AppDbContext>()
 .AddDefaultTokenProviders();
@@ -47,6 +43,8 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<EmailService>();
 
 var app = builder.Build();
 
