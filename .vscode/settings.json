@@ -1,0 +1,14 @@
+{
+  "dotnet.defaultSolution": "LibrarySystem.sln",
+  "omnisharp.defaultLaunchSolution": "LibrarySystem.sln",
+  "files.exclude": {
+    "**/bin": true,
+    "**/obj": true,
+    "**/.vs": true
+  },
+  "search.exclude": {
+    "**/bin": true,
+    "**/obj": true,
+    "**/Migrations": true
+  }
+}

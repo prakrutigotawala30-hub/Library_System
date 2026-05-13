@@ -1,0 +1,62 @@
+﻿@model LibraryManagementSystem.Models.Author
+
+@{
+    ViewData["Title"] = "Add Author";
+}
+
+<div class="container mt-4">
+
+    <div class="card shadow-sm">
+
+        <!-- Header -->
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">👤 Add New Author</h4>
+        </div>
+
+        <div class="card-body">
+
+            <form asp-action="Create" method="post">
+
+                <!-- Validation Summary -->
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <!-- Name -->
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label"></label>
+                    <input asp-for="Name" class="form-control" placeholder="Enter author name" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <!-- Bio -->
+                <div class="mb-3">
+                    <label asp-for="Bio" class="form-label"></label>
+                    <textarea asp-for="Bio" class="form-control" rows="4"
+                              placeholder="Enter author bio"></textarea>
+                    <span asp-validation-for="Bio" class="text-danger"></span>
+                </div>
+
+                <!-- Buttons -->
+                <div class="d-flex justify-content-between">
+
+                    <a asp-action="Index" class="btn btn-secondary">
+                        ⬅ Back
+                    </a>
+
+                    <button type="submit" class="btn btn-success">
+                        💾 Save Author
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

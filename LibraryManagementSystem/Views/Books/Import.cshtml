@@ -1,0 +1,181 @@
+﻿@model LibraryManagementSystem.ViewModels.BookImportViewModel
+
+@{
+    ViewData["Title"] = "Bulk Import Books";
+}
+
+<div class="container mt-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8">
+
+            <div class="card shadow-lg border-0 rounded-4">
+
+                <!-- Header -->
+                <div class="card-header bg-dark text-white py-3">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <h3 class="mb-0">
+                            📚 Bulk Import Books
+                        </h3>
+
+                        <a asp-action="Index"
+                           class="btn btn-light btn-sm">
+                            ← Back
+                        </a>
+
+                    </div>
+
+                </div>
+
+                <!-- Body -->
+                <div class="card-body p-4">
+
+                    <!-- Success Message -->
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show">
+
+                            @TempData["Success"]
+
+                            <button type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="alert">
+                            </button>
+
+                        </div>
+                    }
+
+                    <!-- Error Message -->
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show">
+
+                            @TempData["Error"]
+
+                            <button type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="alert">
+                            </button>
+
+                        </div>
+                    }
+
+                    <!-- Upload Form -->
+                    <form asp-action="Import"
+                          method="post"
+                          enctype="multipart/form-data">
+
+                        <div class="mb-4">
+
+                            <label class="form-label fw-bold">
+                                Upload CSV File
+                            </label>
+
+                            <input asp-for="CsvFile"
+                                   type="file"
+                                   class="form-control form-control-lg"
+                                   accept=".csv" />
+
+                            <span asp-validation-for="CsvFile"
+                                  class="text-danger">
+                            </span>
+
+                            <div class="form-text mt-2">
+                                Only CSV files are supported.
+                            </div>
+
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-flex gap-2">
+
+                            <button type="submit"
+                                    class="btn btn-success btn-lg">
+
+                                🚀 Import Books
+
+                            </button>
+
+                            <a asp-action="Index"
+                               class="btn btn-secondary btn-lg">
+
+                                Cancel
+
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                    <hr class="my-5" />
+
+                    <!-- CSV Format -->
+                    <div>
+
+                        <h5 class="fw-bold mb-3">
+                            📄 CSV File Format
+                        </h5>
+
+                        <div class="bg-light border rounded-3 p-3">
+
+<pre class="mb-0">
+Title,ISBN,AuthorId,CategoryId,DepartmentId,TotalCopies,AvailableCopies,IsFeatured
+Atomic Habits,11111,1,2,1,10,10,true
+Clean Code,22222,2,1,2,5,5,false
+</pre>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Notes -->
+                    <div class="mt-4">
+
+                        <h6 class="fw-bold">
+                            ✅ Important Notes
+                        </h6>
+
+                        <ul class="mb-0">
+
+                            <li>
+                                CSV column names must match exactly.
+                            </li>
+
+                            <li>
+                                AuthorId and CategoryId must exist in database.
+                            </li>
+
+                            <li>
+                                Duplicate ISBN values should be avoided.
+                            </li>
+
+                            <li>
+                                Boolean values:
+                                <strong>true</strong> /
+                                <strong>false</strong>
+                            </li>
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+}

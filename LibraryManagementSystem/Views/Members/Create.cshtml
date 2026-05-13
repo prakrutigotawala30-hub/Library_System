@@ -1,0 +1,52 @@
+﻿@model LibraryManagementSystem.Models.Member
+
+<div class="container d-flex justify-content-center align-items-center vh-100">
+
+    <div class="card shadow-lg p-4" style="width: 450px; border-radius: 15px;">
+
+        <h3 class="text-center mb-3">➕ Add New Member</h3>
+
+        <form asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
+
+            <!-- Validation Summary -->
+            <div asp-validation-summary="All" class="text-danger mb-2"></div>
+
+            <!-- Name -->
+            <div class="mb-3">
+                <label class="form-label">Full Name</label>
+                <input asp-for="Name" class="form-control" placeholder="Enter full name" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <!-- Email -->
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input asp-for="Email" class="form-control" placeholder="Enter email" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <!-- Phone -->
+            <div class="mb-3">
+                <label class="form-label">Phone</label>
+                <input asp-for="Phone" class="form-control" placeholder="Enter phone number" />
+                <span asp-validation-for="Phone" class="text-danger"></span>
+            </div>
+
+            <!-- Buttons -->
+            <button type="submit" class="btn btn-success w-100">
+                <i class="bi bi-check-circle"></i> Save Member
+            </button>
+
+            <div class="text-center mt-3">
+                <a asp-action="Index">⬅ Back to Members List</a>
+            </div>
+
+        </form>
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

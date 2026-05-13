@@ -1,0 +1,136 @@
+﻿@model IEnumerable<LibraryManagementSystem.Models.Author>
+
+@{
+    ViewData["Title"] = "Authors";
+}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    /* MOBILE RESPONSIVE */
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border-radius: 16px;
+    }
+
+    .table {
+        min-width: 700px;
+    }
+        /* TABLE HEADING FONT */
+        .table thead th {
+            font-family: 'Poppins', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        /* TABLE BODY FONT */
+        .table tbody td {
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+    @@media (max-width: 768px) {
+        .table th,
+        .table td {
+            white-space: nowrap;
+            font-size: 14px;
+            padding: 12px;
+        }
+
+        .table {
+            min-width: 650px;
+        }
+    }
+</style>
+
+<div class="container mt-4">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>👤 Authors List</h2>
+        <a class="btn btn-primary" asp-action="Create">+ Add Author</a>
+    </div>
+
+    <!-- SUCCESS -->
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- EMPTY STATE -->
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            No authors found.
+        </div>
+    }
+    else
+    {
+        <!-- TABLE -->
+        <div class="table-responsive">
+
+            <table class="table table-bordered table-striped table-hover align-middle">
+
+                <thead class="table-dark">
+                    <tr>
+                        <th>Name</th>
+                        <th>Bio</th>
+                        <th style="width: 200px;">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Name</td>
+                            <td>@item.Bio</td>
+
+                            <td class="text-nowrap">
+
+                                <!-- VIEW -->
+                                <a asp-action="Details"
+                                   asp-route-id="@item.Id"
+                                   class="btn btn-sm btn-primary me-1"
+                                   title="View">
+
+                                    <i class="bi bi-eye-fill"></i>
+
+                                </a>
+
+                                <!-- EDIT -->
+                                <a asp-action="Edit"
+                                   asp-route-id="@item.Id"
+                                   class="btn btn-sm btn-warning me-1"
+                                   title="Edit">
+
+                                    <i class="bi bi-pencil-square"></i>
+
+                                </a>
+
+                                <!-- DELETE -->
+                                <a asp-action="Delete"
+                                   asp-route-id="@item.Id"
+                                   class="btn btn-sm btn-danger"
+                                   title="Delete">
+
+                                    <i class="bi bi-trash-fill"></i>
+
+                                </a>
+
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+
+        </div>
+    }
+
+</div>

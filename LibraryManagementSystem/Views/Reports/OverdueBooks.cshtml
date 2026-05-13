@@ -1,0 +1,270 @@
+﻿@model IEnumerable<LibraryManagementSystem.Models.BorrowRecord>
+
+@{
+    ViewData["Title"] = "Overdue Books Report";
+}
+
+<style>
+
+    /* PAGE HEADER */
+
+    .report-title {
+        font-weight: 700;
+        color: #dc2626;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    /* CARD */
+
+    .overdue-card {
+        border: none;
+        border-radius: 22px;
+        overflow: hidden;
+        background: #ffffff;
+        box-shadow: 0 12px 35px rgba(220,38,38,0.08);
+    }
+
+    /* TOP HEADER */
+
+    .overdue-header {
+        background: linear-gradient(135deg, #dc2626, #ef4444);
+        padding: 20px 25px;
+        color: white;
+    }
+
+        .overdue-header h4 {
+            margin: 0;
+            font-weight: 700;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .overdue-header p {
+            margin: 5px 0 0;
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+    /* TABLE */
+
+    .overdue-table {
+        margin-bottom: 0;
+    }
+
+        .overdue-table thead {
+            background: #fef2f2;
+        }
+
+            .overdue-table thead th {
+                color: #991b1b;
+                font-size: 14px;
+                font-weight: 700;
+                padding: 16px;
+                border-bottom: none;
+                font-family: 'Poppins', sans-serif;
+            }
+
+        .overdue-table tbody td {
+            padding: 16px;
+            vertical-align: middle;
+            font-size: 14px;
+            border-color: #fee2e2;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .overdue-table tbody tr {
+            transition: 0.2s ease;
+        }
+
+            .overdue-table tbody tr:hover {
+                background: #fff5f5;
+            }
+
+    /* DAYS BADGE */
+
+    .late-badge {
+        background: #fee2e2;
+        color: #b91c1c;
+        padding: 8px 14px;
+        border-radius: 30px;
+        font-size: 13px;
+        font-weight: 700;
+        display: inline-block;
+    }
+
+    /* FINE BADGE */
+
+    .fine-badge {
+        background: #dc2626;
+        color: white;
+        padding: 8px 14px;
+        border-radius: 30px;
+        font-size: 13px;
+        font-weight: 700;
+        display: inline-block;
+    }
+
+    /* BOOK TITLE */
+
+    .book-title {
+        font-weight: 700;
+        color: #0f172a;
+    }
+
+    /* EMPTY CARD */
+
+    .empty-card {
+        border: none;
+        border-radius: 18px;
+        background: #f8fafc;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+    }
+
+    /* MOBILE */
+
+    @@media (max-width:768px) {
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .overdue-table {
+            min-width: 750px;
+        }
+    }
+
+</style>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet">
+
+<div class="container mt-4">
+
+    <!-- PAGE HEADER -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="report-title mb-1">
+                ⏰ Overdue Books Report
+            </h2>
+
+            <p class="text-muted mb-0">
+                Books not returned before due date
+            </p>
+
+        </div>
+
+        <a asp-controller="Home"
+           asp-action="Index"
+           class="btn btn-dark">
+
+            ⬅ Back
+
+        </a>
+
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="card overdue-card">
+
+            <!-- RED HEADER -->
+
+            <div class="overdue-header">
+
+                <h4>
+                    🚨 Overdue Book Records
+                </h4>
+
+                <p>
+                    Fine calculated at ₹10 per day
+                </p>
+
+            </div>
+
+            <!-- TABLE -->
+
+            <div class="table-responsive">
+
+                <table class="table overdue-table align-middle">
+
+                    <thead>
+                        <tr>
+                            <th>Book</th>
+                            <th>Member</th>
+                            <th>Issued</th>
+                            <th>Due Date</th>
+                            <th>Days Late</th>
+                            <th>Fine</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var item in Model)
+                        {
+                            var daysLate = (DateTime.Now - item.DueDate).Days;
+                            var fine = daysLate * 10;
+
+                            <tr>
+
+                                <td class="book-title">
+                                    @item.Book?.Title
+                                </td>
+
+                                <td>
+                                    @item.Member?.Name
+                                </td>
+
+                                <td>
+                                    @item.IssuedOn.ToString("dd-MM-yyyy")
+                                </td>
+
+                                <td>
+                                    @item.DueDate.ToString("dd-MM-yyyy")
+                                </td>
+
+                                <td>
+
+                                    <span class="late-badge">
+                                        @daysLate Days
+                                    </span>
+
+                                </td>
+
+                                <td>
+
+                                    <span class="fine-badge">
+                                        ₹ @fine
+                                    </span>
+
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+    }
+    else
+    {
+        <div class="card empty-card p-5 text-center">
+
+            <h4 class="text-success mb-2">
+                🎉 No overdue books found
+            </h4>
+
+            <p class="text-muted mb-0">
+                All borrowed books are returned on time.
+            </p>
+
+        </div>
+    }
+
+</div>

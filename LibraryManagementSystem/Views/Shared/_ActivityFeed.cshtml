@@ -1,0 +1,177 @@
+﻿@model List<LibraryManagementSystem.Models.BorrowRecord>
+
+<div class="card border-0 shadow-sm mt-5">
+
+    <div class="card-header bg-white border-0 pt-4">
+
+        <div class="d-flex justify-content-between align-items-center">
+
+            <h5 class="fw-bold mb-0">
+                🔔 Recent Activity
+            </h5>
+
+            <span class="badge bg-primary px-3 py-2">
+                Live Feed
+            </span>
+
+        </div>
+
+    </div>
+
+    <div class="card-body">
+
+        @if (Model != null && Model.Any())
+        {
+            <div class="activity-feed">
+
+                @foreach (var item in Model)
+                {
+                    <div class="activity-item">
+
+                        <div class="activity-icon">
+
+                            @if (item.ReturnedOn == null)
+                            {
+                                <i class="bi bi-journal-arrow-down"></i>
+                            }
+                            else
+                            {
+                                <i class="bi bi-journal-check"></i>
+                            }
+
+                        </div>
+
+                        <div class="activity-content">
+
+                            @if (item.ReturnedOn == null)
+                            {
+                                <p class="mb-1">
+
+                                    <span class="fw-bold text-primary">
+                                        @item.Member?.Name
+                                    </span>
+
+                                    issued
+
+                                    <span class="fw-semibold">
+                                        @item.Book?.Title
+                                    </span>
+
+                                </p>
+                            }
+                            else
+                            {
+                                <p class="mb-1">
+
+                                    <span class="fw-bold text-success">
+                                        @item.Member?.Name
+                                    </span>
+
+                                    returned
+
+                                    <span class="fw-semibold">
+                                        @item.Book?.Title
+                                    </span>
+
+                                </p>
+                            }
+
+                            <small class="text-muted">
+
+                                @{
+                                    var timeAgo = DateTime.Now - item.IssuedOn;
+
+                                    string text = "";
+
+                                    if (timeAgo.TotalMinutes < 60)
+                                    {
+                                        text = $"{(int)timeAgo.TotalMinutes} mins ago";
+                                    }
+                                    else if (timeAgo.TotalHours < 24)
+                                    {
+                                        text = $"{(int)timeAgo.TotalHours} hrs ago";
+                                    }
+                                    else
+                                    {
+                                        text = $"{(int)timeAgo.TotalDays} days ago";
+                                    }
+                                }
+
+                                @text
+
+                            </small>
+
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+        }
+        else
+        {
+            <div class="text-center text-muted py-4">
+
+                <i class="bi bi-clock-history fs-1"></i>
+
+                <p class="mt-3 mb-0">
+                    No recent activity found.
+                </p>
+
+            </div>
+        }
+
+    </div>
+
+</div>
+
+<style>
+
+    .activity-feed {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .activity-item {
+        display: flex;
+        align-items: start;
+        gap: 15px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #eef2f7;
+    }
+
+        .activity-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+    .activity-icon {
+        width: 48px;
+        height: 48px;
+        min-width: 48px;
+        border-radius: 14px;
+        background: linear-gradient(135deg,#2563eb,#3b82f6);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        box-shadow: 0 5px 15px rgba(37,99,235,0.25);
+    }
+
+    .activity-content p {
+        font-size: 15px;
+        line-height: 1.5;
+    }
+
+    [data-bs-theme="dark"] .activity-item {
+        border-color: #334155;
+    }
+
+    [data-bs-theme="dark"] .activity-content p,
+    [data-bs-theme="dark"] .activity-content small {
+        color: #e2e8f0 !important;
+    }
+
+</style>

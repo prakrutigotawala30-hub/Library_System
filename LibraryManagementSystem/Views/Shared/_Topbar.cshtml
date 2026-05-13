@@ -1,0 +1,275 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<LibraryManagementSystem.Models.ApplicationUser> UserManager
+
+@{
+    var user = await UserManager.GetUserAsync(User);
+}
+
+<div class="topbar">
+
+    <!-- LEFT SECTION -->
+    <div class="topbar-left">
+
+        <!-- SIDEBAR BUTTON -->
+        <button class="btn btn-light border-0 shadow-sm toggle-btn"
+                id="toggleSidebar">
+
+            <i class="bi bi-list fs-5"></i>
+
+        </button>
+
+        <!-- SEARCH -->
+        <div class="search-box-global">
+
+            <i class="bi bi-search"></i>
+
+            <input type="text"
+                   id="globalSearch"
+                   class="form-control"
+                   placeholder="Search anything in website..." />
+
+        </div>
+
+    </div>
+
+    <!-- RIGHT SECTION -->
+    <div class="topbar-right">
+
+        <!-- NOTIFICATION -->
+        <div class="notification-bell">
+
+            <i class="bi bi-bell"></i>
+
+            <span class="notification-count">3</span>
+
+        </div>
+
+        <!-- DARK MODE -->
+        <button class="theme-toggle-btn"
+                id="themeToggle">
+
+            <i class="bi bi-moon-stars-fill"
+               id="themeIcon"></i>
+
+        </button>
+
+        <!-- USER -->
+        <div class="dropdown">
+
+            <a class="dropdown-toggle text-decoration-none d-flex align-items-center gap-2"
+               href="#"
+               role="button"
+               data-bs-toggle="dropdown">
+
+                <!-- AVATAR -->
+                <div class="user-avatar">
+
+                    @(user?.FullName?.Substring(0, 1).ToUpper() ?? "A")
+
+                </div>
+
+                <!-- NAME -->
+                <div class="user-info d-none d-md-block">
+
+                    <div class="fw-semibold admin-name">
+                        @(user?.FullName ?? user?.Email)
+                    </div>
+
+                    <small class="text-muted">
+                        Administrator
+                    </small>
+
+                </div>
+
+            </a>
+
+            <!-- MENU -->
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+
+                <li>
+                    <a class="dropdown-item"
+                       asp-controller="Home"
+                       asp-action="Index">
+
+                        <i class="bi bi-speedometer2 me-2"></i>
+                        Dashboard
+
+                    </a>
+                </li>
+
+                <li>
+                    <a class="dropdown-item text-danger"
+                       asp-controller="Account"
+                       asp-action="Logout">
+
+                        <i class="bi bi-box-arrow-right me-2"></i>
+                        Logout
+
+                    </a>
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</div>
+<style>
+    /* =========================
+       TOPBAR IMPROVED
+    ========================= */
+
+    .topbar {
+        min-height: 75px;
+        background: white;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 22px;
+        gap: 20px;
+        flex-wrap: nowrap;
+    }
+
+    /* LEFT */
+    .topbar-left {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        flex: 1;
+    }
+
+    /* RIGHT */
+    .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    /* MOBILE LOGO */
+    .mobile-logo {
+        font-size: 20px;
+        font-weight: 700;
+        color: #2563eb;
+        white-space: nowrap;
+    }
+
+    /* TOGGLE */
+    .toggle-btn {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        flex-shrink: 0;
+    }
+
+    /* SEARCH */
+    .search-box-global {
+        position: relative;
+        flex: 1;
+        max-width: 520px;
+    }
+
+        .search-box-global i {
+            position: absolute;
+            top: 50%;
+            left: 16px;
+            transform: translateY(-50%);
+            color: #94a3b8;
+        }
+
+        .search-box-global input {
+            height: 50px;
+            border-radius: 16px;
+            padding-left: 46px;
+            border: 1px solid #dbeafe;
+            background: white;
+            width: 100%;
+        }
+
+    /* ICON BUTTONS */
+    .notification-bell,
+    .theme-toggle-btn {
+        width: 46px;
+        height: 46px;
+        border-radius: 14px;
+        background: #f3f4f6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        border: none;
+        flex-shrink: 0;
+    }
+
+        .notification-bell i,
+        .theme-toggle-btn i {
+            font-size: 18px;
+        }
+
+    /* BADGE */
+    .notification-count {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        width: 20px;
+        height: 20px;
+        background: red;
+        color: white;
+        border-radius: 50%;
+        font-size: 11px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* USER */
+    .user-avatar {
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        background: #2563eb;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+    }
+
+    /* =========================
+       MOBILE
+    ========================= */
+
+    @@media(max-width:768px) {
+
+        .topbar {
+            padding: 12px;
+            gap: 10px;
+        }
+
+        .topbar-left {
+            gap: 10px;
+        }
+
+        .search-box-global {
+            max-width: 100%;
+        }
+
+            .search-box-global input {
+                height: 46px;
+                font-size: 14px;
+            }
+
+        .notification-bell,
+        .theme-toggle-btn,
+        .user-avatar,
+        .toggle-btn {
+            width: 42px;
+            height: 42px;
+        }
+
+        .mobile-logo {
+            font-size: 18px;
+        }
+    }
+</style>

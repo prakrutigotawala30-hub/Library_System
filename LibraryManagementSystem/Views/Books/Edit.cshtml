@@ -1,0 +1,95 @@
+﻿@model LibraryManagementSystem.Models.Book
+
+@{
+    ViewData["Title"] = "Edit Book";
+}
+
+<div class="container mt-4">
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-warning">
+            <h4 class="mb-0">✏ Edit Book</h4>
+        </div>
+
+        <div class="card-body">
+
+            <form asp-action="Edit" method="post">
+
+                <input type="hidden" asp-for="Id" />
+
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <!-- Title -->
+                <div class="mb-3">
+                    <label asp-for="Title"></label>
+                    <input asp-for="Title" class="form-control" />
+                </div>
+
+                <!-- ISBN -->
+                <div class="mb-3">
+                    <label asp-for="ISBN"></label>
+                    <input asp-for="ISBN" class="form-control" />
+                </div>
+
+                <!-- Author -->
+                <div class="mb-3">
+                    <label>Author</label>
+                    <select asp-for="AuthorId" class="form-select" asp-items="ViewBag.AuthorList"></select>
+                </div>
+
+                <!-- Category -->
+                <div class="mb-3">
+                    <label>Category</label>
+                    <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.CategoryList"></select>
+                </div>
+
+                <!-- Department -->
+                <div class="mb-3">
+                    <label>Department</label>
+
+                    <select asp-for="DepartmentId"
+                            class="form-select"
+                            asp-items="ViewBag.DepartmentList">
+
+                        <option value="">-- Select Department --</option>
+
+                    </select>
+                </div>
+
+                <!-- Total Copies -->
+                <div class="mb-3">
+                    <label asp-for="TotalCopies"></label>
+                    <input asp-for="TotalCopies" class="form-control" />
+                </div>
+
+                <!-- Available Copies -->
+                <div class="mb-3">
+                    <label asp-for="AvailableCopies"></label>
+                    <input asp-for="AvailableCopies" class="form-control" />
+                </div>
+
+                <div class="form-check mb-3">
+                    <input asp-for="IsFeatured" class="form-check-input" />
+                    <label asp-for="IsFeatured" class="form-check-label">
+                        Editor's Pick
+                    </label>
+                </div>
+
+                <!-- Buttons -->
+                <div class="d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-secondary">⬅ Back</a>
+                    <button type="submit" class="btn btn-success">Update</button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

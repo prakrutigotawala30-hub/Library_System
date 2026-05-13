@@ -1,0 +1,29 @@
+﻿@if (TempData["Success"] != null)
+{
+    <div class="custom-toast toast-success show-toast">
+        <i class="bi bi-check-circle-fill"></i>
+
+        <div>
+            @TempData["Success"]
+        </div>
+
+        <button class="toast-close">
+            ×
+        </button>
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="custom-toast toast-error show-toast">
+        <i class="bi bi-x-circle-fill"></i>
+
+        <div>
+            @TempData["Error"]
+        </div>
+
+        <button class="toast-close">
+            ×
+        </button>
+    </div>
+}

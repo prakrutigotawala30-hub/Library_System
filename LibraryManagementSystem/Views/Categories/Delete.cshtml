@@ -1,0 +1,35 @@
+﻿@model LibraryManagementSystem.Models.Category
+
+@{
+    ViewData["Title"] = "Delete Category";
+}
+
+<div class="container mt-4">
+
+    <div class="card border-danger">
+
+        <div class="card-header bg-danger text-white">
+            <h4>🗑 Delete Category</h4>
+        </div>
+
+        <div class="card-body">
+
+            <h5>Are you sure you want to delete this category?</h5>
+
+            <hr />
+
+            <p><strong>Name:</strong> @Model.Name</p>
+
+            <form asp-action="Delete" method="post">
+
+                <input type="hidden" asp-for="Id" />
+
+                <button type="submit" class="btn btn-danger">Delete</button>
+                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>

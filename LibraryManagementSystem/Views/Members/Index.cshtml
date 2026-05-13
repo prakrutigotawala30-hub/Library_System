@@ -1,0 +1,167 @@
+﻿@model IEnumerable<LibraryManagementSystem.Models.Member>
+
+@{
+    ViewData["Title"] = "Members";
+}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    /* TABLE HEADING FONT */
+    .table thead th {
+        font-family: 'Poppins', sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+
+    /* TABLE BODY FONT */
+    .table tbody td {
+        font-family: 'Segoe UI', sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        border-radius: 12px;
+    }
+
+    @@media (max-width: 768px) {
+        .table th,
+        .table td {
+            white-space: nowrap;
+            font-size: 14px;
+        }
+    }
+</style>
+
+<div class="container mt-4">
+
+    <!-- HEADER -->
+    <div class="row align-items-center mb-3">
+
+        <div class="col-md-6">
+            <h2 class="m-0">👥 Members List</h2>
+        </div>
+
+        <div class="col-md-6 text-end">
+
+            <a class="btn btn-success" asp-controller="Members" asp-action="ExportExcel">
+                Export Excel
+            </a>
+            <a class="btn btn-primary"
+               asp-action="Create">
+                + Add Book
+            </a>
+
+    </div>
+
+    <!-- SEARCH -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <input type="text" id="searchBox" class="form-control"
+                   placeholder="Search name, email or phone..." />
+        </div>
+    </div>
+
+    <!-- CARD -->
+    <div class="card shadow-sm">
+
+        <div class="card-body p-0">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover mb-0 align-middle" id="membersTable">
+
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Joined</th>
+                            <th style="width:260px;">Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var m in Model)
+                        {
+                            <tr>
+                                <td>@m.Name</td>
+                                <td>@m.Email</td>
+                                <td>@m.Phone</td>
+                                <td>@m.JoinedOn.ToShortDateString()</td>
+
+                                    <td class="text-nowrap">
+
+                                        <!-- VIEW -->
+                                        <a asp-action="Details"
+                                           asp-route-id="@m.Id"
+                                           class="btn btn-sm btn-primary me-1"
+                                           title="View">
+
+                                            <i class="bi bi-eye-fill"></i>
+
+                                        </a>
+
+                                        <!-- EDIT -->
+                                        <a asp-action="Edit"
+                                           asp-route-id="@m.Id"
+                                           class="btn btn-sm btn-warning me-1"
+                                           title="Edit">
+
+                                            <i class="bi bi-pencil-square"></i>
+
+                                        </a>
+
+                                        <!-- DELETE -->
+                                        <a asp-action="Delete"
+                                           asp-route-id="@m.Id"
+                                           class="btn btn-sm btn-danger me-1"
+                                           title="Delete">
+
+                                            <i class="bi bi-trash-fill"></i>
+
+                                        </a>
+
+                                        <!-- HISTORY -->
+                                        <a asp-controller="Borrow"
+                                           asp-action="History"
+                                           asp-route-memberId="@m.Id"
+                                           class="btn btn-sm btn-info"
+                                           title="Borrow History">
+
+                                            <i class="bi bi-clock-history"></i>
+
+                                        </a>
+
+                                    </td>
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+</div>
+
+<!-- SEARCH SCRIPT -->
+<script>
+    document.getElementById("searchBox").addEventListener("keyup", function () {
+
+        let value = this.value.toLowerCase();
+        let rows = document.querySelectorAll("#membersTable tbody tr");
+
+        rows.forEach(row => {
+            let text = row.innerText.toLowerCase();
+            row.style.display = text.includes(value) ? "" : "none";
+        });
+
+    });
+</script>

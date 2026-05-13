@@ -1,0 +1,136 @@
+﻿@model LibraryManagementSystem.ViewModels.BookDetailsViewModel
+
+@{
+    ViewData["Title"] = "Book Details";
+}
+
+<div class="container mt-4">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>📖 Book Details</h2>
+        <a asp-action="Index" class="btn btn-outline-secondary">← Back</a>
+    </div>
+
+    <!-- BOOK INFO CARD -->
+    <div class="card shadow border-0 rounded-3 mb-4">
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-8">
+
+                    <h3 class="text-primary">@Model.Book.Title</h3>
+
+                    <p class="mb-1">
+                        <strong>ISBN:</strong> @Model.Book.ISBN
+                    </p>
+
+                    <p class="mb-1">
+                        <strong>Author:</strong> @Model.Book.Author?.Name
+                    </p>
+
+                    <p class="mb-1">
+                        <strong>Category:</strong> @Model.Book.Category?.Name
+                    </p>
+
+                    <p class="mb-1">
+                        <strong>Department:</strong> @Model.Book.Department?.Name
+                    </p>
+
+                </div>
+
+                <div class="col-md-4 text-end">
+
+                    <div class="p-3 border rounded bg-light">
+
+                        <h6 class="text-muted">Availability</h6>
+
+                        <h4>
+                            @Model.Book.AvailableCopies / @Model.Book.TotalCopies
+                        </h4>
+
+                        @if (Model.Book.AvailableCopies > 0)
+                        {
+                            <span class="badge bg-success px-3 py-2">Available</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger px-3 py-2">Not Available</span>
+                        }
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- BORROW HISTORY -->
+    <div class="card shadow border-0 rounded-3">
+
+        <div class="card-header bg-dark text-white">
+            📊 Borrow History
+        </div>
+
+        <div class="card-body p-0">
+
+            @if (Model.BorrowHistory != null && Model.BorrowHistory.Any())
+            {
+                <table class="table table-hover table-bordered mb-0 align-middle">
+
+                    <thead class="table-light">
+                        <tr>
+                            <th>Student</th>
+                            <th>Borrow Date</th>
+                            <th>Return Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var item in Model.BorrowHistory)
+                        {
+                            <tr>
+
+                                <td>@item.Member?.Name</td>
+
+                                <td>@item.IssuedOn.ToString("dd MMM yyyy")</td>
+
+                                <td>
+                                    @(item.ReturnedOn.HasValue
+                                                                ? item.ReturnedOn.Value.ToString("dd MMM yyyy")
+                                                                : "-")
+                                </td>
+
+                                <td>
+                                    @if (item.Status == "Issued")
+                                    {
+                                        <span class="badge bg-warning text-dark px-3 py-2">Issued</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success px-3 py-2">Returned</span>
+                                    }
+                                </td>
+
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+            }
+            else
+            {
+                <div class="text-center p-4 text-muted">
+                    📭 No borrow history available
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+</div>

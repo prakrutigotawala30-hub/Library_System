@@ -1,0 +1,138 @@
+﻿@model LibraryManagementSystem.Models.Membership
+
+<div class="container py-4">
+
+    <div class="card shadow-lg border-0 rounded-4 mx-auto"
+         style="max-width:600px;">
+
+        <div class="card-body p-4">
+
+            <h3 class="mb-4 text-center fw-bold">
+                🎫 Add Membership
+            </h3>
+
+            <form asp-action="Create" method="post">
+
+                <div class="mb-3">
+                    <label class="form-label">Select Member</label>
+
+                    <select asp-for="MemberId"
+                            class="form-select"
+                            asp-items="ViewBag.Members">
+
+                        <option value="">-- Select Member --</option>
+
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Membership Type</label>
+
+                    <select asp-for="MembershipType"
+                            class="form-select"
+                            id="membershipType">
+
+                        <option value="">-- Select Type --</option>
+
+                        <option value="Student">Student</option>
+
+                        <option value="Regular">Regular</option>
+
+                        <option value="Premium">Premium</option>
+
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Duration</label>
+
+                    <select asp-for="DurationMonths"
+                            class="form-select"
+                            id="duration">
+
+                        <option value="">-- Select Duration --</option>
+
+                        <option value="3">3 Months</option>
+
+                        <option value="6">6 Months</option>
+
+                        <option value="12">1 Year</option>
+
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Membership Fee</label>
+
+                    <input type="text"
+                           id="feeBox"
+                           class="form-control"
+                           readonly />
+                </div>
+
+                <button type="submit"
+                        class="btn btn-dark w-100">
+
+                    Add Membership
+
+                </button>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+
+        const membershipType =
+            document.getElementById("membershipType");
+
+        const duration =
+            document.getElementById("duration");
+
+        const feeBox =
+            document.getElementById("feeBox");
+
+        function calculateFee() {
+
+            let type = membershipType.value;
+            let months = duration.value;
+
+            let fee = 0;
+
+            if(type === "Student")
+            {
+                if(months == 3) fee = 400;
+                if(months == 6) fee = 600;
+                if(months == 12) fee = 1000;
+            }
+
+            else if(type === "Regular")
+            {
+                if(months == 3) fee = 600;
+                if(months == 6) fee = 1000;
+                if(months == 12) fee = 1500;
+            }
+
+            else if(type === "Premium")
+            {
+                if(months == 3) fee = 1000;
+                if(months == 6) fee = 1800;
+                if(months == 12) fee = 3000;
+            }
+
+            feeBox.value = fee > 0
+                ? "₹ " + fee
+                : "";
+        }
+
+        membershipType.addEventListener("change", calculateFee);
+
+        duration.addEventListener("change", calculateFee);
+
+    </script>
+
+}

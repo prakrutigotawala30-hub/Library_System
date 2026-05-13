@@ -1,0 +1,56 @@
+﻿@model LibraryManagementSystem.Models.BorrowRecord
+
+<div class="container d-flex justify-content-center align-items-center vh-100">
+
+    <div class="card shadow-lg p-4" style="width: 500px; border-radius: 15px;">
+
+        <h3 class="text-center mb-3">🔄 Return Book</h3>
+
+        <div class="mb-3">
+            <p><strong>📖 Book:</strong> @Model.Book?.Title</p>
+            <p><strong>👤 Member:</strong> @Model.Member?.Name</p>
+        </div>
+
+        <hr />
+
+        <div class="mb-3">
+            <p><strong>Issued On:</strong> @Model.IssuedOn.ToShortDateString()</p>
+            <p><strong>Due Date:</strong> @Model.DueDate.ToShortDateString()</p>
+        </div>
+
+        @{
+            var isOverdue = DateTime.Now > Model.DueDate;
+            var daysLate = isOverdue ? (DateTime.Now - Model.DueDate).Days : 0;
+            var fine = daysLate * 10;
+        }
+
+        @if (isOverdue)
+        {
+            <div class="alert alert-danger text-center">
+                ⚠ Overdue by <strong>@daysLate days</strong><br />
+                Fine: <strong>₹ @fine</strong>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-success text-center">
+                ✅ Returned on time (No fine)
+            </div>
+        }
+
+        <!-- CONFIRM FORM -->
+        <form asp-action="ReturnConfirmed" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" value="@Model.Id" />
+
+            <button type="submit" class="btn btn-primary w-100">
+                Confirm Return
+            </button>
+        </form>
+
+        <div class="text-center mt-3">
+            <a asp-action="Index">⬅ Back to Borrow List</a>
+        </div>
+
+    </div>
+</div>

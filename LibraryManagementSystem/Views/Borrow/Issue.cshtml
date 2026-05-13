@@ -1,0 +1,145 @@
+﻿@model LibraryManagementSystem.Models.BorrowRecord
+
+<div class="container d-flex justify-content-center align-items-center vh-100">
+
+    <div class="card shadow-lg p-4" style="width: 450px; border-radius: 15px;">
+
+        <h3 class="text-center mb-3">📚 Issue Book</h3>
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success">@TempData["Success"]</div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger">@TempData["Error"]</div>
+        }
+
+        <form asp-action="Issue" method="post">
+            @Html.AntiForgeryToken()
+
+            <!-- BOOK -->
+            <div class="mb-3">
+                <label class="form-label fw-bold">Select Book</label>
+
+                <select asp-for="BookId"
+                        class="form-select"
+                        asp-items="ViewBag.Books">
+                    <option value="">-- Select Book --</option>
+                </select>
+            </div>
+
+            <!-- MEMBER -->
+            <div class="mb-3">
+                <label class="form-label fw-bold">Select Member</label>
+
+                <select asp-for="MemberId"
+                        class="form-select"
+                        asp-items="ViewBag.Members"
+                        id="memberSelect">
+                    <option value="">-- Select Member --</option>
+                </select>
+            </div>
+
+            <!-- TAKE MEMBERSHIP BUTTON (ONLY FOR NON-MEMBER) -->
+            <div id="takeMembershipBox" class="d-none mb-3">
+                <a asp-controller="Membership"
+                   asp-action="Create"
+                   class="btn btn-sm btn-primary">
+                    + Take Membership
+                </a>
+            </div>
+
+            <!-- MEMBERSHIP INFO (ONLY FOR MEMBER WITH MEMBERSHIP) -->
+            <div class="mb-3 d-none" id="membershipBox">
+
+                <label class="form-label fw-bold">Membership Details</label>
+
+                <input type="text"
+                       id="membershipInfo"
+                       class="form-control"
+                       readonly />
+            </div>
+
+            <!-- BORROW DURATION (ONLY FOR NON MEMBERSHIP) -->
+            <div class="mb-3 d-none" id="borrowBox">
+
+                <label class="form-label fw-bold">Borrow Duration</label>
+
+                <select name="borrowDays" class="form-select">
+
+                    <option value="3">3 Days</option>
+                    <option value="7">7 Days</option>
+                    <option value="15">15 Days</option>
+                    <option value="30">1 Month</option>
+
+                </select>
+
+            </div>
+
+            <!-- ISSUE BUTTON -->
+            <button type="submit" class="btn btn-success w-100">
+                Issue Book
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.getElementById("memberSelect").addEventListener("change", function () {
+
+            let memberId = this.value;
+
+            let membershipBox = document.getElementById("membershipBox");
+            let borrowBox = document.getElementById("borrowBox");
+            let takeBox = document.getElementById("takeMembershipBox");
+            let input = document.getElementById("membershipInfo");
+
+            if (!memberId) {
+                membershipBox.classList.add("d-none");
+                borrowBox.classList.add("d-none");
+                takeBox.classList.add("d-none");
+                input.value = "";
+                return;
+            }
+
+            fetch('/Borrow/GetMemberMembership?memberId=' + memberId)
+                .then(res => res.json())
+                .then(data => {
+
+                    if (data.hasMembership) {
+
+                        // SHOW ONLY MEMBERSHIP INFO
+                        membershipBox.classList.remove("d-none");
+                        borrowBox.classList.add("d-none");
+                        takeBox.classList.add("d-none");
+
+                        input.value =
+                            "Active Membership - " +
+                            data.durationMonths + " Months (Ends: " +
+                            data.endDate + ")";
+
+                    } else {
+
+                        // SHOW BORROW + TAKE MEMBERSHIP
+                        membershipBox.classList.add("d-none");
+                        borrowBox.classList.remove("d-none");
+                        takeBox.classList.remove("d-none");
+
+                        input.value = "";
+                    }
+
+                });
+
+        });
+    </script>
+
+}

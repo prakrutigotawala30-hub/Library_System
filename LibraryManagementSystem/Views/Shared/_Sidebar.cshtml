@@ -1,0 +1,126 @@
+﻿<div class="sidebar" id="sidebar">
+
+    <!-- LOGO -->
+    <div class="sidebar-logo">
+        <h4>
+            <i>📚</i>
+            <span class="logo-text">Library</span>
+        </h4>
+    </div>
+
+    <!-- MAIN -->
+    <div class="menu-title">MAIN</div>
+
+    <a asp-controller="Home"
+       asp-action="Index"
+       data-bs-toggle="tooltip"
+       data-bs-placement="right"
+       title="Dashboard">
+
+        <i class="bi bi-speedometer2"></i>
+        <span>Dashboard</span>
+    </a>
+
+    <!-- CATALOGUE -->
+    <div class="menu-title">CATALOGUE</div>
+
+    <a asp-controller="Books"
+       asp-action="Index"
+       data-bs-toggle="tooltip"
+       title="Books">
+
+        <i class="bi bi-book"></i>
+        <span>Books</span>
+    </a>
+
+    <a asp-controller="Books"
+       asp-action="MostPopularBooks"
+       data-bs-toggle="tooltip"
+       title="Popular Books">
+
+        <i class="bi bi-fire"></i>
+        <span>Popular Books</span>
+    </a>
+
+    <a asp-controller="Authors"
+       asp-action="Index"
+       data-bs-toggle="tooltip"
+       title="Authors">
+
+        <i class="bi bi-person"></i>
+        <span>Authors</span>
+    </a>
+
+    <a asp-controller="Categories"
+       asp-action="Index"
+       data-bs-toggle="tooltip"
+       title="Categories">
+
+        <i class="bi bi-folder"></i>
+        <span>Categories</span>
+    </a>
+
+    <a asp-controller="Departments"
+       asp-action="Index"
+       data-bs-toggle="tooltip"
+       title="Departments">
+
+        <i class="bi bi-building"></i>
+        <span>Departments</span>
+    </a>
+
+    <!-- PEOPLE -->
+    <div class="menu-title">PEOPLE</div>
+
+    <a asp-controller="Members"
+       asp-action="Index"
+       data-bs-toggle="tooltip"
+       title="Members">
+
+        <i class="bi bi-people"></i>
+        <span>Members</span>
+    </a>
+
+    <a asp-controller="Membership"
+       asp-action="Index"
+       data-bs-toggle="tooltip"
+       title="Memberships">
+
+        <i class="bi bi-person-vcard"></i>
+        <span>Memberships</span>
+    </a>
+
+    <!-- BORROW -->
+    <div class="menu-title">BORROW</div>
+
+    <a asp-controller="Borrow"
+       asp-action="Index"
+       data-bs-toggle="tooltip"
+       title="Borrow Books">
+
+        <i class="bi bi-journal-arrow-down"></i>
+        <span>Borrow Books</span>
+    </a>
+
+    <!-- REPORTS -->
+    <div class="menu-title">REPORTS</div>
+
+    <a asp-controller="Reports"
+       asp-action="OverdueBooks"
+       data-bs-toggle="tooltip"
+       title="Overdue Report">
+
+        <i class="bi bi-exclamation-circle"></i>
+        <span>Overdue Report</span>
+    </a>
+
+    <a asp-controller="Reports"
+       asp-action="TopBorrowers"
+       data-bs-toggle="tooltip"
+       title="Top Borrowers">
+
+        <i class="bi bi-trophy"></i>
+        <span>Top Borrowers</span>
+    </a>
+
+</div>

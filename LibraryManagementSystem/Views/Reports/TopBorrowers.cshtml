@@ -1,0 +1,280 @@
+﻿@model IEnumerable<LibraryManagementSystem.ViewModels.TopBorrowerViewModel>
+
+@{
+    ViewData["Title"] = "Top Borrowers Report";
+}
+
+<style>
+
+
+    .borrower-card {
+        background: var(--bs-body-bg);
+        border: 1px solid rgba(128,128,128,0.15);
+        border-radius: 22px;
+        overflow: hidden;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    }
+
+    /* HEADER */
+
+    .borrower-header {
+        background: linear-gradient(135deg, #2563eb, #7c3aed);
+        padding: 22px;
+        color: white;
+    }
+
+        .borrower-header h4 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 22px;
+        }
+
+        .borrower-header p {
+            margin: 5px 0 0;
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+    /* TABLE */
+
+    .borrower-table {
+        margin: 0;
+    }
+
+        .borrower-table thead {
+            background: rgba(128,128,128,0.08);
+        }
+
+            .borrower-table thead th {
+                border: none;
+                padding: 16px;
+                font-size: 13px;
+                font-weight: 700;
+                letter-spacing: 0.4px;
+                color: var(--bs-body-color);
+            }
+
+        .borrower-table tbody td {
+            padding: 16px;
+            vertical-align: middle;
+            border-top: 1px solid rgba(128,128,128,0.12);
+            color: var(--bs-body-color);
+        }
+
+        .borrower-table tbody tr {
+            transition: 0.25s ease;
+        }
+
+            .borrower-table tbody tr:hover {
+                background: rgba(128,128,128,0.05);
+            }
+
+    /* RANK */
+
+    .rank-badge {
+        width: 38px;
+        height: 38px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 14px;
+    }
+
+    /* MEMBER */
+
+    .member-name {
+        font-size: 15px;
+        font-weight: 600;
+    }
+
+    .member-subtitle {
+        font-size: 12px;
+        opacity: 0.7;
+    }
+
+    /* BOOK BADGE */
+
+    .book-pill {
+        display: inline-block;
+        padding: 8px 16px;
+        border-radius: 30px;
+        background: rgba(34,197,94,0.15);
+        color: #16a34a;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    /* EMPTY */
+
+    .empty-box {
+        background: var(--bs-body-bg);
+        border: 1px solid rgba(128,128,128,0.15);
+        border-radius: 20px;
+        padding: 40px;
+        text-align: center;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+    }
+
+    /* RESPONSIVE */
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    @@media(max-width:768px) {
+
+        .borrower-table {
+            min-width: 600px;
+        }
+
+            .borrower-table th,
+            .borrower-table td {
+                white-space: nowrap;
+            }
+
+        .borrower-header h4 {
+            font-size: 18px;
+        }
+    }
+
+</style>
+
+<div class="container mt-4">
+
+    <!-- PAGE HEADER -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h3 class="fw-bold">
+                🏆 Top Borrowers
+            </h3>
+
+            <p class="text-muted mb-0">
+                Most active members in the library
+            </p>
+
+        </div>
+
+        <a asp-controller="Home"
+           asp-action="Index"
+           class="btn btn-outline-secondary">
+
+            ⬅ Back
+
+        </a>
+
+    </div>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="empty-box">
+
+            <h5>No Borrowing Data Found</h5>
+
+            <p class="text-muted mb-0">
+                No members have borrowed books yet.
+            </p>
+
+        </div>
+    }
+    else
+    {
+
+        <!-- CARD -->
+
+        <div class="borrower-card">
+
+            <!-- HEADER -->
+
+            <div class="borrower-header">
+
+                <h4>
+                    📚 Borrower Leaderboard
+                </h4>
+
+                <p>
+                    Ranked by total borrowed books
+                </p>
+
+            </div>
+
+            <!-- TABLE -->
+
+            <div class="table-responsive">
+
+                <table class="table borrower-table align-middle">
+
+                    <thead>
+                        <tr>
+                            <th width="90">Rank</th>
+                            <th>Member</th>
+                            <th width="220">Books Borrowed</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @{
+                            int rank = 1;
+                        }
+
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+
+                                <!-- RANK -->
+
+                                <td>
+
+                                    <div class="rank-badge">
+                                        #@rank
+                                    </div>
+
+                                </td>
+
+                                <!-- MEMBER -->
+
+                                <td>
+
+                                    <div class="member-name">
+                                        @item.MemberName
+                                    </div>
+
+                                    <div class="member-subtitle">
+                                        Active Reader
+                                    </div>
+
+                                </td>
+
+                                <!-- BOOKS -->
+
+                                <td>
+
+                                    <span class="book-pill">
+                                        📖 @item.TotalBooks Books
+                                    </span>
+
+                                </td>
+
+                            </tr>
+
+                            rank++;
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    }
+
+</div>

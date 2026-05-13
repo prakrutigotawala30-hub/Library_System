@@ -1,0 +1,121 @@
+﻿@model IEnumerable<LibraryManagementSystem.Models.Membership>
+
+@{
+    ViewData["Title"] = "Memberships";
+}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        border-radius: 12px;
+    }
+    /* TABLE HEADING FONT */
+    .table thead th {
+        font-family: 'Poppins', sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+
+    /* TABLE BODY FONT */
+    .table tbody td {
+        font-family: 'Segoe UI', sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    @@media (max-width: 768px) {
+        .table th,
+        .table td {
+            white-space: nowrap;
+            font-size: 14px;
+        }
+    }
+</style>
+
+<div class="container mt-4">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+
+        <h2>🎫 Memberships</h2>
+
+        <div>
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="btn btn-secondary">
+                ← Back
+            </a>
+
+            <a asp-action="Create"
+               class="btn btn-primary">
+                + Add Membership
+            </a>
+        </div>
+
+    </div>
+
+    <!-- SUCCESS -->
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Success"]
+        </div>
+    }
+
+    <!-- CARD -->
+    <div class="card shadow-sm">
+
+        <div class="card-body p-0">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover mb-0 align-middle">
+
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Member</th>
+                            <th>Type</th>
+                            <th>Fee</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+
+                                <td>@item.Member?.Name</td>
+                                <td>@item.MembershipType</td>
+                                <td>₹@item.Fee</td>
+                                <td>@item.StartDate.ToShortDateString()</td>
+                                <td>@item.EndDate.ToShortDateString()</td>
+
+                                <td>
+                                    @if (item.EndDate > DateTime.Now && item.IsActive)
+                                    {
+                                        <span class="badge bg-success">Active</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">Expired</span>
+                                    }
+                                </td>
+
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
