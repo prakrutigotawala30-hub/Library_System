@@ -29,8 +29,5 @@
 
 	</ItemGroup>
 
-	<ItemGroup>
-	  <ProjectReference Include="..\LibraryManagementSystem\LibraryManagementSystem.csproj" />
-	</ItemGroup>
 
 </Project>
