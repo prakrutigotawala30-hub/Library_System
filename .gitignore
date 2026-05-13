@@ -2,6 +2,8 @@
 bin/
 obj/
 *.user
+# Keep solution-wide multi-launch config (shared across team)
+!*.slnLaunch.user
 
 # Visual Studio
 .vs/

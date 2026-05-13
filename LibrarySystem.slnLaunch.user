@@ -1,0 +1,47 @@
+[
+  {
+    "Name": "Admin (LibraryManagementSystem)",
+    "Projects": [
+      {
+        "Path": "LibraryManagementSystem\\LibraryManagementSystem.csproj",
+        "Action": "Start",
+        "DebugTarget": "https"
+      },
+      {
+        "Path": "Library_Management_System\\Library_Management_System.csproj",
+        "Action": "DoNotStart",
+        "DebugTarget": "https"
+      }
+    ]
+  },
+  {
+    "Name": "User (Library_Management_System)",
+    "Projects": [
+      {
+        "Path": "LibraryManagementSystem\\LibraryManagementSystem.csproj",
+        "Action": "DoNotStart",
+        "DebugTarget": "https"
+      },
+      {
+        "Path": "Library_Management_System\\Library_Management_System.csproj",
+        "Action": "Start",
+        "DebugTarget": "https"
+      }
+    ]
+  },
+  {
+    "Name": "Both (Admin + User)",
+    "Projects": [
+      {
+        "Path": "LibraryManagementSystem\\LibraryManagementSystem.csproj",
+        "Action": "Start",
+        "DebugTarget": "https"
+      },
+      {
+        "Path": "Library_Management_System\\Library_Management_System.csproj",
+        "Action": "Start",
+        "DebugTarget": "https"
+      }
+    ]
+  }
+]
