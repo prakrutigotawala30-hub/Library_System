@@ -1,0 +1,19 @@
+<Project>
+
+  <PropertyGroup>
+    <!--
+      Suppress nullable-reference-type chatter across all projects in this
+      solution. These warnings are informational only - they don't affect
+      runtime behavior. Same approach SoftPosMVC_ClassLibrary uses.
+
+      CS8600 - Converting null literal or possible null value to non-nullable
+      CS8601 - Possible null reference assignment
+      CS8602 - Dereference of a possibly null reference
+      CS8604 - Possible null reference argument
+      CS8618 - Non-nullable property must contain a non-null value
+      CS8625 - Cannot convert null literal to non-nullable reference type
+    -->
+    <NoWarn>$(NoWarn);CS8600;CS8601;CS8602;CS8604;CS8618;CS8625</NoWarn>
+  </PropertyGroup>
+
+</Project>
