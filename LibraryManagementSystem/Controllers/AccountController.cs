@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryManagementSystem.Controllers
 {
-    [Route("Admin/[controller]/[action]")]
     public class AccountController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -26,6 +25,14 @@ namespace LibraryManagementSystem.Controllers
         [HttpGet]
         public IActionResult Login()
         {
+            // Fresh install — no admin exists yet. Send them to Register
+            // so they can create the first admin account using the admin key.
+            if (!_userManager.Users.Any())
+            {
+                TempData["Info"] = "No admin account exists yet. Register the first admin to get started.";
+                return RedirectToAction(nameof(Register));
+            }
+
             return View();
         }
 
