@@ -34,8 +34,7 @@ namespace Library_Management_System.ViewModels
         [Display(Name = "Confirm Password")]
         public string ConfirmPassword { get; set; }
 
-        [Required(ErrorMessage = "Address is required")]
         [StringLength(250)]
-        public string Address { get; set; }
+        public string? Address { get; set; }
     }
 }

@@ -61,7 +61,8 @@ namespace LibraryManagementSystem.Controllers
                     FullName = model.FullName,
                     UserName = model.Email,
                     Email = model.Email,
-                    PhoneNumber = model.PhoneNumber
+                    PhoneNumber = model.PhoneNumber,
+                    EmailConfirmed = true
                 };
 
                 var result = await _userManager.CreateAsync(user, model.Password);
@@ -70,28 +71,26 @@ namespace LibraryManagementSystem.Controllers
                 {
                     await _userManager.AddToRoleAsync(user, "Member");
 
-                    // ================= EMAIL CONFIRMATION =================
-                    var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    // Best-effort welcome email — never block registration if SMTP is down.
+                    try
+                    {
+                        string subject = "Welcome to Library System";
+                        string body = $@"
+                            <h3>Welcome, {user.FullName}!</h3>
+                            <p>Your account has been created successfully.</p>
+                        ";
+                        await _emailService.SendEmailAsync(user.Email, subject, body);
+                    }
+                    catch
+                    {
+                        // swallow SMTP failures — account is already created
+                    }
 
-                    var confirmationLink = Url.Action(
-                        "ConfirmEmail",
-                        "Account",
-                        new { userId = user.Id, token },
-                        Request.Scheme
-                    );
+                    await _signInManager.SignInAsync(user, isPersistent: false);
 
-                    string subject = "Confirm Your Email";
-                    string body = $@"
-                        <h3>Welcome to Library System</h3>
-                        <p>Click below to confirm your email:</p>
-                        <a href='{confirmationLink}'>Confirm Email</a>
-                    ";
+                    TempData["success"] = "Registration successful. Welcome!";
 
-                    await _emailService.SendEmailAsync(user.Email, subject, body);
-
-                    TempData["success"] = "Registration successful. Please confirm your email.";
-
-                    return RedirectToAction("Login");
+                    return RedirectToAction("Index", "Home");
                 }
 
                 foreach (var error in result.Errors)
@@ -150,13 +149,6 @@ namespace LibraryManagementSystem.Controllers
                 if (user == null)
                 {
                     ModelState.AddModelError("", "Account not found.");
-                    return View(model);
-                }
-
-                // 🔒 EMAIL NOT CONFIRMED CHECK
-                if (!user.EmailConfirmed)
-                {
-                    ModelState.AddModelError("", "Please confirm your email before login.");
                     return View(model);
                 }
 
@@ -232,9 +224,15 @@ namespace LibraryManagementSystem.Controllers
                     <a href='{resetLink}'>Reset Password</a>
                 ";
 
-                await _emailService.SendEmailAsync(user.Email, subject, body);
-
-                TempData["success"] = "Reset link sent to email.";
+                try
+                {
+                    await _emailService.SendEmailAsync(user.Email, subject, body);
+                    TempData["success"] = "Reset link sent to email.";
+                }
+                catch
+                {
+                    TempData["error"] = "Could not send reset email. Try again later.";
+                }
 
                 return View();
             }
