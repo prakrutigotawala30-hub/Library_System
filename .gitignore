@@ -1,12 +1,28 @@
 # Build output
 bin/
 obj/
+
+# Per-developer Visual Studio state
 *.user
-
-# Visual Studio
 .vs/
+*.csproj.lscache
+*.lscache
 
-# SQLite (Mac/Linux dev DB — never commit)
+# Keep the shared multi-launch profile config (not per-developer)
+!*.slnLaunch.user
+
+# VS Code workspaces (use VS .sln instead; if a team member wants VS Code
+# workspaces, put a single .code-workspace at the solution root, not buried)
+*.code-workspace
+
+# SQLite dev DBs — never commit
 *.db
 *.db-shm
 *.db-wal
+
+# OS noise
+.DS_Store
+Thumbs.db
+
+# Typo guard — the real one is `.gitignore`
+.gitignore.txt
