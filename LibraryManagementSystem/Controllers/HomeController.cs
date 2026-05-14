@@ -101,6 +101,10 @@ namespace LibraryManagementSystem.Controllers
             return View();
         }
 
+        // Error pages must be reachable WITHOUT authentication, otherwise
+        // status-code re-execution (UseStatusCodePagesWithReExecute) would
+        // bounce to /Account/Login and cause a redirect loop.
+        [AllowAnonymous]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
@@ -109,16 +113,19 @@ namespace LibraryManagementSystem.Controllers
                 RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
             });
         }
+
         public IActionResult Contact()
         {
             return View();
         }
 
+        [AllowAnonymous]
         public IActionResult Error404()
         {
             return View("~/Views/Shared/Error404.cshtml");
         }
 
+        [AllowAnonymous]
         public IActionResult Error500()
         {
             return View("~/Views/Shared/Error500.cshtml");
