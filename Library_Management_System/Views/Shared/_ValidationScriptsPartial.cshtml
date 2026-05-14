@@ -1,2 +1,13 @@
-﻿<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+@*
+    Standalone Account pages (Login, Register, ForgotPassword, ResetPassword)
+    set `Layout = null` and don't inherit _Layout's jQuery script, so this
+    partial has to load jQuery itself before the validation libraries -
+    otherwise jquery.validate.min.js throws "jQuery is not defined".
+
+    On pages that DO use _Layout, jQuery is already loaded; including it
+    again here is harmless (browser caches it, the second <script> tag
+    just re-runs and replaces the same `$` global).
+*@
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
 <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
