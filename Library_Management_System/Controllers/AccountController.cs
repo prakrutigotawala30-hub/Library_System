@@ -73,16 +73,18 @@ namespace LibraryManagementSystem.Controllers
 
                     // Generate confirmation token + link, then email it. We do NOT
                     // sign the user in here — they must click the link first.
+                    //
+                    // Pass the token RAW to Url.Action — it URL-encodes route values
+                    // exactly once. Encoding it manually here would double-encode,
+                    // so when ASP.NET decodes on the receiving end the token wouldn't
+                    // match what UserManager generated and ConfirmEmailAsync would
+                    // silently fail.
                     var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
                     var confirmLink = Url.Action(
                         "ConfirmEmail",
                         "Account",
-                        new
-                        {
-                            userId = user.Id,
-                            token = WebUtility.UrlEncode(token)
-                        },
+                        new { userId = user.Id, token = token },
                         Request.Scheme);
 
                     string subject = "Confirm your Library System account";
