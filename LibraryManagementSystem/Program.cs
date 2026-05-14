@@ -51,9 +51,15 @@ builder.Services.ConfigureApplicationCookie(options =>
 var app = builder.Build();
 
 // ERROR HANDLING
-if (!app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
+    // Show full stack-trace page in dev so we can see the real exception.
+    app.UseDeveloperExceptionPage();
+}
+else
+{
+    // In production: swallow exceptions and render the friendly Error500 view.
+    app.UseExceptionHandler("/Home/Error500");
     app.UseHsts();
 }
 
@@ -61,8 +67,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseStatusCodePagesWithReExecute("/Home/Error404");
-
-app.UseExceptionHandler("/Home/Error500");
 
 app.UseRouting();
 
