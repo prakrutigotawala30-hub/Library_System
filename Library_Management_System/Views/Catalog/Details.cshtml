@@ -1,0 +1,171 @@
+@{
+    ViewData["Title"] = "Book Details";
+    Layout = "_Layout";
+}
+
+<div class="book-details-container">
+
+    <!-- BOOK CARD -->
+    <div class="book-card">
+
+        <!-- COVER -->
+        <div class="book-cover">
+            <img src="@Model.CoverImageUrl" alt="@Model.Title" />
+        </div>
+
+        <!-- INFO -->
+        <div class="book-info">
+
+            <h1 class="book-title">@Model.Title</h1>
+
+            <p class="book-author">
+                by <strong>@Model.AuthorName</strong>
+            </p>
+
+            <p class="book-category">
+                Category: @Model.CategoryName
+            </p>
+
+            <p class="book-description">
+                @Model.Description
+            </p>
+
+            <!-- AVAILABILITY -->
+            <div class="availability">
+                @if (Model.IsAvailable)
+                {
+                    <span class="badge available">Available</span>
+                }
+                else
+                {
+                    <span class="badge unavailable">Not Available</span>
+                }
+            </div>
+
+            <!-- ACTION BUTTONS -->
+            <div class="actions">
+
+                <form asp-controller="Wishlist"
+                      asp-action="Add"
+                      method="post">
+
+                    <input type="hidden" name="BookId" value="@Model.Id" />
+
+                    <button type="submit" class="btn wishlist-btn">
+                        Add to Wishlist
+                    </button>
+                </form>
+
+                <form asp-controller="Reservation"
+                      asp-action="Reserve"
+                      method="post">
+
+                    <input type="hidden" name="BookId" value="@Model.Id" />
+
+                    <button type="submit"
+                            class="btn reserve-btn"
+                            @(Model.IsAvailable ? "" : "disabled")>
+                        Reserve Book
+                    </button>
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- STYLES -->
+<style>
+    body {
+        background: #0b1020;
+        color: #fff;
+        font-family: Inter, sans-serif;
+    }
+
+    .book-details-container {
+        display: flex;
+        justify-content: center;
+        padding: 50px;
+    }
+
+    .book-card {
+        display: flex;
+        gap: 40px;
+        background: #121a33;
+        padding: 30px;
+        border-radius: 16px;
+        max-width: 900px;
+        width: 100%;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
+
+    .book-cover img {
+        width: 220px;
+        height: 320px;
+        object-fit: cover;
+        border-radius: 10px;
+    }
+
+    .book-title {
+        font-size: 28px;
+        margin-bottom: 10px;
+    }
+
+    .book-author,
+    .book-category {
+        opacity: 0.8;
+        margin-bottom: 10px;
+    }
+
+    .book-description {
+        margin: 20px 0;
+        line-height: 1.6;
+    }
+
+    .availability {
+        margin-bottom: 20px;
+    }
+
+    .badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 14px;
+    }
+
+    .available {
+        background: #1f9d55;
+    }
+
+    .unavailable {
+        background: #e3342f;
+    }
+
+    .actions {
+        display: flex;
+        gap: 15px;
+    }
+
+    .btn {
+        padding: 10px 16px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+    }
+
+    .wishlist-btn {
+        background: #6c5ce7;
+        color: #fff;
+    }
+
+    .reserve-btn {
+        background: #00b894;
+        color: #fff;
+    }
+
+    .reserve-btn:disabled {
+        background: #555;
+        cursor: not-allowed;
+    }
+</style>

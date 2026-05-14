@@ -1,30 +1,25 @@
-﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace LibraryManagementSystem.Models
+namespace Library_Management_System.Models
 {
     public class Event
     {
         public int Id { get; set; }
+        [Required]
+        [StringLength(200)]
+        public string Title { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Event title is required")]
-        [StringLength(150)]
-        public string Title { get; set; }
-
-        [Required(ErrorMessage = "Description is required")]
+        [Required]
         [StringLength(1000)]
-        public string Description { get; set; }
+        public string Description { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Event date is required")]
+        [Required]
         public DateTime Date { get; set; }
 
-        [Required(ErrorMessage = "Location is required")]
+        [Required]
         [StringLength(200)]
-        public string Location { get; set; }
+        public string Location { get; set; } = string.Empty;
 
-        [StringLength(300)]
         public string? ImagePath { get; set; }
-
-        public DateTime CreatedOn { get; set; } = DateTime.Now;
     }
 }

@@ -1,0 +1,197 @@
+@model IEnumerable<Library_Management_System.Models.Event>
+
+@{
+    ViewData["Title"] = "Events";
+}
+
+<div class="container-fluid">
+
+    <!-- HEADER -->
+
+    <div class="events-header mb-5">
+
+        <div>
+            <h1 class="page-title">
+                Library Events
+            </h1>
+
+            <p class="page-subtitle">
+                Explore workshops, seminars, reading sessions and upcoming activities.
+            </p>
+        </div>
+
+    </div>
+
+    <!-- EVENTS -->
+
+    <div class="row g-4">
+
+        @foreach (var item in Model)
+        {
+            <div class="col-xl-4 col-lg-6">
+
+                <div class="event-card">
+
+                    <div class="event-image">
+
+                        @if (!string.IsNullOrEmpty(item.ImagePath))
+                        {
+                            <img src="@item.ImagePath" alt="@item.Title" />
+                        }
+                        else
+                        {
+                            <div class="event-placeholder">
+                                📚
+                            </div>
+                        }
+
+                    </div>
+
+                    <div class="event-content">
+
+                        <div class="event-date">
+                            <i class="bi bi-calendar-event"></i>
+                            @item.Date.ToString("dd MMM yyyy")
+                        </div>
+
+                        <h3 class="event-title">
+                            @item.Title
+                        </h3>
+
+                        <p class="event-description">
+                            @item.Description
+                        </p>
+
+                        <div class="event-location">
+                            <i class="bi bi-geo-alt"></i>
+                            @item.Location
+                        </div>
+
+                        <a asp-action="Details"
+                           asp-route-id="@item.Id"
+                           class="btn event-btn">
+                            View Details
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+        }
+
+    </div>
+
+</div>
+
+<style>
+
+    .events-header{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+    }
+
+    .page-title{
+        color:white;
+        font-size:42px;
+        font-weight:800;
+        margin-bottom:10px;
+    }
+
+    .page-subtitle{
+        color:rgba(255,255,255,0.65);
+        font-size:15px;
+    }
+
+    .event-card{
+        background:rgba(255,255,255,0.05);
+        border:1px solid rgba(255,255,255,0.08);
+        border-radius:24px;
+        overflow:hidden;
+        transition:0.3s;
+        backdrop-filter:blur(10px);
+        height:100%;
+    }
+
+    .event-card:hover{
+        transform:translateY(-8px);
+        box-shadow:0 0 35px rgba(147,51,234,0.25);
+    }
+
+    .event-image{
+        height:240px;
+        overflow:hidden;
+        background:linear-gradient(135deg,#7e22ce,#9333ea);
+    }
+
+    .event-image img{
+        width:100%;
+        height:100%;
+        object-fit:cover;
+    }
+
+    .event-placeholder{
+        width:100%;
+        height:100%;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        font-size:70px;
+        color:white;
+    }
+
+    .event-content{
+        padding:24px;
+    }
+
+    .event-date{
+        color:#c084fc;
+        font-size:14px;
+        margin-bottom:12px;
+        font-weight:600;
+    }
+
+    .event-title{
+        color:white;
+        font-size:24px;
+        font-weight:700;
+        margin-bottom:14px;
+    }
+
+    .event-description{
+        color:rgba(255,255,255,0.70);
+        line-height:1.7;
+        margin-bottom:20px;
+        min-height:70px;
+    }
+
+    .event-location{
+        color:#d1d5db;
+        margin-bottom:20px;
+        font-size:14px;
+    }
+
+    .event-btn{
+        width:100%;
+        height:50px;
+        border:none;
+        border-radius:14px;
+
+        background:
+            linear-gradient(
+                135deg,
+                #7e22ce,
+                #9333ea
+            );
+
+        color:white;
+        font-weight:600;
+    }
+
+    .event-btn:hover{
+        color:white;
+        box-shadow:0 0 20px rgba(147,51,234,0.35);
+    }
+
+</style>

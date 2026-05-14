@@ -1,0 +1,147 @@
+@{
+    ViewData["Title"] = "Browse Books";
+}
+
+<h2 class="mb-3">Browse Books</h2>
+
+<!-- FILTER FORM -->
+<form method="get" asp-action="Index" class="row g-2 mb-4">
+
+    <!-- Search -->
+    <div class="col-md-3">
+        <input type="text"
+               name="SearchQuery"
+               value="@Model.SearchQuery"
+               class="form-control"
+               placeholder="Search books..." />
+    </div>
+
+    <!-- Category -->
+    <div class="col-md-2">
+        <select name="CategoryId" class="form-select">
+            <option value="">All Categories</option>
+            @foreach (var c in Model.Categories)
+            {
+                <option value="@c.Id" selected="@(Model.CategoryId == c.Id)">
+                    @c.Name
+                </option>
+            }
+        </select>
+    </div>
+
+    <!-- Author -->
+    <div class="col-md-2">
+        <select name="AuthorId" class="form-select">
+            <option value="">All Authors</option>
+            @foreach (var a in Model.Authors)
+            {
+                <option value="@a.Id" selected="@(Model.AuthorId == a.Id)">
+                    @a.Name
+                </option>
+            }
+        </select>
+    </div>
+
+    <!-- Availability -->
+    <div class="col-md-2">
+        <select name="Availability" class="form-select">
+            <option value="">All</option>
+            <option value="available" selected="@(Model.Availability == "available")">Available</option>
+            <option value="unavailable" selected="@(Model.Availability == "unavailable")">Unavailable</option>
+        </select>
+    </div>
+
+    <!-- Sort -->
+    <div class="col-md-2">
+        <select name="SortBy" class="form-select">
+            <option value="">Sort By</option>
+            <option value="title" selected="@(Model.SortBy == "title")">Title</option>
+            <option value="newest" selected="@(Model.SortBy == "newest")">Newest</option>
+            <option value="popular" selected="@(Model.SortBy == "popular")">Popular</option>
+        </select>
+    </div>
+
+    <!-- Button -->
+    <div class="col-md-1 d-grid">
+        <button type="submit" class="btn btn-primary">Go</button>
+    </div>
+
+</form>
+
+<!-- BOOK LIST -->
+<div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Category</th>
+                <th>Status</th>
+                <th width="120">Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        @if (Model.PagedBooks != null && Model.PagedBooks.Any())
+        {
+            foreach (var book in Model.PagedBooks)
+            {
+                <tr>
+                    <td>@book.Title</td>
+                    <td>@book.AuthorName</td>
+                    <td>@book.CategoryName</td>
+
+                    <td>
+                        @if (book.IsAvailable)
+                        {
+                            <span class="badge bg-success">Available</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">Issued</span>
+                        }
+                    </td>
+
+                    <td>
+                        <a asp-action="Details" asp-route-id="@book.Id"
+                           class="btn btn-sm btn-info">
+                            View
+                        </a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5" class="text-center text-muted">
+                    No books found
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+<!-- PAGINATION -->
+<div class="d-flex justify-content-between mt-3">
+
+    <div>
+        Page @Model.PageNumber
+    </div>
+
+    <div>
+        <a asp-action="Index"
+           asp-route-PageNumber="@(Model.PageNumber - 1)"
+           class="btn btn-outline-secondary btn-sm @(Model.PageNumber <= 1 ? "disabled" : "")">
+            Prev
+        </a>
+
+        <a asp-action="Index"
+           asp-route-PageNumber="@(Model.PageNumber + 1)"
+           class="btn btn-outline-secondary btn-sm">
+            Next
+        </a>
+    </div>
+
+</div>
