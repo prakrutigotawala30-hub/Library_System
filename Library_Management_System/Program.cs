@@ -8,12 +8,27 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // DATABASE
+// Provider order: appsettings override -> SqlServer on Windows -> Sqlite elsewhere (Mac/Linux).
+var configuredProvider = builder.Configuration.GetValue<string>("Database:Provider");
+var dbProvider = !string.IsNullOrWhiteSpace(configuredProvider)
+    ? configuredProvider
+    : (OperatingSystem.IsWindows() ? "SqlServer" : "Sqlite");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
-        sql => sql.CommandTimeout(120)
-    ));
+{
+    if (string.Equals(dbProvider, "Sqlite", StringComparison.OrdinalIgnoreCase))
+    {
+        options.UseSqlite(
+            builder.Configuration.GetConnectionString("SqliteConnection")
+            ?? "Data Source=LibraryManagementDB.db");
+    }
+    else
+    {
+        options.UseSqlServer(
+            builder.Configuration.GetConnectionString("DefaultConnection"),
+            sql => sql.CommandTimeout(120));
+    }
+});
 
 // IDENTITY
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
