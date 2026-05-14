@@ -62,7 +62,7 @@ namespace LibraryManagementSystem.Controllers
                     UserName = model.Email,
                     Email = model.Email,
                     PhoneNumber = model.PhoneNumber,
-                    EmailConfirmed = true
+                    EmailConfirmed = false
                 };
 
                 var result = await _userManager.CreateAsync(user, model.Password);
@@ -71,26 +71,45 @@ namespace LibraryManagementSystem.Controllers
                 {
                     await _userManager.AddToRoleAsync(user, "Member");
 
-                    // Best-effort welcome email — never block registration if SMTP is down.
+                    // Generate confirmation token + link, then email it. We do NOT
+                    // sign the user in here — they must click the link first.
+                    var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+                    var confirmLink = Url.Action(
+                        "ConfirmEmail",
+                        "Account",
+                        new
+                        {
+                            userId = user.Id,
+                            token = WebUtility.UrlEncode(token)
+                        },
+                        Request.Scheme);
+
+                    string subject = "Confirm your Library System account";
+                    string body = $@"
+                        <h3>Welcome, {user.FullName}!</h3>
+                        <p>Please confirm your email to activate your account:</p>
+                        <p><a href='{confirmLink}'>Confirm Email</a></p>
+                        <p>If the button doesn't work, copy this link into your browser:</p>
+                        <p>{confirmLink}</p>
+                    ";
+
                     try
                     {
-                        string subject = "Welcome to Library System";
-                        string body = $@"
-                            <h3>Welcome, {user.FullName}!</h3>
-                            <p>Your account has been created successfully.</p>
-                        ";
                         await _emailService.SendEmailAsync(user.Email, subject, body);
+                        TempData["success"] =
+                            "Account created. Please check your email and click the confirmation link to activate it.";
                     }
                     catch
                     {
-                        // swallow SMTP failures — account is already created
+                        // SMTP failed — account exists but no email sent.
+                        // Give the user actionable feedback rather than a silent error.
+                        TempData["error"] =
+                            "Account created but confirmation email could not be sent. " +
+                            "Please contact the administrator.";
                     }
 
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-
-                    TempData["success"] = "Registration successful. Welcome!";
-
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Login");
                 }
 
                 foreach (var error in result.Errors)
@@ -108,23 +127,32 @@ namespace LibraryManagementSystem.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> ConfirmEmail(string userId, string token)
         {
-            if (userId == null || token == null)
+            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(token))
+            {
+                TempData["error"] = "Invalid confirmation link.";
                 return RedirectToAction("Login");
+            }
 
             var user = await _userManager.FindByIdAsync(userId);
 
             if (user == null)
+            {
+                TempData["error"] = "Account not found.";
                 return RedirectToAction("Login");
+            }
 
+            // Token came through the URL with WebUtility.UrlEncode applied —
+            // ASP.NET model binding already URL-decodes once when reading from
+            // the query string, so the token here is the original. No extra decode.
             var result = await _userManager.ConfirmEmailAsync(user, token);
 
             if (result.Succeeded)
             {
-                TempData["success"] = "Email confirmed successfully.";
+                TempData["success"] = "Email confirmed. You can now log in.";
                 return View();
             }
 
-            TempData["error"] = "Email confirmation failed.";
+            TempData["error"] = "Email confirmation failed. The link may have expired.";
             return RedirectToAction("Login");
         }
 
@@ -149,6 +177,14 @@ namespace LibraryManagementSystem.Controllers
                 if (user == null)
                 {
                     ModelState.AddModelError("", "Account not found.");
+                    return View(model);
+                }
+
+                if (!await _userManager.IsEmailConfirmedAsync(user))
+                {
+                    ModelState.AddModelError(
+                        "",
+                        "Email not confirmed yet. Please check your inbox for the confirmation link.");
                     return View(model);
                 }
 
