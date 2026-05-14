@@ -26,5 +26,22 @@ namespace Library_Management_System.Data
         public DbSet<Book> Books { get; set; }
         public DbSet<Author> Authors { get; set; }
         public DbSet<Category> Categories { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<BorrowRecord>()
+                .Property(b => b.FineAmount)
+                .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<BorrowRecord>()
+                .Property(b => b.FinePerDay)
+                .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<Membership>()
+                .Property(m => m.Fee)
+                .HasColumnType("decimal(18,2)");
+        }
     }
 }

@@ -1,0 +1,402 @@
+﻿@model Library_Management_System.ViewModels.MemberDashboardViewModel
+
+@{
+    ViewData["Title"] = "Member Dashboard";
+}
+
+<style>
+
+    body {
+        background: #050816;
+        color: white;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .dashboard-wrapper {
+        padding: 25px;
+    }
+
+    .top-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+
+        .top-header h2 {
+            font-weight: 700;
+            margin: 0;
+        }
+
+    .welcome-text {
+        color: #9ca3af;
+        font-size: 14px;
+    }
+
+    .summary-card {
+        background: linear-gradient(145deg,#111827,#1f2937);
+        border-radius: 18px;
+        padding: 22px;
+        box-shadow: 0 0 20px rgba(139,92,246,0.15);
+        border: 1px solid rgba(255,255,255,0.05);
+        transition: 0.3s;
+        height: 100%;
+    }
+
+        .summary-card:hover {
+            transform: translateY(-5px);
+        }
+
+    .summary-icon {
+        width: 55px;
+        height: 55px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        margin-bottom: 15px;
+    }
+
+    .bg-purple {
+        background: linear-gradient(135deg,#7c3aed,#9333ea);
+    }
+
+    .bg-red {
+        background: linear-gradient(135deg,#dc2626,#ef4444);
+    }
+
+    .bg-green {
+        background: linear-gradient(135deg,#059669,#10b981);
+    }
+
+    .bg-blue {
+        background: linear-gradient(135deg,#2563eb,#3b82f6);
+    }
+
+    .summary-title {
+        color: #9ca3af;
+        font-size: 14px;
+        margin-bottom: 6px;
+    }
+
+    .summary-value {
+        font-size: 32px;
+        font-weight: bold;
+    }
+
+    .dashboard-card {
+        background: linear-gradient(145deg,#0f172a,#111827);
+        border-radius: 20px;
+        padding: 25px;
+        margin-top: 28px;
+        box-shadow: 0 0 25px rgba(139,92,246,0.08);
+        border: 1px solid rgba(255,255,255,0.05);
+    }
+
+        .dashboard-card h4 {
+            margin-bottom: 22px;
+            font-weight: 700;
+        }
+
+    .table {
+        color: white;
+        margin: 0;
+    }
+
+        .table thead {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .table th {
+            border: none;
+            color: #d1d5db;
+            padding: 16px;
+        }
+
+        .table td {
+            border-color: rgba(255,255,255,0.05);
+            vertical-align: middle;
+            padding: 16px;
+        }
+
+    .book-title {
+        font-weight: 600;
+    }
+
+    .badge-active {
+        background: #2563eb;
+        padding: 7px 14px;
+        border-radius: 30px;
+        font-size: 12px;
+    }
+
+    .badge-overdue {
+        background: #dc2626;
+        padding: 7px 14px;
+        border-radius: 30px;
+        font-size: 12px;
+    }
+
+    .badge-returned {
+        background: #059669;
+        padding: 7px 14px;
+        border-radius: 30px;
+        font-size: 12px;
+    }
+
+    .activity-box {
+        background: rgba(255,255,255,0.03);
+        border-radius: 14px;
+        padding: 15px 18px;
+        margin-bottom: 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .activity-date {
+        color: #9ca3af;
+        font-size: 13px;
+    }
+
+    .empty-box {
+        color: #9ca3af;
+        text-align: center;
+        padding: 20px;
+    }
+
+</style>
+
+<div class="dashboard-wrapper">
+
+    <!-- HEADER -->
+
+    <div class="top-header">
+
+        <div>
+            <div class="welcome-text">
+                Welcome Back 👋
+            </div>
+
+            <h2>📚 My Dashboard</h2>
+        </div>
+
+    </div>
+
+    <!-- SUMMARY -->
+
+    <div class="row g-4">
+
+        <div class="col-md-3">
+
+            <div class="summary-card">
+
+                <div class="summary-icon bg-purple">
+                    📖
+                </div>
+
+                <div class="summary-title">
+                    Current Borrows
+                </div>
+
+                <div class="summary-value">
+                    @Model.CurrentBorrows
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="summary-card">
+
+                <div class="summary-icon bg-red">
+                    ⏰
+                </div>
+
+                <div class="summary-title">
+                    Overdue Books
+                </div>
+
+                <div class="summary-value">
+                    @Model.Overdue
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="summary-card">
+
+                <div class="summary-icon bg-green">
+                    ₹
+                </div>
+
+                <div class="summary-title">
+                    Total Fine
+                </div>
+
+                <div class="summary-value">
+                    ₹@Model.FineDue
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="summary-card">
+
+                <div class="summary-icon bg-blue">
+                    ❤️
+                </div>
+
+                <div class="summary-title">
+                    Wishlist
+                </div>
+
+                <div class="summary-value">
+                    @Model.WishListCount
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- MY BOOKS -->
+
+    <div class="dashboard-card">
+
+        <h4>📚 My Borrowed Books</h4>
+
+        <div class="table-responsive">
+
+            <table class="table align-middle">
+
+                <thead>
+                    <tr>
+                        <th>Book</th>
+                        <th>Author</th>
+                        <th>Issue Date</th>
+                        <th>Due Date</th>
+                        <th>Status</th>
+                        <th>Fine</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @if (Model.MyBooks != null && Model.MyBooks.Any())
+                    {
+                        foreach (var book in Model.MyBooks)
+                        {
+                            <tr>
+
+                                <td class="book-title">
+                                    @book.BookTitle
+                                </td>
+
+                                <td>
+                                    @book.Author
+                                </td>
+
+                                <td>
+                                    @book.IssueDate.ToShortDateString()
+                                </td>
+
+                                <td>
+                                    @book.DueDate.ToShortDateString()
+                                </td>
+
+                                <td>
+
+                                    @if (book.IsReturned)
+                                    {
+                                        <span class="badge-returned">
+                                            Returned
+                                        </span>
+                                    }
+                                    else if (book.DueDate < DateTime.Now)
+                                    {
+                                        <span class="badge-overdue">
+                                            Overdue
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge-active">
+                                            Active
+                                        </span>
+                                    }
+
+                                </td>
+
+                                <td>
+                                    ₹@book.FineAmount
+                                </td>
+
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6">
+
+                                <div class="empty-box">
+                                    No borrowed books found
+                                </div>
+
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- RECENT ACTIVITY -->
+
+    <div class="dashboard-card">
+
+        <h4>🕒 Recent Activity</h4>
+
+        @if (Model.RecentActivity != null && Model.RecentActivity.Any())
+        {
+            foreach (var activity in Model.RecentActivity)
+            {
+                <div class="activity-box">
+
+                    <div>
+                        @activity.Activity
+                    </div>
+
+                    <div class="activity-date">
+                        @activity.ActivityDate.ToShortDateString()
+                    </div>
+
+                </div>
+            }
+        }
+        else
+        {
+            <div class="empty-box">
+                No recent activity available
+            </div>
+        }
+
+    </div>
+
+</div>
+

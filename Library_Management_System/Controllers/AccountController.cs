@@ -1,4 +1,5 @@
-﻿using LibraryManagementSystem.Models;
+﻿
+using LibraryManagementSystem.Models;
 using Library_Management_System.ViewModels;
 using Library_Management_System.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -69,47 +70,34 @@ namespace LibraryManagementSystem.Controllers
 
                 if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(user, "Member");
+                    var token = await _userManager
+                        .GenerateEmailConfirmationTokenAsync(user);
 
-                    // Generate confirmation token + link, then email it. We do NOT
-                    // sign the user in here — they must click the link first.
-                    //
-                    // Pass the token RAW to Url.Action — it URL-encodes route values
-                    // exactly once. Encoding it manually here would double-encode,
-                    // so when ASP.NET decodes on the receiving end the token wouldn't
-                    // match what UserManager generated and ConfirmEmailAsync would
-                    // silently fail.
-                    var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-
-                    var confirmLink = Url.Action(
+                    var confirmationLink = Url.Action(
                         "ConfirmEmail",
                         "Account",
-                        new { userId = user.Id, token = token },
-                        Request.Scheme);
+                        new
+                        {
+                            userId = user.Id,
+                            token = token
+                        },
+                        protocol: HttpContext.Request.Scheme);
 
-                    string subject = "Confirm your Library System account";
                     string body = $@"
-                        <h3>Welcome, {user.FullName}!</h3>
-                        <p>Please confirm your email to activate your account:</p>
-                        <p><a href='{confirmLink}'>Confirm Email</a></p>
-                        <p>If the button doesn't work, copy this link into your browser:</p>
-                        <p>{confirmLink}</p>
-                    ";
+                        <h2>Library Management System</h2>
+                        <p>Please confirm your email by clicking below:</p>
 
-                    try
-                    {
-                        await _emailService.SendEmailAsync(user.Email, subject, body);
-                        TempData["success"] =
-                            "Account created. Please check your email and click the confirmation link to activate it.";
-                    }
-                    catch
-                    {
-                        // SMTP failed — account exists but no email sent.
-                        // Give the user actionable feedback rather than a silent error.
-                        TempData["error"] =
-                            "Account created but confirmation email could not be sent. " +
-                            "Please contact the administrator.";
-                    }
+                        <a href='{confirmationLink}'>
+                            Confirm Email
+                        </a>";
+
+                    await _emailService.SendEmailAsync(
+                        user.Email,
+                        "Confirm Your Email",
+                        body);
+
+                    TempData["Success"] =
+                        "Registration successful. Check your email.";
 
                     return RedirectToAction("Login");
                 }
@@ -129,9 +117,8 @@ namespace LibraryManagementSystem.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> ConfirmEmail(string userId, string token)
         {
-            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(token))
+            if (userId == null || token == null)
             {
-                TempData["error"] = "Invalid confirmation link.";
                 return RedirectToAction("Login");
             }
 
@@ -139,22 +126,17 @@ namespace LibraryManagementSystem.Controllers
 
             if (user == null)
             {
-                TempData["error"] = "Account not found.";
-                return RedirectToAction("Login");
+                return NotFound();
             }
 
-            // Token came through the URL with WebUtility.UrlEncode applied —
-            // ASP.NET model binding already URL-decodes once when reading from
-            // the query string, so the token here is the original. No extra decode.
-            var result = await _userManager.ConfirmEmailAsync(user, token);
+            var result = await _userManager
+                .ConfirmEmailAsync(user, token);
 
             if (result.Succeeded)
             {
-                TempData["success"] = "Email confirmed. You can now log in.";
-                return View();
+                return View("ConfirmEmail");
             }
 
-            TempData["error"] = "Email confirmation failed. The link may have expired.";
             return RedirectToAction("Login");
         }
 
@@ -182,11 +164,11 @@ namespace LibraryManagementSystem.Controllers
                     return View(model);
                 }
 
-                if (!await _userManager.IsEmailConfirmedAsync(user))
+                if (user != null && !await _userManager.IsEmailConfirmedAsync(user))
                 {
-                    ModelState.AddModelError(
-                        "",
-                        "Email not confirmed yet. Please check your inbox for the confirmation link.");
+                    ModelState.AddModelError("",
+                        "Please confirm your email first. Please check your inbox for the confirmation link.");
+
                     return View(model);
                 }
 
