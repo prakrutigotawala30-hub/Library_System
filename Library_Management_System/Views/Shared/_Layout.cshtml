@@ -1,14 +1,379 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+<style>
 
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Inter',sans-serif;
+    }
+
+    body {
+        background: #050816;
+        overflow-x: hidden;
+    }
+
+    /* AUTH PAGE */
+
+    .auth-layout {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient( 135deg, #12051f, #43118f, #7e22ce );
+    }
+
+    /* DASHBOARD */
+
+    .dashboard-layout {
+        display: flex;
+        min-height: 100vh;
+        background: radial-gradient(circle at top left, rgba(126,34,206,.25), transparent 30%), radial-gradient(circle at bottom right, rgba(59,130,246,.18), transparent 25%), #050816;
+    }
+
+    /* SIDEBAR */
+
+    .sidebar {
+        width: 270px;
+        background: rgba(10,15,35,.96);
+        border-right: 1px solid rgba(139,92,246,.18);
+        padding: 24px 18px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        overflow-y: auto;
+        box-shadow: 0 0 40px rgba(139,92,246,.15);
+    }
+
+    /* LOGO */
+
+    .sidebar-logo {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 40px;
+    }
+
+    .logo-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 18px;
+        background: linear-gradient( 135deg, #7e22ce, #9333ea );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 28px;
+        font-weight: 700;
+        box-shadow: 0 0 25px rgba(147,51,234,.45);
+    }
+
+    .sidebar-logo h4 {
+        color: white;
+        font-size: 21px;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .sidebar-logo small {
+        color: rgba(255,255,255,.55);
+    }
+
+    /* MENU */
+
+    .sidebar-menu {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-decoration: none;
+            padding: 14px 16px;
+            border-radius: 16px;
+            color: rgba(255,255,255,.75);
+            transition: .3s;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+            .sidebar-menu a:hover {
+                background: rgba(139,92,246,.15);
+                color: white;
+                transform: translateX(5px);
+            }
+
+            .sidebar-menu a.active {
+                background: linear-gradient( 135deg, #6d28d9, #9333ea );
+                color: white;
+                box-shadow: 0 0 25px rgba(147,51,234,.30);
+            }
+
+    /* MAIN */
+
+    .main-wrapper {
+        margin-left: 270px;
+        width: calc(100% - 270px);
+    }
+
+    /* TOPBAR */
+
+    .topbar {
+        height: 90px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 35px;
+        border-bottom: 1px solid rgba(255,255,255,.05);
+        background: rgba(5,8,22,.82);
+        backdrop-filter: blur(12px);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+
+    .welcome-text {
+        color: rgba(255,255,255,.60);
+        font-size: 14px;
+        margin-bottom: 4px;
+    }
+
+    .user-name {
+        color: white;
+        font-size: 28px;
+        font-weight: 700;
+    }
+
+    .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+    }
+
+    /* ICON */
+
+    .top-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 16px;
+        background: rgba(255,255,255,.05);
+        border: 1px solid rgba(255,255,255,.06);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        cursor: pointer;
+        transition: .3s;
+    }
+
+        .top-icon:hover {
+            background: rgba(139,92,246,.15);
+            transform: translateY(-3px);
+        }
+
+    /* PROFILE */
+
+    .profile-box {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 14px;
+        border-radius: 18px;
+        background: rgba(255,255,255,.05);
+        border: 1px solid rgba(255,255,255,.06);
+    }
+
+    .profile-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient( 135deg, #9333ea, #6d28d9 );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .profile-name {
+        color: white;
+        font-weight: 600;
+    }
+
+    .premium-text {
+        color: #facc15;
+    }
+
+    /* PAGE */
+
+    .page-content {
+        padding: 0px 20px;
+    }
+
+    /* GLASS CARD */
+
+    .glass-card {
+        background: rgba(255,255,255,.04);
+        border: 1px solid rgba(255,255,255,.08);
+        border-radius: 28px;
+        padding: 24px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 0 40px rgba(0,0,0,.25);
+    }
+
+    /* BOOK CARD */
+
+    .book-card {
+        background: rgba(255,255,255,.05);
+        border-radius: 22px;
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,.05);
+        transition: .3s;
+    }
+
+        .book-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 0 30px rgba(139,92,246,.25);
+        }
+
+    .book-cover {
+        height: 240px;
+        background: linear-gradient( 135deg, #f59e0b, #f97316 );
+    }
+
+    .book-content {
+        padding: 18px;
+    }
+
+    .book-title {
+        color: white;
+        font-size: 17px;
+        font-weight: 600;
+        margin-bottom: 6px;
+    }
+
+    .book-author {
+        color: rgba(255,255,255,.60);
+        font-size: 14px;
+        margin-bottom: 14px;
+    }
+
+    /* BUTTON */
+
+    .borrow-btn {
+        width: 100%;
+        height: 42px;
+        border: none;
+        border-radius: 12px;
+        background: linear-gradient( 135deg, #7e22ce, #9333ea );
+        color: white;
+        font-weight: 600;
+        transition: .3s;
+    }
+
+        .borrow-btn:hover {
+            box-shadow: 0 0 25px rgba(147,51,234,.40);
+            transform: translateY(-2px);
+        }
+
+    /* STATS */
+
+    .stats-card {
+        background: rgba(255,255,255,.05);
+        border-radius: 24px;
+        padding: 24px;
+        border: 1px solid rgba(255,255,255,.05);
+    }
+
+        .stats-card h3 {
+            color: white;
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .stats-card p {
+            color: rgba(255,255,255,.60);
+        }
+
+    /* SCROLLBAR */
+
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #7e22ce;
+        border-radius: 20px;
+    }
+
+    /* MOBILE */
+
+    /* MOBILE */
+
+    @@media (max-width: 992px) {
+
+        .sidebar {
+            width: 90px;
+        }
+
+        .sidebar-logo h4,
+        .sidebar-logo small,
+        .sidebar-menu span {
+            display: none;
+        }
+
+        .sidebar-menu a {
+            justify-content: center;
+        }
+
+        .main-wrapper {
+            margin-left: 90px;
+            width: calc(100% - 90px);
+        }
+    }
+
+    @@media (max-width: 768px) {
+
+        .topbar {
+            padding: 0 15px;
+        }
+
+        .page-content {
+            padding: 20px;
+        }
+
+        .user-name {
+            font-size: 20px;
+        }
+
+        .profile-box {
+            display: none;
+        }
+    }
+</style>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>@ViewData["Title"] - Library Management System</title>
+    <title>@ViewData["Title"] - LibrarySphere</title>
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/user-site.css" asp-append-version="true" />
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet" />
+
+    <link rel="stylesheet"
+          href="~/css/dashboard.css"
+          asp-append-version="true" />
 </head>
 
 <body>
@@ -18,67 +383,171 @@
         ViewContext.RouteData.Values["controller"]?.ToString() == "Account";
     }
 
-    @if (User.Identity != null && User.Identity.IsAuthenticated && !isAuthPage)
+    @if (User.Identity != null &&
+        User.Identity.IsAuthenticated &&
+        !isAuthPage)
     {
-        <!-- ================= DASHBOARD LAYOUT ================= -->
+        <div class="dashboard-layout">
 
-        <header class="bg-white border-bottom shadow-sm">
-            <nav class="navbar navbar-expand-sm navbar-light container">
+            <!-- SIDEBAR -->
 
-                <a class="navbar-brand fw-bold" asp-controller="Home" asp-action="Index">
-                    📚 Library Management
-                </a>
+            <aside class="sidebar">
 
-                <div class="ms-auto d-flex gap-2">
+                <div class="sidebar-logo">
 
-                    <a class="nav-link" asp-controller="Home" asp-action="Index">
-                        Dashboard
+                    <div class="logo-icon">
+                        ∞
+                    </div>
+
+                    <div>
+                        <h4>LibrarySphere</h4>
+                        <small>Your Digital Library</small>
+                    </div>
+
+                </div>
+
+                <div class="sidebar-menu">
+
+                    <a asp-controller="Home"
+                       asp-action="Index"
+                       class="active">
+
+                        <i class="bi bi-grid-fill"></i>
+                        <span>Dashboard</span>
+
                     </a>
 
-                    <a class="btn btn-danger btn-sm"
-                       asp-controller="Account"
+                    <a href="#">
+                        <i class="bi bi-book"></i>
+                        <span>Browse Books</span>
+                    </a>
+
+                    <a href="#">
+                        <i class="bi bi-collection"></i>
+                        <span>Categories</span>
+                    </a>
+
+                    <a href="#">
+                        <i class="bi bi-heart"></i>
+                        <span>Favorites</span>
+                    </a>
+
+                    <a href="#">
+                        <i class="bi bi-journal-bookmark"></i>
+                        <span>Borrowed</span>
+                    </a>
+
+                    <a href="#">
+                        <i class="bi bi-clock-history"></i>
+                        <span>History</span>
+                    </a>
+
+                    <a href="#">
+                        <i class="bi bi-bell"></i>
+                        <span>Notifications</span>
+                    </a>
+
+                    <a href="#">
+                        <i class="bi bi-person"></i>
+                        <span>Profile</span>
+                    </a>
+
+                    <a href="#">
+                        <i class="bi bi-gear"></i>
+                        <span>Settings</span>
+                    </a>
+
+                    <a asp-controller="Account"
                        asp-action="Logout">
-                        Logout
+
+                        <i class="bi bi-box-arrow-right"></i>
+                        <span>Logout</span>
+
                     </a>
 
                 </div>
 
-            </nav>
-        </header>
+            </aside>
 
-        <div class="container py-4">
-            @RenderBody()
+            <!-- MAIN -->
+
+            <div class="main-wrapper">
+
+                <!-- TOPBAR -->
+
+                <header class="topbar">
+
+                    <div>
+
+                        <h5 class="welcome-text">
+                            Good Morning
+                        </h5>
+
+                        <h3 class="user-name">
+                            @User.Identity.Name 👋
+                        </h3>
+
+                    </div>
+
+                    <div class="topbar-right">
+
+                        <div class="top-icon">
+                            <i class="bi bi-search"></i>
+                        </div>
+
+                        <div class="top-icon">
+                            <i class="bi bi-bell"></i>
+                        </div>
+
+                        <div class="profile-box">
+
+                            <div class="profile-avatar">
+                                @User.Identity.Name?.Substring(0, 1).ToUpper()
+                            </div>
+
+                            <div>
+
+                                <div class="profile-name">
+                                    @User.Identity.Name
+                                </div>
+
+                                <small class="premium-text">
+                                    Premium Member
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </header>
+
+                <!-- PAGE -->
+
+                <main class="page-content">
+
+                    @RenderBody()
+
+                </main>
+
+            </div>
+
         </div>
-
-        <footer class="border-top bg-white text-center py-3">
-            © 2026 - Library Management System
-        </footer>
     }
     else
     {
-        <div style="
-            min-height:100vh;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            background:linear-gradient(135deg,#4b0082,#6a0dad,#9333ea);
-            padding:20px;
-        ">
-
+        <div class="auth-layout">
             @RenderBody()
-
         </div>
     }
 
-    <!-- SCRIPTS (ONLY ONCE) -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/user-site.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@4.0.0/dist/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
     @RenderSection("Scripts", required: false)
 
 </body>
+
 </html>

@@ -1,0 +1,276 @@
+﻿@{
+    ViewData["Title"] = "Message Received";
+}
+
+<style>
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Inter', sans-serif;
+    }
+
+    body {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 10px;
+        overflow: hidden;
+        background: linear-gradient( 135deg, #05010a 0%, #170022 30%, #32004d 65%, #5f006f 100% );
+    }
+
+    /* WRAPPER */
+
+    .thank-wrapper {
+        width: 100%;
+        max-width: 820px;
+    }
+
+    /* CARD */
+
+    .glass-card {
+        width: 100%;
+        min-height: 430px;
+        display: flex;
+        overflow: hidden;
+        border-radius: 22px;
+        background: linear-gradient( 135deg, rgba(20,0,35,0.95), rgba(70,0,120,0.88), rgba(125,0,120,0.78) );
+        border: 1px solid rgba(255,255,255,0.08);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.45), 0 0 24px rgba(192,38,211,0.16);
+        backdrop-filter: blur(12px);
+    }
+
+    /* LEFT PANEL */
+
+    .left-panel {
+        width: 42%;
+        padding: 32px 26px;
+        color: white;
+        background: linear-gradient( 180deg, rgba(35,0,60,0.95), rgba(95,0,140,0.85), rgba(125,0,115,0.82) );
+        border-right: 1px solid rgba(255,255,255,0.06);
+        display: flex;
+        align-items: center;
+    }
+
+    .left-content {
+        width: 100%;
+    }
+
+    .logo {
+        font-size: 34px;
+        margin-bottom: 14px;
+    }
+
+    .left-panel h2 {
+        font-size: 36px;
+        line-height: 1.1;
+        font-weight: 800;
+        margin-bottom: 14px;
+    }
+
+    .left-panel p {
+        font-size: 13px;
+        line-height: 1.7;
+        color: #f3e8ff;
+    }
+
+    .feature-list {
+        margin-top: 18px;
+        padding-left: 18px;
+    }
+
+        .feature-list li {
+            margin-bottom: 9px;
+            font-size: 13px;
+            color: #f5d0fe;
+        }
+
+    .quote {
+        margin-top: 18px;
+        font-size: 13px;
+        font-style: italic;
+        color: #fbcfe8;
+    }
+
+    /* RIGHT PANEL */
+
+    .right-panel {
+        width: 58%;
+        padding: 32px 28px;
+        color: white;
+        background: linear-gradient( 135deg, rgba(55,0,85,0.70), rgba(120,0,120,0.48) );
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+
+    .success-icon {
+        font-size: 64px;
+        margin-bottom: 18px;
+    }
+
+    .title {
+        font-size: 36px;
+        font-weight: 800;
+        margin-bottom: 14px;
+    }
+
+    .message {
+        font-size: 14px;
+        line-height: 1.8;
+        color: #f3e8ff;
+        max-width: 380px;
+        margin-bottom: 26px;
+    }
+
+    /* BUTTON */
+
+    .btn-home {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 46px;
+        padding: 0 26px;
+        border: none;
+        border-radius: 12px;
+        background: linear-gradient( 135deg, #ff00cc 0%, #c026d3 45%, #7e22ce 100% );
+        color: white;
+        font-size: 15px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+
+        .btn-home:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(192,38,211,0.35);
+            color: white;
+        }
+
+    /* MOBILE */
+
+    @@media(max-width:768px) {
+
+        body {
+            overflow: auto;
+            padding: 12px;
+        }
+
+        .glass-card {
+            flex-direction: column;
+            min-height: auto;
+        }
+
+        .left-panel,
+        .right-panel {
+            width: 100%;
+        }
+
+        .left-panel {
+            text-align: center;
+            padding: 24px 20px;
+        }
+
+        .right-panel {
+            padding: 28px 22px;
+        }
+
+        .left-panel h2 {
+            font-size: 30px;
+        }
+
+        .title {
+            font-size: 30px;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .btn-home {
+            width: 100%;
+        }
+    }
+
+</style>
+
+<div class="thank-wrapper">
+
+    <div class="glass-card">
+
+        <!-- LEFT PANEL -->
+
+        <div class="left-panel">
+
+            <div class="left-content">
+
+                <div class="logo">📩</div>
+
+                <h2>
+                    Message<br />
+                    Received
+                </h2>
+
+                <p>
+                    Thank you for contacting our
+                    Library Management System.
+                    Our support team will respond
+                    to your message shortly.
+                </p>
+
+                <ul class="feature-list">
+
+                    <li>Fast Email Response</li>
+
+                    <li>Secure Communication</li>
+
+                    <li>Professional Support Team</li>
+
+                    <li>24/7 Assistance</li>
+
+                </ul>
+
+                <p class="quote">
+                    “Every message matters to us.”
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- RIGHT PANEL -->
+
+        <div class="right-panel">
+
+            <div class="success-icon">✅</div>
+
+            <h2 class="title">
+                Thank You!
+            </h2>
+
+            <p class="message">
+
+                Your message has been successfully sent.
+                Our admin team will contact you soon
+                through your registered email address.
+
+            </p>
+
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="btn-home">
+
+                Back To Home
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>

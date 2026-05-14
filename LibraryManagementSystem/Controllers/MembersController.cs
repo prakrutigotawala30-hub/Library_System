@@ -8,7 +8,7 @@ using System.Security.Claims;
 
 namespace LibraryManagementSystem.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class MembersController : Controller
     {
         private readonly AppDbContext _context;

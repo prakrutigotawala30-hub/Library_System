@@ -35,4 +35,8 @@
 		<ProjectReference Include="..\LibraryManagementSystem.ClassLibrary\LibraryManagementSystem.ClassLibrary.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<Folder Include="Area\Member\Models\" />
+	</ItemGroup>
+
 </Project>

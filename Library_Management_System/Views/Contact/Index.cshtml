@@ -1,0 +1,392 @@
+﻿@model Library_Management_System.ViewModels.ContactFormViewModel
+
+@{
+    ViewData["Title"] = "Contact Us";
+}
+
+<style>
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Inter', sans-serif;
+    }
+
+    body {
+        min-height: 100vh;
+        background: linear-gradient( 135deg, #05010a 0%, #170022 30%, #32004d 65%, #5f006f 100% );
+        color: white;
+    }
+
+    .contact-container {
+        padding: 40px 15px;
+    }
+
+    /* HERO */
+
+    .contact-hero {
+        background: linear-gradient( 135deg, rgba(20,0,35,0.95), rgba(70,0,120,0.88), rgba(125,0,120,0.78) );
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 28px;
+        padding: 55px 40px;
+        margin-bottom: 28px;
+        backdrop-filter: blur(12px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.45), 0 0 24px rgba(192,38,211,0.16);
+        position: relative;
+        overflow: hidden;
+    }
+
+        .contact-hero::before {
+            content: "";
+            position: absolute;
+            width: 240px;
+            height: 240px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+            top: -120px;
+            right: -80px;
+        }
+
+        .contact-hero h1 {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .contact-hero p {
+            font-size: 15px;
+            color: #f3e8ff;
+            line-height: 1.8;
+            max-width: 700px;
+            position: relative;
+            z-index: 2;
+        }
+
+    /* MAIN GRID */
+
+    .contact-grid {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 24px;
+    }
+
+    /* CARD */
+
+    .glass-card {
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 24px;
+        padding: 32px;
+        backdrop-filter: blur(12px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+    }
+
+    .section-title {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 22px;
+    }
+
+    /* FORM */
+
+    label {
+        color: #f5d0fe;
+        font-size: 14px;
+        margin-bottom: 8px;
+        font-weight: 500;
+    }
+
+    .form-control {
+        height: 48px;
+        border-radius: 14px;
+        border: 1px solid rgba(255,255,255,0.08);
+        background: rgba(255,255,255,0.10);
+        color: white;
+        padding: 12px 15px;
+        font-size: 14px;
+        margin-bottom: 4px;
+    }
+
+        .form-control:focus {
+            background: rgba(255,255,255,0.14);
+            color: white;
+            border-color: #d946ef;
+            box-shadow: 0 0 0 4px rgba(217,70,239,0.18);
+        }
+
+        .form-control::placeholder {
+            color: rgba(255,255,255,0.55);
+        }
+
+    textarea.form-control {
+        min-height: 130px;
+        resize: none;
+    }
+
+    .text-danger {
+        font-size: 12px;
+        color: #fecdd3 !important;
+    }
+
+    /* BUTTON */
+
+    .btn-send {
+        width: 100%;
+        height: 50px;
+        border: none;
+        border-radius: 14px;
+        background: linear-gradient( 135deg, #ff00cc 0%, #c026d3 45%, #7e22ce 100% );
+        color: white;
+        font-size: 16px;
+        font-weight: 700;
+        transition: 0.3s;
+        margin-top: 10px;
+    }
+
+        .btn-send:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 22px rgba(192,38,211,0.35);
+            color: white;
+        }
+
+    /* INFO */
+
+    .info-box {
+        margin-bottom: 22px;
+    }
+
+        .info-box h5 {
+            font-size: 18px;
+            margin-bottom: 8px;
+            color: #f9a8d4;
+        }
+
+        .info-box p {
+            font-size: 14px;
+            color: #f3e8ff;
+            line-height: 1.8;
+            margin: 0;
+        }
+
+    /* MAP */
+
+    .map-box {
+        overflow: hidden;
+        border-radius: 20px;
+        margin-top: 20px;
+        border: 1px solid rgba(255,255,255,0.08);
+    }
+
+        .map-box iframe {
+            width: 100%;
+            height: 280px;
+            border: 0;
+        }
+
+    /* MOBILE */
+
+    @@media(max-width:992px) {
+
+        .contact-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @@media(max-width:768px) {
+
+        .contact-hero {
+            padding: 40px 25px;
+        }
+
+            .contact-hero h1 {
+                font-size: 36px;
+            }
+
+        .glass-card {
+            padding: 24px 20px;
+        }
+
+        .section-title {
+            font-size: 24px;
+        }
+    }
+
+</style>
+
+<div class="container-fluid contact-container">
+
+    <!-- HERO -->
+
+    <div class="contact-hero">
+
+        <h1>📩 Contact Us</h1>
+
+        <p>
+            Have questions about books, borrowing,
+            membership or library services?
+            Contact our Library Management Team anytime.
+        </p>
+
+    </div>
+
+    <!-- MAIN CONTENT -->
+
+    <div class="contact-grid">
+
+        <!-- CONTACT FORM -->
+
+        <div class="glass-card">
+
+            <h2 class="section-title">
+                Send Message
+            </h2>
+
+            <form asp-action="Send" method="post">
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3">
+                </div>
+
+                <div class="mb-3">
+
+                    <label asp-for="Name"></label>
+
+                    <input asp-for="Name"
+                           class="form-control"
+                           placeholder="Enter your name" />
+
+                    <span asp-validation-for="Name"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label asp-for="Email"></label>
+
+                    <input asp-for="Email"
+                           class="form-control"
+                           placeholder="Enter your email" />
+
+                    <span asp-validation-for="Email"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label asp-for="Subject"></label>
+
+                    <input asp-for="Subject"
+                           class="form-control"
+                           placeholder="Enter subject" />
+
+                    <span asp-validation-for="Subject"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label asp-for="Message"></label>
+
+                    <textarea asp-for="Message"
+                              class="form-control"
+                              placeholder="Write your message">
+                    </textarea>
+
+                    <span asp-validation-for="Message"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+                <button type="submit"
+                        class="btn-send">
+
+                    Send Message
+
+                </button>
+
+            </form>
+
+        </div>
+
+        <!-- CONTACT INFO -->
+
+        <div class="glass-card">
+
+            <h2 class="section-title">
+                Library Information
+            </h2>
+
+            <div class="info-box">
+
+                <h5>📍 Address</h5>
+
+                <p>
+                    Library Management System<br />
+                    Surat, Gujarat, India
+                </p>
+
+            </div>
+
+            <div class="info-box">
+
+                <h5>📧 Email</h5>
+
+                <p>
+                    library@gmail.com
+                </p>
+
+            </div>
+
+            <div class="info-box">
+
+                <h5>📞 Phone</h5>
+
+                <p>
+                    +91 9876543210
+                </p>
+
+            </div>
+
+            <div class="info-box">
+
+                <h5>🕒 Working Hours</h5>
+
+                <p>
+                    Monday - Saturday<br />
+                    9:00 AM - 7:00 PM
+                </p>
+
+            </div>
+
+            <!-- MAP -->
+
+            <div class="map-box">
+
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3719.514432837173!2d72.8311!3d21.1702!2m3!1f0!2f0!3f0!"
+                        allowfullscreen=""
+                        loading="lazy">
+                </iframe>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+}

@@ -17,5 +17,10 @@ namespace Library_Management_System.Data
         public DbSet<Reservation> Reservations { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Event> Events { get; set; }
+
+        // Tables owned by Admin app but read by Member dashboard.
+        // (Both apps point at the same database; these expose existing tables.)
+        public DbSet<Member> Members { get; set; }
+        public DbSet<BorrowRecord> BorrowRecords { get; set; }
     }
 }
