@@ -1,0 +1,314 @@
+﻿@{
+    Layout = "~/Areas/Member/Views/Shared/_MemberLayout.cshtml";
+}
+@model List<Library_Management_System.ViewModels.BorrowHistoryViewModel>
+
+@{
+    ViewData["Title"] = "Borrow History";
+}
+
+<style>
+
+    body {
+        background: #050816;
+        color: white;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .history-wrapper {
+        padding: 30px;
+    }
+
+    .page-title {
+        font-size: 30px;
+        font-weight: 700;
+        margin-bottom: 25px;
+    }
+
+    /* FILTERS */
+
+    .filter-box {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+    }
+
+    .filter-btn {
+        padding: 10px 18px;
+        border-radius: 12px;
+        text-decoration: none;
+        color: white;
+        background: #111827;
+        transition: 0.3s;
+        border: 1px solid rgba(255,255,255,0.05);
+    }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: linear-gradient(90deg,#7c3aed,#9333ea);
+            color: white;
+        }
+
+    /* TIMELINE */
+
+    .timeline {
+        position: relative;
+        margin-left: 15px;
+        padding-left: 30px;
+        border-left: 3px solid #7c3aed;
+    }
+
+    .timeline-item {
+        position: relative;
+        margin-bottom: 30px;
+    }
+
+    .timeline-dot {
+        position: absolute;
+        left: -42px;
+        top: 12px;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: #9333ea;
+        border: 3px solid #050816;
+    }
+
+    /* CARD */
+
+    .history-card {
+        background: linear-gradient(145deg,#0f172a,#111827);
+        border-radius: 20px;
+        padding: 22px;
+        border: 1px solid rgba(255,255,255,0.05);
+        box-shadow: 0 0 25px rgba(139,92,246,0.08);
+        transition: 0.3s;
+    }
+
+        .history-card:hover {
+            transform: translateY(-4px);
+        }
+
+    .book-title {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 6px;
+    }
+
+    .author-name {
+        color: #9ca3af;
+        margin-bottom: 18px;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit,minmax(180px,1fr));
+        gap: 15px;
+    }
+
+    .info-box {
+        background: rgba(255,255,255,0.03);
+        border-radius: 14px;
+        padding: 14px;
+    }
+
+    .info-title {
+        color: #9ca3af;
+        font-size: 13px;
+        margin-bottom: 5px;
+    }
+
+    .info-value {
+        font-weight: 600;
+    }
+
+    /* STATUS */
+
+    .badge-status {
+        padding: 8px 14px;
+        border-radius: 30px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .active-status {
+        background: #16a34a;
+    }
+
+    .returned-status {
+        background: #2563eb;
+    }
+
+    .overdue-status {
+        background: #dc2626;
+    }
+
+    .empty-box {
+        background: #111827;
+        padding: 30px;
+        border-radius: 20px;
+        text-align: center;
+        color: #9ca3af;
+    }
+
+</style>
+
+<div class="history-wrapper">
+
+    <div class="page-title">
+        📚 Borrow History Timeline
+    </div>
+
+    <!-- FILTERS -->
+
+    <div class="filter-box">
+
+        <a asp-action="Index"
+           class="filter-btn @(ViewBag.CurrentStatus == null ? "active" : "")">
+            All
+        </a>
+
+        <a asp-action="Index"
+           asp-route-status="active"
+           class="filter-btn @(ViewBag.CurrentStatus == "active" ? "active" : "")">
+            Active
+        </a>
+
+        <a asp-action="Index"
+           asp-route-status="returned"
+           class="filter-btn @(ViewBag.CurrentStatus == "returned" ? "active" : "")">
+            Returned
+        </a>
+
+        <a asp-action="Index"
+           asp-route-status="overdue"
+           class="filter-btn @(ViewBag.CurrentStatus == "overdue" ? "active" : "")">
+            Overdue
+        </a>
+
+    </div>
+
+    <!-- TIMELINE -->
+    @if (Model.Any())
+    {
+        <div class="timeline">
+
+            @foreach (var item in Model)
+            {
+                <div class="timeline-item">
+
+                    <div class="timeline-dot"></div>
+
+                    <div class="history-card">
+
+                        <div class="d-flex justify-content-between align-items-start flex-wrap">
+
+                            <div>
+
+                                <div class="book-title">
+                                    @item.BookTitle
+                                </div>
+
+                                <div class="author-name">
+                                    by @item.Author
+                                </div>
+
+                            </div>
+
+                            <div>
+
+                                @if (item.Status == "Returned")
+                                {
+                                    <span class="badge-status returned-status">
+                                        Returned
+                                    </span>
+                                }
+                                else if (item.Status == "Overdue")
+                                {
+                                    <span class="badge-status overdue-status">
+                                        Overdue
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge-status active-status">
+                                        Active
+                                    </span>
+                                }
+
+                            </div>
+
+                        </div>
+
+                        <div class="info-grid mt-3">
+
+                            <div class="info-box">
+
+                                <div class="info-title">
+                                    Borrow Date
+                                </div>
+
+                                <div class="info-value">
+                                    @item.BorrowDate.ToShortDateString()
+                                </div>
+
+                            </div>
+
+                            <div class="info-box">
+
+                                <div class="info-title">
+                                    Due Date
+                                </div>
+
+                                <div class="info-value">
+                                    @item.DueDate.ToShortDateString()
+                                </div>
+
+                            </div>
+
+                            <div class="info-box">
+
+                                <div class="info-title">
+                                    Return Date
+                                </div>
+
+                                <div class="info-value">
+
+                                    @(item.ReturnDate.HasValue
+                                                                ? item.ReturnDate.Value.ToShortDateString()
+                                                                : "Not Returned")
+
+                                </div>
+
+                            </div>
+
+                            <div class="info-box">
+
+                                <div class="info-title">
+                                    Fine
+                                </div>
+
+                                <div class="info-value">
+                                    ₹@item.FineAmount
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            }
+
+        </div>
+    }
+    else
+    {
+        <div class="empty-box">
+            No borrow history found.
+        </div>
+    }
+
+</div>

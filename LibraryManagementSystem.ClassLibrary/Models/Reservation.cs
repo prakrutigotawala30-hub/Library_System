@@ -1,6 +1,4 @@
-﻿using Library_Management_System.Models;
-using LibraryManagementSystem.Models;
-using System;
+﻿using LibraryManagementSystem.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -10,23 +8,23 @@ namespace LibraryManagementSystem.Models
     {
         public int Id { get; set; }
 
-        // 👤 MemberId from IdentityUser (ApplicationUser)
-        [Required(ErrorMessage = "Member is required")]
+        [Required]
         [StringLength(450)]
         public string MemberId { get; set; }
 
         [ForeignKey("MemberId")]
         public ApplicationUser Member { get; set; }
 
-        // 📚 Book reference
-        [Required(ErrorMessage = "Book is required")]
-        [Range(1, int.MaxValue, ErrorMessage = "Invalid Book selected")]
+        [Required]
         public int BookId { get; set; }
+
+        [ForeignKey("BookId")]
+        public Book Book { get; set; }
 
         public DateTime ReservedOn { get; set; } = DateTime.Now;
 
-        // 📌 Reservation status
         [Required]
-        public ReservationStatus Status { get; set; } = ReservationStatus.Waiting;
+        public ReservationStatus Status { get; set; }
+            = ReservationStatus.Waiting;
     }
 }

@@ -1,0 +1,185 @@
+﻿@model IEnumerable<Library_Management_System.Models.Wishlist>
+
+@{
+    ViewData["Title"] = "My Wishlist";
+}
+
+<style>
+
+    body {
+        background: #050816;
+        color: white;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .wishlist-wrapper {
+        padding: 30px;
+    }
+
+    .page-title {
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 30px;
+    }
+
+    .wishlist-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill,minmax(260px,1fr));
+        gap: 25px;
+    }
+
+    .wishlist-card {
+        background: linear-gradient(145deg,#0f172a,#111827);
+        border-radius: 22px;
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,0.05);
+        transition: 0.3s;
+        box-shadow: 0 0 20px rgba(139,92,246,0.08);
+    }
+
+        .wishlist-card:hover {
+            transform: translateY(-6px);
+        }
+
+    .book-image {
+        width: 100%;
+        height: 260px;
+        object-fit: cover;
+    }
+
+    .card-body-custom {
+        padding: 20px;
+    }
+
+    .book-title {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .book-author {
+        color: #9ca3af;
+        margin-bottom: 15px;
+    }
+
+    .added-date {
+        color: #9ca3af;
+        font-size: 13px;
+        margin-bottom: 20px;
+    }
+
+    .btn-group-custom {
+        display: flex;
+        gap: 12px;
+    }
+
+    .btn-view {
+        flex: 1;
+        background: linear-gradient(90deg,#7c3aed,#9333ea);
+        border: none;
+        color: white;
+        padding: 10px;
+        border-radius: 12px;
+        text-decoration: none;
+        text-align: center;
+        font-weight: 600;
+    }
+
+    .btn-remove {
+        flex: 1;
+        background: #dc2626;
+        border: none;
+        color: white;
+        padding: 10px;
+        border-radius: 12px;
+        text-decoration: none;
+        text-align: center;
+        font-weight: 600;
+    }
+
+    .empty-box {
+        background: #111827;
+        border-radius: 20px;
+        padding: 40px;
+        text-align: center;
+        color: #9ca3af;
+    }
+
+</style>
+
+<div class="wishlist-wrapper">
+
+    <div class="page-title">
+        ❤️ My Wishlist
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="wishlist-grid">
+
+            @foreach (var item in Model)
+            {
+                <div class="wishlist-card">
+
+                    <img src="@(item.Book.CoverImageUrl ?? "https://via.placeholder.com/300x400")"
+                         class="book-image" />
+
+                    <div class="card-body-custom">
+
+                        <div class="book-title">
+                            @item.Book.Title
+                        </div>
+
+                        <div class="book-author">
+                            by @item.Book.Author.Name
+                        </div>
+
+                        <div class="added-date">
+                            Added on @item.AddedOn.ToShortDateString()
+                        </div>
+
+                        <div class="btn-group-custom">
+
+                            <a asp-area=""
+                               asp-controller="Books"
+                               asp-action="Details"
+                               asp-route-id="@item.BookId"
+                               class="btn-view">
+
+                                View Book
+
+                            </a>
+
+                            <a asp-action="Remove"
+                               asp-route-bookId="@item.BookId"
+                               class="btn-remove">
+
+                                Remove
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            }
+
+        </div>
+    }
+    else
+    {
+        <div class="empty-box">
+
+            <h4>
+                Your wishlist is empty 💔
+            </h4>
+
+            <p>
+                Save books to your wishlist and they will appear here.
+            </p>
+
+        </div>
+    }
+
+</div>

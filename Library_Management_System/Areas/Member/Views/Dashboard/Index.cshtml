@@ -1,402 +1,722 @@
-﻿@model Library_Management_System.ViewModels.MemberDashboardViewModel
+﻿@{
+    Layout = "~/Areas/Member/Views/Shared/_MemberLayout.cshtml";
+}
+@model Library_Management_System.ViewModels.MemberDashboardViewModel
 
 @{
-    ViewData["Title"] = "Member Dashboard";
+    ViewData["Title"] = "Dashboard";
+    Layout = null;
 }
 
-<style>
+<!DOCTYPE html>
+<html lang="en">
 
-    body {
-        background: #050816;
-        color: white;
-        font-family: 'Segoe UI', sans-serif;
-    }
+<head>
 
-    .dashboard-wrapper {
-        padding: 25px;
-    }
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    .top-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 30px;
-    }
+    <title>BookVerse Dashboard</title>
 
-        .top-header h2 {
-            font-weight: 700;
+    <!-- Bootstrap -->
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet" />
+
+    <!-- Font Awesome -->
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+          rel="stylesheet" />
+
+    <style>
+
+        * {
             margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-    .welcome-text {
-        color: #9ca3af;
-        font-size: 14px;
-    }
-
-    .summary-card {
-        background: linear-gradient(145deg,#111827,#1f2937);
-        border-radius: 18px;
-        padding: 22px;
-        box-shadow: 0 0 20px rgba(139,92,246,0.15);
-        border: 1px solid rgba(255,255,255,0.05);
-        transition: 0.3s;
-        height: 100%;
-    }
-
-        .summary-card:hover {
-            transform: translateY(-5px);
+        body {
+            background: #050816;
+            font-family: 'Segoe UI', sans-serif;
+            color: white;
+            overflow-x: hidden;
         }
 
-    .summary-icon {
-        width: 55px;
-        height: 55px;
-        border-radius: 14px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 24px;
-        margin-bottom: 15px;
-    }
+        /* =========================
+                   SIDEBAR
+                ==========================*/
 
-    .bg-purple {
-        background: linear-gradient(135deg,#7c3aed,#9333ea);
-    }
+        .sidebar {
+            position: fixed;
+            width: 250px;
+            height: 100vh;
+            background: #070b1f;
+            border-right: 1px solid rgba(255,255,255,0.05);
+            padding: 20px 15px;
+            overflow-y: auto;
+        }
 
-    .bg-red {
-        background: linear-gradient(135deg,#dc2626,#ef4444);
-    }
-
-    .bg-green {
-        background: linear-gradient(135deg,#059669,#10b981);
-    }
-
-    .bg-blue {
-        background: linear-gradient(135deg,#2563eb,#3b82f6);
-    }
-
-    .summary-title {
-        color: #9ca3af;
-        font-size: 14px;
-        margin-bottom: 6px;
-    }
-
-    .summary-value {
-        font-size: 32px;
-        font-weight: bold;
-    }
-
-    .dashboard-card {
-        background: linear-gradient(145deg,#0f172a,#111827);
-        border-radius: 20px;
-        padding: 25px;
-        margin-top: 28px;
-        box-shadow: 0 0 25px rgba(139,92,246,0.08);
-        border: 1px solid rgba(255,255,255,0.05);
-    }
-
-        .dashboard-card h4 {
-            margin-bottom: 22px;
+        .logo {
+            font-size: 24px;
             font-weight: 700;
+            margin-bottom: 40px;
+            color: #a855f7;
         }
 
-    .table {
-        color: white;
-        margin: 0;
-    }
-
-        .table thead {
-            background: rgba(255,255,255,0.05);
+        .menu-title {
+            color: #6b7280;
+            font-size: 12px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
         }
 
-        .table th {
-            border: none;
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-decoration: none;
             color: #d1d5db;
-            padding: 16px;
+            padding: 14px 16px;
+            border-radius: 14px;
+            margin-bottom: 10px;
+            transition: 0.3s;
+            font-size: 15px;
         }
 
-        .table td {
-            border-color: rgba(255,255,255,0.05);
-            vertical-align: middle;
-            padding: 16px;
+            .sidebar-link:hover,
+            .sidebar-link.active {
+                background: linear-gradient(90deg,#7c3aed,#9333ea);
+                color: white;
+            }
+
+        /* =========================
+                   MAIN CONTENT
+                ==========================*/
+
+        .main-content {
+            margin-left: 250px;
+            padding: 25px;
         }
 
-    .book-title {
-        font-weight: 600;
-    }
+        /* =========================
+                   TOPBAR
+                ==========================*/
 
-    .badge-active {
-        background: #2563eb;
-        padding: 7px 14px;
-        border-radius: 30px;
-        font-size: 12px;
-    }
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
 
-    .badge-overdue {
-        background: #dc2626;
-        padding: 7px 14px;
-        border-radius: 30px;
-        font-size: 12px;
-    }
+        .search-box {
+            width: 420px;
+            background: #0f172a;
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 14px;
+            padding: 12px 18px;
+            color: white;
+            outline: none;
+        }
 
-    .badge-returned {
-        background: #059669;
-        padding: 7px 14px;
-        border-radius: 30px;
-        font-size: 12px;
-    }
+        .profile-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-    .activity-box {
-        background: rgba(255,255,255,0.03);
-        border-radius: 14px;
-        padding: 15px 18px;
-        margin-bottom: 14px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
+        .profile-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: linear-gradient(135deg,#7c3aed,#9333ea);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
 
-    .activity-date {
-        color: #9ca3af;
-        font-size: 13px;
-    }
+        /* =========================
+                   HERO SECTION
+                ==========================*/
 
-    .empty-box {
-        color: #9ca3af;
-        text-align: center;
-        padding: 20px;
-    }
+        .hero-card {
+            background: linear-gradient(135deg,#4c1d95,#7e22ce);
+            border-radius: 24px;
+            padding: 35px;
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
 
-</style>
+            .hero-card h2 {
+                font-weight: 700;
+                margin-bottom: 10px;
+            }
 
-<div class="dashboard-wrapper">
+            .hero-card p {
+                color: #e5e7eb;
+                margin-bottom: 25px;
+            }
 
-    <!-- HEADER -->
+        .hero-btn {
+            background: white;
+            color: #7c3aed;
+            padding: 12px 22px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+        }
 
-    <div class="top-header">
+        .hero-image {
+            width: 230px;
+        }
 
-        <div>
-            <div class="welcome-text">
-                Welcome Back 👋
-            </div>
+        /* =========================
+                   SUMMARY CARDS
+                ==========================*/
 
-            <h2>📚 My Dashboard</h2>
+        .summary-card {
+            background: linear-gradient(145deg,#0f172a,#111827);
+            border-radius: 22px;
+            padding: 24px;
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 0 25px rgba(139,92,246,0.06);
+            transition: 0.3s;
+            height: 100%;
+        }
+
+            .summary-card:hover {
+                transform: translateY(-5px);
+            }
+
+        .summary-icon {
+            width: 58px;
+            height: 58px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 18px;
+            font-size: 22px;
+        }
+
+        .bg-purple {
+            background: linear-gradient(135deg,#7c3aed,#9333ea);
+        }
+
+        .bg-green {
+            background: linear-gradient(135deg,#059669,#10b981);
+        }
+
+        .bg-red {
+            background: linear-gradient(135deg,#dc2626,#ef4444);
+        }
+
+        .bg-orange {
+            background: linear-gradient(135deg,#ea580c,#f97316);
+        }
+
+        .summary-title {
+            color: #9ca3af;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .summary-value {
+            font-size: 34px;
+            font-weight: bold;
+        }
+
+        /* =========================
+                   SECTION CARD
+                ==========================*/
+
+        .dashboard-card {
+            background: linear-gradient(145deg,#0f172a,#111827);
+            border-radius: 22px;
+            padding: 25px;
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 0 25px rgba(139,92,246,0.06);
+            margin-top: 25px;
+        }
+
+            .dashboard-card h4 {
+                margin-bottom: 22px;
+                font-weight: 700;
+            }
+
+        /* =========================
+                   TABLE
+                ==========================*/
+
+        .table {
+            color: white;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+
+            .table th {
+                border: none;
+                color: #9ca3af;
+                padding: 15px;
+                background: rgba(255,255,255,0.03);
+            }
+
+            .table td {
+                border: none;
+                padding: 16px;
+                vertical-align: middle;
+            }
+
+            .table tbody tr {
+                background: rgba(255,255,255,0.03);
+                transition: 0.3s;
+            }
+
+                .table tbody tr:hover {
+                    background: rgba(139,92,246,0.10);
+                }
+
+        .book-title {
+            font-weight: 600;
+        }
+
+        /* =========================
+                   BADGES
+                ==========================*/
+
+        .badge-active {
+            background: #16a34a;
+            padding: 8px 14px;
+            border-radius: 30px;
+            font-size: 12px;
+        }
+
+        .badge-overdue {
+            background: #dc2626;
+            padding: 8px 14px;
+            border-radius: 30px;
+            font-size: 12px;
+        }
+
+        .badge-returned {
+            background: #2563eb;
+            padding: 8px 14px;
+            border-radius: 30px;
+            font-size: 12px;
+        }
+
+        /* =========================
+                   ACTIVITY
+                ==========================*/
+
+        .activity-item {
+            background: rgba(255,255,255,0.03);
+            border-radius: 16px;
+            padding: 15px 18px;
+            margin-bottom: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .activity-date {
+            color: #9ca3af;
+            font-size: 13px;
+        }
+
+        .empty-box {
+            color: #9ca3af;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* =========================
+                   RESPONSIVE
+                ==========================*/
+
+        @@media(max-width:991px) {
+
+            .sidebar {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .topbar {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .hero-image {
+                width: 140px;
+                margin-top: 20px;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+
+    <div class="sidebar">
+
+        <div class="logo">
+            📚 BOOKVERSE
         </div>
+
+        <div class="menu-title">
+            MENU
+        </div>
+
+        <a href="#" class="sidebar-link active">
+            <i class="fa fa-house"></i>
+            Home
+        </a>
+
+        <a href="#" class="sidebar-link">
+            <i class="fa fa-book"></i>
+            My Dashboard
+        </a>
+
+        <a href="#" class="sidebar-link">
+            <i class="fa fa-clock-rotate-left"></i>
+            Borrow History
+        </a>
+
+        <a href="#" class="sidebar-link">
+            <i class="fa fa-heart"></i>
+            Wishlist
+        </a>
+
+        <a href="#" class="sidebar-link">
+            <i class="fa fa-bookmark"></i>
+            Reservations
+        </a>
+
+        <a href="#" class="sidebar-link">
+            <i class="fa fa-bell"></i>
+            Notifications
+        </a>
+
+        <a href="#" class="sidebar-link">
+            <i class="fa fa-user"></i>
+            Profile
+        </a>
+
+        <a href="#" class="sidebar-link">
+            <i class="fa fa-lock"></i>
+            Change Password
+        </a>
+
+        <a href="#" class="sidebar-link">
+            <i class="fa fa-gear"></i>
+            Settings
+        </a>
+
+        <a href="#" class="sidebar-link">
+            <i class="fa fa-right-from-bracket"></i>
+            Logout
+        </a>
 
     </div>
 
-    <!-- SUMMARY -->
+    <!-- MAIN CONTENT -->
 
-    <div class="row g-4">
+    <div class="main-content">
 
-        <div class="col-md-3">
+        <!-- TOPBAR -->
 
-            <div class="summary-card">
+        <div class="topbar">
 
-                <div class="summary-icon bg-purple">
-                    📖
+            <input type="text"
+                   class="search-box"
+                   placeholder="Search books, authors, categories..." />
+
+            <div class="profile-box">
+
+                <div class="profile-avatar">
+                    @User.Identity?.Name?.Substring(0, 1)
                 </div>
 
-                <div class="summary-title">
-                    Current Borrows
-                </div>
-
-                <div class="summary-value">
-                    @Model.CurrentBorrows
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-md-3">
-
-            <div class="summary-card">
-
-                <div class="summary-icon bg-red">
-                    ⏰
-                </div>
-
-                <div class="summary-title">
-                    Overdue Books
-                </div>
-
-                <div class="summary-value">
-                    @Model.Overdue
+                <div>
+                    @User.Identity?.Name
                 </div>
 
             </div>
 
         </div>
 
-        <div class="col-md-3">
+        <!-- HERO -->
 
-            <div class="summary-card">
+        <div class="hero-card">
 
-                <div class="summary-icon bg-green">
-                    ₹
+            <div class="row align-items-center">
+
+                <div class="col-lg-8">
+
+                    <h2>
+                        Knowledge is Power 📚
+                    </h2>
+
+                    <p>
+                        Explore the world's best books and expand your imagination.
+                    </p>
+
+                    <a href="#" class="hero-btn">
+                        Explore Books
+                    </a>
+
                 </div>
 
-                <div class="summary-title">
-                    Total Fine
-                </div>
+                <div class="col-lg-4 text-end">
 
-                <div class="summary-value">
-                    ₹@Model.FineDue
-                </div>
+                    <img src="https://cdn-icons-png.flaticon.com/512/2232/2232688.png"
+                         class="hero-image" />
 
-            </div>
-
-        </div>
-
-        <div class="col-md-3">
-
-            <div class="summary-card">
-
-                <div class="summary-icon bg-blue">
-                    ❤️
-                </div>
-
-                <div class="summary-title">
-                    Wishlist
-                </div>
-
-                <div class="summary-value">
-                    @Model.WishListCount
                 </div>
 
             </div>
 
         </div>
 
-    </div>
+        <!-- SUMMARY -->
 
-    <!-- MY BOOKS -->
+        <div class="row g-4">
 
-    <div class="dashboard-card">
+            <div class="col-lg-3 col-md-6">
 
-        <h4>📚 My Borrowed Books</h4>
+                <div class="summary-card">
 
-        <div class="table-responsive">
+                    <div class="summary-icon bg-purple">
+                        <i class="fa fa-book"></i>
+                    </div>
 
-            <table class="table align-middle">
+                    <div class="summary-title">
+                        Current Borrowed
+                    </div>
 
-                <thead>
-                    <tr>
-                        <th>Book</th>
-                        <th>Author</th>
-                        <th>Issue Date</th>
-                        <th>Due Date</th>
-                        <th>Status</th>
-                        <th>Fine</th>
-                    </tr>
-                </thead>
+                    <div class="summary-value">
+                        @Model.CurrentBorrows
+                    </div>
 
-                <tbody>
+                </div>
 
-                    @if (Model.MyBooks != null && Model.MyBooks.Any())
-                    {
-                        foreach (var book in Model.MyBooks)
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+
+                <div class="summary-card">
+
+                    <div class="summary-icon bg-green">
+                        <i class="fa fa-check"></i>
+                    </div>
+
+                    <div class="summary-title">
+                        Returned
+                    </div>
+
+                    <div class="summary-value">
+                        @Model.ReturnedBooks
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+
+                <div class="summary-card">
+
+                    <div class="summary-icon bg-red">
+                        <i class="fa fa-clock"></i>
+                    </div>
+
+                    <div class="summary-title">
+                        Overdue
+                    </div>
+
+                    <div class="summary-value">
+                        @Model.Overdue
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+
+                <div class="summary-card">
+
+                    <div class="summary-icon bg-orange">
+                        ₹
+                    </div>
+
+                    <div class="summary-title">
+                        Fine Due
+                    </div>
+
+                    <div class="summary-value">
+                        ₹@Model.FineDue
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- BOOK TABLE -->
+
+        <div class="dashboard-card">
+
+            <h4>
+                My Borrowed Books
+            </h4>
+
+            <div class="table-responsive">
+
+                <table class="table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Book</th>
+                            <th>Author</th>
+                            <th>Borrowed</th>
+                            <th>Due Date</th>
+                            <th>Status</th>
+                            <th>Fine</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @if (Model.MyBooks != null && Model.MyBooks.Any())
+                        {
+                            foreach (var book in Model.MyBooks)
+                            {
+                                <tr>
+
+                                    <td class="book-title">
+                                        @book.BookTitle
+                                    </td>
+
+                                    <td>
+                                        @book.Author
+                                    </td>
+
+                                    <td>
+                                        @book.IssueDate.ToShortDateString()
+                                    </td>
+
+                                    <td>
+                                        @book.DueDate.ToShortDateString()
+                                    </td>
+
+                                    <td>
+
+                                        @if (book.IsReturned)
+                                        {
+                                            <span class="badge-returned">
+                                                Returned
+                                            </span>
+                                        }
+                                        else if (book.DueDate < DateTime.Now)
+                                        {
+                                            <span class="badge-overdue">
+                                                Overdue
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge-active">
+                                                Active
+                                            </span>
+                                        }
+
+                                    </td>
+
+                                    <td>
+                                        ₹@book.FineAmount
+                                    </td>
+
+                                </tr>
+                            }
+                        }
+                        else
                         {
                             <tr>
 
-                                <td class="book-title">
-                                    @book.BookTitle
-                                </td>
+                                <td colspan="6">
 
-                                <td>
-                                    @book.Author
-                                </td>
+                                    <div class="empty-box">
+                                        No borrowed books found
+                                    </div>
 
-                                <td>
-                                    @book.IssueDate.ToShortDateString()
-                                </td>
-
-                                <td>
-                                    @book.DueDate.ToShortDateString()
-                                </td>
-
-                                <td>
-
-                                    @if (book.IsReturned)
-                                    {
-                                        <span class="badge-returned">
-                                            Returned
-                                        </span>
-                                    }
-                                    else if (book.DueDate < DateTime.Now)
-                                    {
-                                        <span class="badge-overdue">
-                                            Overdue
-                                        </span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge-active">
-                                            Active
-                                        </span>
-                                    }
-
-                                </td>
-
-                                <td>
-                                    ₹@book.FineAmount
                                 </td>
 
                             </tr>
                         }
-                    }
-                    else
-                    {
-                        <tr>
-                            <td colspan="6">
 
-                                <div class="empty-box">
-                                    No borrowed books found
-                                </div>
+                    </tbody>
 
-                            </td>
-                        </tr>
-                    }
+                </table>
 
-                </tbody>
+            </div>
 
-            </table>
+        </div>
+
+        <!-- RECENT ACTIVITY -->
+
+        <div class="dashboard-card">
+
+            <h4>
+                Recent Activity
+            </h4>
+
+            @if (Model.RecentActivity != null && Model.RecentActivity.Any())
+            {
+                foreach (var activity in Model.RecentActivity)
+                {
+                    <div class="activity-item">
+
+                        <div>
+                            @activity.Activity
+                        </div>
+
+                        <div class="activity-date">
+                            @activity.ActivityDate.ToShortDateString()
+                        </div>
+
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="empty-box">
+                    No recent activity available
+                </div>
+            }
 
         </div>
 
     </div>
 
-    <!-- RECENT ACTIVITY -->
+</body>
 
-    <div class="dashboard-card">
-
-        <h4>🕒 Recent Activity</h4>
-
-        @if (Model.RecentActivity != null && Model.RecentActivity.Any())
-        {
-            foreach (var activity in Model.RecentActivity)
-            {
-                <div class="activity-box">
-
-                    <div>
-                        @activity.Activity
-                    </div>
-
-                    <div class="activity-date">
-                        @activity.ActivityDate.ToShortDateString()
-                    </div>
-
-                </div>
-            }
-        }
-        else
-        {
-            <div class="empty-box">
-                No recent activity available
-            </div>
-        }
-
-    </div>
-
-</div>
-
+</html>

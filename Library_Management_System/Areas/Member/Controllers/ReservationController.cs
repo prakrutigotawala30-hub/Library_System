@@ -1,0 +1,117 @@
+﻿using Library_Management_System.Data;
+using Library_Management_System.Models;
+using LibraryManagementSystem.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+
+namespace Library_Management_System.Areas.Member.Controllers
+{
+    [Area("Member")]
+    [Authorize(Roles = "Member")]
+    public class ReservationController : Controller
+    {
+        private readonly AppDbContext _context;
+
+        public ReservationController(AppDbContext context)
+        {
+            _context = context;
+        }
+
+        // RESERVATION LIST
+
+        public async Task<IActionResult> Index()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var reservations = await _context.Reservations
+                .Include(r => r.Book)
+                    .ThenInclude(b => b.Author)
+                .Where(r => r.MemberId == userId)
+                .OrderByDescending(r => r.ReservedOn)
+                .ToListAsync();
+
+            ViewBag.QueuePositions = reservations.ToDictionary(
+                r => r.Id,
+                r => _context.Reservations
+                        .Count(x =>
+                            x.BookId == r.BookId &&
+                            x.ReservedOn < r.ReservedOn &&
+                            x.Status == ReservationStatus.Waiting) + 1
+            );
+
+            return View(reservations);
+        }
+
+        // CREATE RESERVATION PAGE
+
+        public async Task<IActionResult> Create(int bookId)
+        {
+            var book = await _context.Books
+                .Include(b => b.Author)
+                .FirstOrDefaultAsync(b => b.Id == bookId);
+
+            if (book == null)
+                return NotFound();
+
+            return View(book);
+        }
+
+        // SAVE RESERVATION
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateReservation(int bookId)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            // already reserved?
+
+            var alreadyReserved = await _context.Reservations
+                .AnyAsync(r =>
+                    r.BookId == bookId &&
+                    r.MemberId == userId &&
+                    r.Status == ReservationStatus.Waiting);
+
+            if (alreadyReserved)
+            {
+                TempData["Error"] = "You already reserved this book.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var reservation = new Reservation
+            {
+                BookId = bookId,
+                MemberId = userId,
+                ReservedOn = DateTime.Now,
+                Status = ReservationStatus.Waiting
+            };
+
+            _context.Reservations.Add(reservation);
+
+            await _context.SaveChangesAsync();
+
+            TempData["Success"] = "Book reserved successfully.";
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        // CANCEL
+        public async Task<IActionResult> Cancel(int id)
+        {
+            var reservation = await _context.Reservations.FindAsync(id);
+
+            if (reservation == null)
+                return NotFound();
+
+            _context.Reservations.Remove(reservation);
+
+            await _context.SaveChangesAsync();
+
+            TempData["Success"] = "Reservation cancelled.";
+
+            return RedirectToAction(nameof(Index));
+        }
+    }
+}

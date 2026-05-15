@@ -27,26 +27,35 @@ namespace Library_Management_System.Areas.Member.Controllers
             if (string.IsNullOrEmpty(userId))
                 return RedirectToAction("Login", "Account");
 
-            // STEP 1: Get MemberId safely
+            // MEMBER ID
+
             var memberId = await _context.Members
                 .Where(m => m.ApplicationUserId == userId)
                 .Select(m => m.Id)
                 .FirstOrDefaultAsync();
 
-            // STEP 2: Get borrow records
+            // CURRENT BORROWED BOOKS
+
             var borrowRecords = await _context.BorrowRecords
                 .Include(b => b.Book)
+                .ThenInclude(b => b.Author)
                 .Where(b => b.MemberId == memberId && b.ReturnedOn == null)
                 .ToListAsync();
 
-            // STEP 3: Map to ViewModel
+            // MY BOOKS
+
             var myBooks = borrowRecords.Select(b => new MyBookViewModel
             {
                 Id = b.Id,
+
                 BookTitle = b.Book.Title,
+
                 Author = b.Book.Author.Name,
+
                 IssueDate = b.IssuedOn,
+
                 DueDate = b.DueDate,
+
                 IsReturned = b.ReturnedOn != null,
 
                 FineAmount = b.DueDate < DateTime.Now
@@ -55,20 +64,49 @@ namespace Library_Management_System.Areas.Member.Controllers
                     : 0
             }).ToList();
 
-            // STEP 4: Build dashboard model
+            // RETURNED BOOKS COUNT
+
+            var returnedBooks = await _context.BorrowRecords
+                .CountAsync(x =>
+                    x.MemberId == memberId &&
+                    x.ReturnedOn != null);
+
+            // RECENT ACTIVITY
+
+            var recentActivities = await _context.BorrowRecords
+                .Include(x => x.Book)
+                .Where(x => x.MemberId == memberId)
+                .OrderByDescending(x => x.IssuedOn)
+                .Take(5)
+                .Select(x => new RecentActivityViewModel
+                {
+                    Activity = x.ReturnedOn != null
+                        ? "Returned \"" + x.Book.Title + "\""
+                        : "Borrowed \"" + x.Book.Title + "\"",
+
+                    ActivityDate = x.ReturnedOn ?? x.IssuedOn
+                })
+                .ToListAsync();
+
+            // FINAL MODEL
+
             var model = new MemberDashboardViewModel
             {
                 CurrentBorrows = borrowRecords.Count,
+
                 Overdue = borrowRecords.Count(x =>
-                    x.DueDate < DateTime.Now && x.ReturnedOn == null),
+                    x.DueDate < DateTime.Now &&
+                    x.ReturnedOn == null),
 
                 FineDue = myBooks.Sum(x => x.FineAmount),
 
                 WishListCount = 0,
 
+                ReturnedBooks = returnedBooks,
+
                 MyBooks = myBooks,
 
-                RecentActivity = new List<RecentActivityViewModel>()
+                RecentActivity = recentActivities
             };
 
             return View(model);

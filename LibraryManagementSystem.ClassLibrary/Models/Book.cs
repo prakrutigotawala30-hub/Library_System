@@ -39,11 +39,10 @@ namespace LibraryManagementSystem.Models
         [Range(0, int.MaxValue)]
         public int TotalCopies { get; set; }
 
-        [Range(0, int.MaxValue)]
+        [Range(0, int.MaxValue)] public int TotalPages { get; set; }
         public int AvailableCopies { get; set; }
         public bool IsFeatured { get; set; } = false;
 
-        // Catalog-feature fields used by the user app's CatalogController
         [StringLength(2000)]
         public string? Description { get; set; }
 
@@ -55,5 +54,8 @@ namespace LibraryManagementSystem.Models
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public List<BorrowRecord> BorrowRecords { get; set; } = new();
+
+
+        public List<Reservation> Reservations { get; set; } = new();
     }
 }

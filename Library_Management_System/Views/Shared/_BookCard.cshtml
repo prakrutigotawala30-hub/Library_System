@@ -1,0 +1,45 @@
+﻿<div class="card h-100 border-0 shadow-lg rounded-4 overflow-hidden">
+
+    <img src="@Model.CoverImageUrl"
+         class="card-img-top"
+         style="height:320px; object-fit:cover;" />
+
+    <div class="card-body">
+
+        <h5 class="fw-bold">
+            @Model.Title
+        </h5>
+
+        <p class="text-muted mb-2">
+            @(Model.Author != null ? Model.Author.Name : "Unknown")
+        </p>
+
+        @if (Model.AvailableCopies > 0)
+        {
+            <span class="badge bg-success mb-3">
+                Available
+            </span>
+        }
+        else
+        {
+            <span class="badge bg-danger mb-3">
+                Reserved
+            </span>
+        }
+
+        <div class="d-grid">
+
+            <a asp-controller="Catalog"
+               asp-action="Details"
+               asp-route-id="@Model.Id"
+               class="btn btn-dark rounded-3">
+
+                View Details
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>

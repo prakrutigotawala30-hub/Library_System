@@ -42,4 +42,9 @@
 		<ProjectReference Include="..\LibraryManagementSystem.ClassLibrary\LibraryManagementSystem.ClassLibrary.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="wwwroot\imagess\covers\" />
+	  <Folder Include="wwwroot\imagess\hero\" />
+	</ItemGroup>
+
 </Project>

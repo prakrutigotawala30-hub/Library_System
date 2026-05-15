@@ -7,40 +7,38 @@ using LibraryManagementSystem.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // SERVICES
+
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<PdfReceiptService>();
 builder.Services.AddScoped<ExportService>();
 
 // DATABASE
-// Provider order: appsettings override → SqlServer on Windows → Sqlite elsewhere (Mac/Linux).
-var configuredProvider = builder.Configuration.GetValue<string>("Database:Provider");
-var dbProvider = !string.IsNullOrWhiteSpace(configuredProvider)
-    ? configuredProvider
-    : (OperatingSystem.IsWindows() ? "SqlServer" : "Sqlite");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    if (string.Equals(dbProvider, "Sqlite", StringComparison.OrdinalIgnoreCase))
-    {
-        options.UseSqlite(
-            builder.Configuration.GetConnectionString("SqliteConnection")
-            ?? "Data Source=LibraryManagementDB.db");
-    }
-    else
-    {
-        options.UseSqlServer(
-            builder.Configuration.GetConnectionString("DefaultConnection"),
-            sql => sql.CommandTimeout(120));
-    }
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        sql => sql.CommandTimeout(120));
 });
 
 // IDENTITY
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-    .AddEntityFrameworkStores<AppDbContext>()
-    .AddDefaultTokenProviders();
+
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+{
+    options.SignIn.RequireConfirmedEmail = true;
+
+    options.Password.RequireDigit = true;
+    options.Password.RequiredLength = 6;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireNonAlphanumeric = false;
+})
+.AddEntityFrameworkStores<AppDbContext>()
+.AddDefaultTokenProviders();
 
 // COOKIE SETTINGS
+
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Account/Login";
@@ -51,19 +49,19 @@ builder.Services.ConfigureApplicationCookie(options =>
 var app = builder.Build();
 
 // ERROR HANDLING
+
 if (app.Environment.IsDevelopment())
 {
-    // Show full stack-trace page in dev so we can see the real exception.
     app.UseDeveloperExceptionPage();
 }
 else
 {
-    // In production: swallow exceptions and render the friendly Error500 view.
     app.UseExceptionHandler("/Home/Error500");
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
+
 app.UseStaticFiles();
 
 app.UseStatusCodePagesWithReExecute("/Home/Error404");
@@ -71,34 +69,37 @@ app.UseStatusCodePagesWithReExecute("/Home/Error404");
 app.UseRouting();
 
 app.UseAuthentication();
+
 app.UseAuthorization();
 
 // ROUTES
+
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Account}/{action=Login}/{id?}");
 
-// CREATE ADMIN ROLE
+
+// DATABASE + ROLES
+
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider
         .GetRequiredService<AppDbContext>();
 
-    if (string.Equals(dbProvider, "Sqlite", StringComparison.OrdinalIgnoreCase))
-    {
-        // SQLite: build schema directly from model (skips SQL-Server-specific migrations)
-        await db.Database.EnsureCreatedAsync();
-    }
-    else
-    {
-        await db.Database.MigrateAsync();
-    }
+    await db.Database.MigrateAsync();
 
     var roleManager = scope.ServiceProvider
         .GetRequiredService<RoleManager<IdentityRole>>();
 
-    // ONLY ADMIN ROLE
-    string[] roles = { "Admin" };
+    string[] roles =
+    {
+        "Admin",
+        "Member"
+    };
 
     foreach (var role in roles)
     {

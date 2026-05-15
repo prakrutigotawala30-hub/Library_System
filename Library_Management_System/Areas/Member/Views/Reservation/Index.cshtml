@@ -1,0 +1,217 @@
+﻿@{
+    Layout = "~/Areas/Member/Views/Shared/_MemberLayout.cshtml";
+}
+@using LibraryManagementSystem.Models
+@model IEnumerable<LibraryManagementSystem.Models.Reservation>
+
+@{
+    ViewData["Title"] = "My Reservations";
+}
+
+<style>
+
+    body {
+        background: #050816;
+        color: white;
+    }
+
+    .reservation-wrapper {
+        padding: 30px;
+    }
+
+    .page-title {
+        font-size: 34px;
+        font-weight: 800;
+        margin-bottom: 30px;
+    }
+
+    .reservation-card {
+        background: linear-gradient(145deg,#0f172a,#111827);
+        border-radius: 24px;
+        padding: 24px;
+        margin-bottom: 22px;
+        border: 1px solid rgba(255,255,255,0.05);
+        transition: 0.3s;
+    }
+
+        .reservation-card:hover {
+            transform: translateY(-5px);
+        }
+
+    .book-title {
+        font-size: 24px;
+        font-weight: 700;
+    }
+
+    .book-author {
+        color: #9ca3af;
+        margin-top: 5px;
+    }
+
+    .reservation-info {
+        margin-top: 20px;
+        display: flex;
+        gap: 40px;
+        flex-wrap: wrap;
+    }
+
+    .info-box {
+        background: rgba(255,255,255,0.04);
+        padding: 14px 18px;
+        border-radius: 14px;
+        min-width: 180px;
+    }
+
+    .info-title {
+        color: #9ca3af;
+        font-size: 13px;
+        margin-bottom: 8px;
+    }
+
+    .info-value {
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .status-badge {
+        padding: 8px 16px;
+        border-radius: 30px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .waiting {
+        background: #f59e0b;
+    }
+
+    .completed {
+        background: #10b981;
+    }
+
+    .cancelled {
+        background: #ef4444;
+    }
+
+    .btn-cancel {
+        margin-top: 20px;
+        background: linear-gradient(135deg,#dc2626,#ef4444);
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 14px;
+        font-weight: 600;
+    }
+
+</style>
+
+<div class="reservation-wrapper">
+
+    <div class="page-title">
+        📚 My Reservations
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-dark">
+            No reservations found.
+        </div>
+    }
+
+    @foreach (var item in Model)
+    {
+        <div class="reservation-card">
+
+            <div class="d-flex justify-content-between align-items-start">
+
+                <div>
+
+                    <div class="book-title">
+                        @item.Book.Title
+                    </div>
+
+                    <div class="book-author">
+                        by @item.Book.Author.Name
+                    </div>
+
+                </div>
+
+                <div>
+
+                    @if (item.Status == ReservationStatus.Waiting)
+                    {
+                        <span class="status-badge waiting">
+                            Waiting
+                        </span>
+                    }
+                    else if (item.Status == ReservationStatus.Completed)
+                    {
+                        <span class="status-badge completed">
+                            Completed
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="status-badge cancelled">
+                            Cancelled
+                        </span>
+                    }
+
+                </div>
+
+            </div>
+
+            <div class="reservation-info">
+
+                <div class="info-box">
+
+                    <div class="info-title">
+                        Reserved On
+                    </div>
+
+                    <div class="info-value">
+                        @item.ReservedOn.ToShortDateString()
+                    </div>
+
+                </div>
+
+                <div class="info-box">
+
+                    <div class="info-title">
+                        Queue Position
+                    </div>
+
+                    <div class="info-value">
+                        #@ViewBag.QueuePositions[item.Id]
+                    </div>
+
+                </div>
+
+                <div class="info-box">
+
+                    <div class="info-title">
+                        Status
+                    </div>
+
+                    <div class="info-value">
+                        @item.Status
+                    </div>
+
+                </div>
+
+            </div>
+
+            @if (item.Status == ReservationStatus.Waiting)
+            {
+                <a asp-action="Cancel"
+                   asp-route-id="@item.Id"
+                   class="btn btn-cancel">
+
+                    Cancel Reservation
+
+                </a>
+            }
+
+        </div>
+    }
+
+</div>

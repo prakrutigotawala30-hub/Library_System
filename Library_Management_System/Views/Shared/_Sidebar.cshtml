@@ -1,0 +1,244 @@
+﻿<aside class="sidebar">
+
+    <!-- LOGO -->
+
+    <div class="logo-wrap">
+
+        <div class="logo-symbol">
+            ∞
+        </div>
+
+        <div class="logo-text">
+
+            <h4>BOOKVERSE</h4>
+
+            <small>LIBRARY MANAGEMENT SYSTEM</small>
+
+        </div>
+
+    </div>
+
+
+    <!-- HOME -->
+
+    <a class="menu-item active" asp-controller="Home" asp-action="Dashboard">
+
+        <i class="bi bi-house-fill"></i>
+
+        <span>Home</span>
+
+    </a>
+
+
+    <!-- MEMBER -->
+
+    <div class="menu-heading">
+        MEMBER
+    </div>
+
+
+    <div class="menu-list">
+
+        <a class="menu-item"
+           asp-area="Member"
+           asp-controller="Dashboard"
+           asp-action="Index">
+
+            <i class="bi bi-graph-up"></i>
+
+            <span>My Dashboard</span>
+
+        </a>
+
+
+        <a class="menu-item"
+           asp-controller="Borrow"
+           asp-action="MyBooks">
+
+            <i class="bi bi-journal-bookmark"></i>
+
+            <span>My Borrowed Books</span>
+
+        </a>
+
+
+        <a class="menu-item"
+           asp-controller="Borrow"
+           asp-action="History">
+
+            <i class="bi bi-clock-history"></i>
+
+            <span>Borrow History</span>
+
+        </a>
+
+
+        <a class="menu-item"
+           asp-controller="Wishlist"
+           asp-action="Index">
+
+            <i class="bi bi-heart"></i>
+
+            <span>Wishlist</span>
+
+        </a>
+
+
+        <a class="menu-item"
+           asp-controller="Reservation"
+           asp-action="Index">
+
+            <i class="bi bi-calendar-event"></i>
+
+            <span>Reservations</span>
+
+        </a>
+
+
+        <a class="menu-item"
+           asp-controller="Notifications"
+           asp-action="Index">
+
+            <i class="bi bi-bell"></i>
+
+            <span>Notifications</span>
+
+            <span class="badge-count">
+                2
+            </span>
+
+        </a>
+
+
+        <a class="menu-item"
+           asp-controller="Account"
+           asp-action="Profile">
+
+            <i class="bi bi-person-circle"></i>
+
+            <span>Profile</span>
+
+        </a>
+
+
+        <a class="menu-item"
+           asp-controller="Account"
+           asp-action="ChangePassword">
+
+            <i class="bi bi-lock"></i>
+
+            <span>Change Password</span>
+
+        </a>
+
+
+        <a class="menu-item"
+           asp-controller="Account"
+           asp-action="Settings">
+
+            <i class="bi bi-gear"></i>
+
+            <span>Settings</span>
+
+        </a>
+
+    </div>
+
+
+    <hr />
+
+
+    <!-- EXPLORE -->
+
+    <div class="menu-heading">
+        EXPLORE
+    </div>
+
+
+    <div class="menu-list">
+
+        <a class="menu-item"
+           asp-controller="Catalog"
+           asp-action="Index">
+
+            <i class="bi bi-book"></i>
+
+            <span>Browse Books</span>
+
+        </a>
+
+
+        <a class="menu-item"
+           asp-controller="Category"
+           asp-action="Index">
+
+            <i class="bi bi-grid"></i>
+
+            <span>Categories</span>
+
+        </a>
+
+
+        <a class="menu-item"
+           asp-controller="Author"
+           asp-action="Index">
+
+            <i class="bi bi-person"></i>
+
+            <span>Authors</span>
+
+        </a>
+
+
+        <a class="menu-item"
+           asp-controller="Books"
+           asp-action="NewArrivals">
+
+            <i class="bi bi-stars"></i>
+
+            <span>New Arrivals</span>
+
+        </a>
+
+
+        <a class="menu-item"
+           asp-controller="Books"
+           asp-action="Popular">
+
+            <i class="bi bi-fire"></i>
+
+            <span>Popular Books</span>
+
+        </a>
+
+
+        <a class="menu-item"
+           asp-controller="Events"
+           asp-action="Index">
+
+            <i class="bi bi-calendar2-event"></i>
+
+            <span>Events</span>
+
+        </a>
+
+    </div>
+
+
+    <!-- LOGOUT -->
+
+    <div class="logout-box">
+
+        <a asp-controller="Account"
+           asp-action="Logout"
+           class="logout-link">
+
+            <i class="bi bi-box-arrow-left"></i>
+
+            Logout
+
+        </a>
+
+    </div>
+
+</aside>

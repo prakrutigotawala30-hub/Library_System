@@ -70,6 +70,8 @@ namespace LibraryManagementSystem.Controllers
 
                 if (result.Succeeded)
                 {
+                    await _userManager.AddToRoleAsync(user, "Member");
+
                     var token = await _userManager
                         .GenerateEmailConfirmationTokenAsync(user);
 
@@ -308,6 +310,11 @@ namespace LibraryManagementSystem.Controllers
             }
 
             return View(model);
+        }
+
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }

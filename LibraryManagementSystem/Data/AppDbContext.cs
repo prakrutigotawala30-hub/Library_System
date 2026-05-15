@@ -21,6 +21,8 @@ namespace LibraryManagementSystem.Data
 
         public DbSet<Membership> Memberships { get; set; }
         public DbSet<Department> Departments { get; set; }
+
+        public DbSet<Reservation> Reservations { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
