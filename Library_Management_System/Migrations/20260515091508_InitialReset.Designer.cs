@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Library_Management_System.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260515053630_AddWishlist")]
-    partial class AddWishlist
+    [Migration("20260515091508_InitialReset")]
+    partial class InitialReset
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -164,6 +164,9 @@ namespace Library_Management_System.Migrations
                         .HasColumnType("nvarchar(200)");
 
                     b.Property<int>("TotalCopies")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalPages")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -394,6 +397,8 @@ namespace Library_Management_System.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BookId");
 
                     b.HasIndex("MemberId");
 
@@ -713,11 +718,19 @@ namespace Library_Management_System.Migrations
 
             modelBuilder.Entity("LibraryManagementSystem.Models.Reservation", b =>
                 {
+                    b.HasOne("LibraryManagementSystem.Models.Book", "Book")
+                        .WithMany("Reservations")
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("LibraryManagementSystem.Models.ApplicationUser", "Member")
                         .WithMany()
                         .HasForeignKey("MemberId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Book");
 
                     b.Navigation("Member");
                 });
@@ -800,6 +813,8 @@ namespace Library_Management_System.Migrations
             modelBuilder.Entity("LibraryManagementSystem.Models.Book", b =>
                 {
                     b.Navigation("BorrowRecords");
+
+                    b.Navigation("Reservations");
                 });
 
             modelBuilder.Entity("LibraryManagementSystem.Models.Category", b =>

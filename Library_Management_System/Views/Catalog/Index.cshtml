@@ -1,7 +1,7 @@
+@model Library_Management_System.ViewModels.CatalogViewModel
+@using System.Linq
 @{
     Layout = "~/Views/Shared/_PublicLayout.cshtml";
-}
-@{
     ViewData["Title"] = "Browse Books";
 }
 
@@ -85,7 +85,7 @@
         </thead>
 
         <tbody>
-        @if (Model.PagedBooks != null && Model.PagedBooks.Any())
+            @if (Model.PagedBooks != null && Model.PagedBooks.Count > 0)
         {
             foreach (var book in Model.PagedBooks)
             {

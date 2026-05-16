@@ -228,7 +228,7 @@
         and manage your reading journey with BOOKVERSE.
     </p>
 
-    <a asp-controller="Books"
+    <a asp-controller="Catalog"
        asp-action="Index"
        class="hero-btn">
 
@@ -451,11 +451,14 @@
 
             </div>
 
-            <button class="dashboard-btn">
+            <a asp-area="Member"
+               asp-controller="Dashboard"
+               asp-action="Index"
+               class="btn dashboard-btn">
 
                 View Dashboard →
 
-            </button>
+            </a>
 
         </div>
 

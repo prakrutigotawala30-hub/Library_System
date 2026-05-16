@@ -1,5 +1,54 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model Library_Management_System.ViewModels.ProfileViewModel
+
+<div class="card shadow p-4">
+
+    <h3>Edit Profile</h3>
+
+    <form method="post">
+
+        <div class="mb-3">
+
+            <label asp-for="Name"></label>
+
+            <input asp-for="Name"
+                   class="form-control" />
+
+            <span asp-validation-for="Name"
+                  class="text-danger"></span>
+
+        </div>
+
+
+        <div class="mb-3">
+
+            <label asp-for="Phone"></label>
+
+            <input asp-for="Phone"
+                   class="form-control" />
+
+            <span asp-validation-for="Phone"
+                  class="text-danger"></span>
+
+        </div>
+
+
+        <div class="form-check mb-3">
+
+            <input asp-for="NotificationPrefs"
+                   class="form-check-input" />
+
+            <label asp-for="NotificationPrefs">
+            </label>
+
+        </div>
+
+
+        <button class="btn btn-primary">
+
+            Save Changes
+
+        </button>
+
+    </form>
+
+</div>

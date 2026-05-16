@@ -4,180 +4,397 @@
     ViewData["Title"] = "Event Details";
 }
 
-<div class="container-fluid">
+<style>
 
-    <div class="details-card">
+    .event-details-page {
+        background: radial-gradient(circle at top left, rgba(139,92,246,.15), transparent 25%), linear-gradient(to bottom,#050816,#0b1023);
+        min-height: 100vh;
+        padding: 35px;
+    }
 
-        <!-- IMAGE -->
+    .glass-card {
+        background: rgba(255,255,255,.05);
+        border: 1px solid rgba(255,255,255,.08);
+        backdrop-filter: blur(14px);
+        border-radius: 24px;
+    }
 
-        <div class="details-image">
+    /* TOP */
 
-            @if (!string.IsNullOrEmpty(Model.ImagePath))
-            {
-                <img src="@Model.ImagePath" alt="@Model.Title" />
+    .event-top {
+        padding: 35px;
+        margin-bottom: 25px;
+    }
+
+    .event-cover {
+        width: 220px;
+        border-radius: 20px;
+        overflow: hidden;
+        flex-shrink: 0;
+    }
+
+        .event-cover img {
+            width: 100%;
+            height: 320px;
+            object-fit: cover;
+        }
+
+    .event-info {
+        padding-left: 35px;
+    }
+
+    .event-badge {
+        display: inline-block;
+        padding: 8px 18px;
+        border-radius: 30px;
+        background: rgba(168,85,247,.18);
+        color: #e9d5ff;
+        font-size: 13px;
+        margin-bottom: 20px;
+    }
+
+    .event-info h1 {
+        color: white;
+        font-size: 55px;
+        font-weight: 800;
+        margin-bottom: 20px;
+    }
+
+    .event-meta {
+        display: flex;
+        gap: 25px;
+        flex-wrap: wrap;
+        color: #ddd6fe;
+        margin-bottom: 25px;
+    }
+
+    .event-desc {
+        color: #d1d5db;
+        line-height: 1.9;
+        font-size: 16px;
+        max-width: 800px;
+    }
+
+    .event-buttons {
+        margin-top: 30px;
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .btn-main {
+        background: linear-gradient(135deg,#9333ea,#d946ef);
+        border: none;
+        color: white;
+        padding: 14px 28px;
+        border-radius: 14px;
+        text-decoration: none;
+        font-weight: 700;
+    }
+
+    .btn-outline {
+        background: rgba(255,255,255,.04);
+        border: 1px solid rgba(255,255,255,.12);
+        color: white;
+        padding: 14px 28px;
+        border-radius: 14px;
+        text-decoration: none;
+    }
+
+    /* SIDE */
+
+    .side-card {
+        padding: 28px;
+        margin-bottom: 25px;
+    }
+
+        .side-card h4 {
+            color: white;
+            margin-bottom: 25px;
+            font-weight: 700;
+        }
+
+    .info-item {
+        margin-bottom: 22px;
+    }
+
+        .info-item small {
+            color: #a78bfa;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .info-item div {
+            color: white;
+            font-size: 16px;
+        }
+
+    /* CONTENT */
+
+    .content-card {
+        padding: 35px;
+        margin-bottom: 25px;
+    }
+
+        .content-card h3 {
+            color: white;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .content-card p {
+            color: #d1d5db;
+            line-height: 1.9;
+        }
+
+    /* SPEAKER */
+
+    .speaker-box {
+        display: flex;
+        gap: 25px;
+        align-items: center;
+    }
+
+    .speaker-img {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        overflow: hidden;
+    }
+
+        .speaker-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .speaker-info h4 {
+        color: white;
+        font-size: 28px;
+        margin-bottom: 10px;
+    }
+
+    .speaker-info p {
+        color: #d1d5db;
+        line-height: 1.8;
+    }
+
+    @@media(max-width:991px) {
+
+        .event-info {
+            padding-left: 0;
+            margin-top: 30px;
+        }
+
+            .event-info h1 {
+                font-size: 38px;
             }
-            else
-            {
-                <div class="details-placeholder">
-                    📚
+    }
+
+</style>
+
+<div class="event-details-page">
+
+    <div class="container-fluid">
+
+        <div class="row">
+
+            <!-- MAIN -->
+
+            <div class="col-lg-9">
+
+                <!-- TOP -->
+
+                <div class="glass-card event-top">
+
+                    <div class="row align-items-center">
+
+                        <div class="col-lg-3">
+
+                            <div class="event-cover">
+
+                                @if (!string.IsNullOrEmpty(Model.ImagePath))
+                                {
+                                    <img src="@Model.ImagePath" />
+                                }
+                                else
+                                {
+                                    <img src="/images/default-book.jpg" />
+                                }
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-lg-9">
+
+                            <div class="event-info">
+
+                                <div class="event-badge">
+                                    Author Session
+                                </div>
+
+                                <h1>@Model.Title</h1>
+
+                                <div class="event-meta">
+
+                                    <div>
+                                        📅 @Model.Date.ToString("dd MMM yyyy")
+                                    </div>
+
+                                    <div>
+                                        ⏰ 4:00 PM - 6:00 PM
+                                    </div>
+
+                                    <div>
+                                        📍 @Model.Location
+                                    </div>
+
+                                </div>
+
+                                <div class="event-desc">
+
+                                    @Model.Description
+
+                                </div>
+
+                                <div class="event-buttons">
+
+                                    <a href="#" class="btn-main">
+                                        Reserve My Seat
+                                    </a>
+
+                                    <a href="#" class="btn-outline">
+                                        Add To Wishlist
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
                 </div>
-            }
 
-        </div>
+                <!-- ABOUT -->
 
-        <!-- CONTENT -->
+                <div class="glass-card content-card">
 
-        <div class="details-content">
+                    <h3>About This Event</h3>
 
-            <div class="event-badge">
-                Upcoming Event
+                    <p>
+                        @Model.Description
+                    </p>
+
+                </div>
+
+                <!-- SPEAKER -->
+
+                <div class="glass-card content-card">
+
+                    <h3>About The Speaker</h3>
+
+                    <div class="speaker-box">
+
+                        <div class="speaker-img">
+
+                            <img src="/images/speaker.jpg" />
+
+                        </div>
+
+                        <div class="speaker-info">
+
+                            <h4>James Clear</h4>
+
+                            <p>
+                                Bestselling author and productivity expert.
+                                Known for Atomic Habits and personal development seminars.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
             </div>
 
-            <h1 class="details-title">
-                @Model.Title
-            </h1>
+            <!-- RIGHT SIDE -->
 
-            <div class="details-meta">
+            <div class="col-lg-3">
 
-                <div class="meta-box">
-                    <i class="bi bi-calendar-event"></i>
-                    @Model.Date.ToString("dddd, dd MMM yyyy")
+                <!-- SUMMARY -->
+
+                <div class="glass-card side-card">
+
+                    <h4>Event Summary</h4>
+
+                    <div class="info-item">
+                        <small>Date</small>
+                        <div>@Model.Date.ToString("dd MMM yyyy")</div>
+                    </div>
+
+                    <div class="info-item">
+                        <small>Location</small>
+                        <div>@Model.Location</div>
+                    </div>
+
+                    <div class="info-item">
+                        <small>Category</small>
+                        <div>Author Session</div>
+                    </div>
+
+                    <div class="info-item">
+                        <small>Seats Available</small>
+                        <div>78 / 100</div>
+                    </div>
+
                 </div>
 
-                <div class="meta-box">
-                    <i class="bi bi-geo-alt"></i>
-                    @Model.Location
+                <!-- REGISTRATION -->
+
+                <div class="glass-card side-card">
+
+                    <h4>Registration</h4>
+
+                    <p style="color:#d1d5db;">
+                        Reserve your seat for this premium event experience.
+                    </p>
+
+                    <a href="#"
+                       class="btn-main d-block text-center mt-4">
+
+                        Reserve My Seat
+
+                    </a>
+
+                </div>
+
+                <!-- VENUE -->
+
+                <div class="glass-card side-card">
+
+                    <h4>Venue</h4>
+
+                    <img src="/images/hall.jpg"
+                         class="img-fluid rounded-4 mb-3" />
+
+                    <div style="color:white;font-weight:700;">
+                        BookVerse Community Hall
+                    </div>
+
+                    <div style="color:#d1d5db;">
+                        @Model.Location
+                    </div>
+
                 </div>
 
             </div>
-
-            <div class="details-description">
-
-                @Model.Description
-
-            </div>
-
-            <a asp-action="Index"
-               class="btn back-btn">
-                Back to Events
-            </a>
 
         </div>
 
     </div>
 
 </div>
-
-<style>
-
-    .details-card{
-        background:rgba(255,255,255,0.05);
-        border:1px solid rgba(255,255,255,0.08);
-        border-radius:28px;
-        overflow:hidden;
-        backdrop-filter:blur(12px);
-    }
-
-    .details-image{
-        height:380px;
-        overflow:hidden;
-        background:linear-gradient(135deg,#7e22ce,#9333ea);
-    }
-
-    .details-image img{
-        width:100%;
-        height:100%;
-        object-fit:cover;
-    }
-
-    .details-placeholder{
-        width:100%;
-        height:100%;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        color:white;
-        font-size:100px;
-    }
-
-    .details-content{
-        padding:40px;
-    }
-
-    .event-badge{
-        display:inline-block;
-        padding:8px 18px;
-        border-radius:30px;
-        background:rgba(147,51,234,0.20);
-        color:#d8b4fe;
-        font-size:13px;
-        font-weight:600;
-        margin-bottom:22px;
-    }
-
-    .details-title{
-        color:white;
-        font-size:48px;
-        font-weight:800;
-        margin-bottom:24px;
-    }
-
-    .details-meta{
-        display:flex;
-        gap:18px;
-        flex-wrap:wrap;
-        margin-bottom:28px;
-    }
-
-    .meta-box{
-        padding:14px 20px;
-        border-radius:16px;
-        background:rgba(255,255,255,0.06);
-        color:white;
-    }
-
-    .details-description{
-        color:rgba(255,255,255,0.75);
-        line-height:1.9;
-        font-size:16px;
-        margin-bottom:35px;
-    }
-
-    .back-btn{
-        height:52px;
-        padding:0 28px;
-        border:none;
-        border-radius:14px;
-
-        background:
-            linear-gradient(
-                135deg,
-                #7e22ce,
-                #9333ea
-            );
-
-        color:white;
-        font-weight:600;
-    }
-
-    .back-btn:hover{
-        color:white;
-        box-shadow:0 0 25px rgba(147,51,234,0.35);
-    }
-
-    @@media(max-width:768px){
-
-        .details-image{
-            height:240px;
-        }
-
-        .details-content{
-            padding:24px;
-        }
-
-        .details-title{
-            font-size:34px;
-        }
-    }
-
-</style>

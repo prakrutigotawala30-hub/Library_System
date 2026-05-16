@@ -39,7 +39,7 @@ namespace LibraryManagementSystem.Models
         [Range(0, int.MaxValue)]
         public int TotalCopies { get; set; }
 
-        [Range(0, int.MaxValue)] public int TotalPages { get; set; }
+        public int TotalPages { get; set; }
         public int AvailableCopies { get; set; }
         public bool IsFeatured { get; set; } = false;
 
@@ -55,7 +55,6 @@ namespace LibraryManagementSystem.Models
 
         public List<BorrowRecord> BorrowRecords { get; set; } = new();
 
-
-        public List<Reservation> Reservations { get; set; } = new();
+        public ICollection<Reservation> Reservations { get; set; }
     }
 }
