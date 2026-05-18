@@ -111,8 +111,9 @@
 
 
         <a class="menu-item"
-           asp-controller="Account"
-           asp-action="Profile">
+           asp-area="Member"
+           asp-controller="Profile"
+           asp-action="Edit">
 
             <i class="bi bi-person-circle"></i>
 
@@ -120,15 +121,12 @@
 
         </a>
 
-
-        <a class="menu-item"
-           asp-controller="Account"
+        <a asp-area="Member"
+           asp-controller="Profile"
            asp-action="ChangePassword">
-
             <i class="bi bi-lock"></i>
 
             <span>Change Password</span>
-
         </a>
 
 

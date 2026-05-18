@@ -17,6 +17,8 @@ namespace Library_Management_System.ViewModels
         [Display(Name = "Profile Photo")]
         public IFormFile? AvatarFile { get; set; }
 
+        public string? ProfileImagePath { get; set; }
+
         [Display(Name = "Enable Notifications")]
         public bool NotificationPrefs { get; set; }
     }

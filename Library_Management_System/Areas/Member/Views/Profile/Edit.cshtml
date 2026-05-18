@@ -1,54 +1,559 @@
 ﻿@model Library_Management_System.ViewModels.ProfileViewModel
 
-<div class="card shadow p-4">
+@{
+    ViewData["Title"] = "My Profile";
+}
 
-    <h3>Edit Profile</h3>
+<style>
 
-    <form method="post">
+    html,
+    body {
+        margin: 0;
+        padding: 0;
+        background: #050816;
+        overflow-x: hidden;
+    }
 
-        <div class="mb-3">
+    .profile-page {
+        min-height: 100vh;
+        padding: 30px;
+        background: radial-gradient(circle at top right, rgba(147,51,234,.18), transparent 25%), radial-gradient(circle at bottom left, rgba(236,72,153,.12), transparent 30%), linear-gradient(to bottom,#050816,#0b1020);
+    }
 
-            <label asp-for="Name"></label>
+    .profile-wrapper {
+        width: 100%;
+        max-width: 1350px;
+        margin: auto;
+    }
 
-            <input asp-for="Name"
-                   class="form-control" />
+    .profile-card {
+        background: rgba(8,12,24,.96);
+        border-radius: 32px;
+        overflow: hidden;
+        box-shadow: 0 25px 60px rgba(0,0,0,.45);
+    }
 
-            <span asp-validation-for="Name"
-                  class="text-danger"></span>
+    /* HEADER */
+
+    .profile-header {
+        padding: 30px 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: linear-gradient(135deg, rgba(147,51,234,.15), rgba(217,70,239,.06));
+    }
+
+        .profile-header h2 {
+            color: white;
+            font-size: 34px;
+            font-weight: 800;
+            margin: 0;
+        }
+
+    .edit-btn {
+        height: 55px;
+        padding: 0 28px;
+        border-radius: 16px;
+        border: none;
+        background: linear-gradient(135deg,#9333ea,#d946ef);
+        color: white;
+        font-weight: 700;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        transition: .3s;
+        box-shadow: 0 12px 30px rgba(168,85,247,.25);
+    }
+
+        .edit-btn:hover {
+            transform: translateY(-3px);
+            color: white;
+        }
+
+    /* BODY */
+
+    .profile-body {
+        display: grid;
+        grid-template-columns: 340px 1fr;
+    }
+
+    /* SIDEBAR */
+
+    .profile-sidebar {
+        padding: 40px 30px;
+        background: rgba(255,255,255,.02);
+    }
+
+    .avatar-link {
+        text-decoration: none;
+    }
+
+    .profile-image-wrap {
+        width: 170px;
+        height: 170px;
+        margin: auto;
+        position: relative;
+        cursor: pointer;
+    }
+
+    .profile-image {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+        transition: .3s;
+        box-shadow: 0 20px 40px rgba(0,0,0,.45);
+    }
+
+    .empty-profile {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background: linear-gradient(135deg,#9333ea,#d946ef);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 55px;
+        font-weight: 800;
+        color: white;
+        box-shadow: 0 20px 40px rgba(0,0,0,.45);
+    }
+
+    .profile-image-wrap:hover .profile-image {
+        transform: scale(1.05);
+    }
+
+    .camera-icon {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        background: linear-gradient(135deg,#9333ea,#d946ef);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 18px;
+        box-shadow: 0 10px 25px rgba(168,85,247,.4);
+    }
+
+    .profile-name {
+        text-align: center;
+        margin-top: 25px;
+    }
+
+        .profile-name h3 {
+            color: white;
+            font-size: 30px;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .profile-name span {
+            color: #c4b5fd;
+            font-size: 14px;
+        }
+
+    /* INFO */
+
+    .profile-info-card {
+        margin-top: 35px;
+        background: rgba(255,255,255,.03);
+        border-radius: 24px;
+        padding: 25px;
+    }
+
+    .info-item {
+        margin-bottom: 25px;
+    }
+
+        .info-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-item label {
+            display: block;
+            color: #9ca3af;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .info-item div {
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+    /* CONTENT */
+
+    .profile-content {
+        padding: 40px;
+    }
+
+    .content-title {
+        color: white;
+        font-size: 28px;
+        font-weight: 800;
+        margin-bottom: 30px;
+    }
+
+    .profile-grid {
+        display: grid;
+        grid-template-columns: repeat(2,1fr);
+        gap: 25px;
+    }
+
+    .profile-box {
+        background: rgba(255,255,255,.03);
+        border-radius: 24px;
+        padding: 24px;
+        transition: .3s;
+    }
+
+        .profile-box:hover {
+            transform: translateY(-4px);
+            background: rgba(255,255,255,.045);
+        }
+
+        .profile-box label {
+            display: block;
+            color: #9ca3af;
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+
+        .profile-box h4 {
+            color: white;
+            margin: 0;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+    .notification-card {
+        margin-top: 30px;
+        background: rgba(255,255,255,.03);
+        border-radius: 24px;
+        padding: 25px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .notification-left h5 {
+        color: white;
+        margin: 0;
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .notification-left p {
+        color: #9ca3af;
+        margin: 6px 0 0;
+        font-size: 14px;
+    }
+
+    .status-badge {
+        padding: 10px 18px;
+        border-radius: 50px;
+        font-size: 13px;
+        font-weight: 700;
+        background: rgba(34,197,94,.15);
+        color: #22c55e;
+    }
+
+    /* BUTTONS */
+
+    .action-buttons {
+        margin-top: 35px;
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .action-btn {
+        height: 58px;
+        padding: 0 28px;
+        border-radius: 18px;
+        border: none;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        transition: .3s;
+    }
+
+    .primary-btn {
+        background: linear-gradient(135deg,#9333ea,#d946ef);
+        color: white;
+        box-shadow: 0 15px 30px rgba(168,85,247,.25);
+    }
+
+        .primary-btn:hover {
+            transform: translateY(-3px);
+            color: white;
+        }
+
+    .secondary-btn {
+        background: rgba(255,255,255,.05);
+        color: white;
+    }
+
+        .secondary-btn:hover {
+            background: rgba(255,255,255,.1);
+            color: white;
+        }
+
+    /* RESPONSIVE */
+
+    @@media(max-width:991px) {
+
+        .profile-body {
+            grid-template-columns: 1fr;
+        }
+
+        .profile-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @@media(max-width:768px) {
+
+        .profile-page {
+            padding: 15px;
+        }
+
+        .profile-header,
+        .profile-content,
+        .profile-sidebar {
+            padding: 25px;
+        }
+
+        .profile-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 18px;
+        }
+
+            .profile-header h2 {
+                font-size: 28px;
+            }
+
+        .notification-card {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+    }
+
+</style>
+
+<div class="profile-page">
+
+    <div class="profile-wrapper">
+
+        <div class="profile-card">
+
+            <!-- HEADER -->
+
+            <div class="profile-header">
+
+                <h2>
+                    My Profile
+                </h2>
+
+                <a asp-area="Member"
+                   asp-controller="Profile"
+                   asp-action="Edit"
+                   class="edit-btn">
+
+                    Edit Profile
+
+                </a>
+
+            </div>
+
+            <!-- BODY -->
+
+            <div class="profile-body">
+
+                <!-- LEFT -->
+
+                <div class="profile-sidebar">
+
+                    <a asp-area="Member"
+                       asp-controller="Profile"
+                       asp-action="Avatar"
+                       class="avatar-link">
+
+                        <div class="profile-image-wrap">
+
+                            @if (!string.IsNullOrEmpty(Model.ProfileImagePath))
+                            {
+                                <img src="@Model.ProfileImagePath"
+                                     class="profile-image" />
+                            }
+                            else
+                            {
+                                <div class="empty-profile">
+
+                                    <span>
+                                        @(string.IsNullOrEmpty(Model.Name)
+                                                                            ? "U"
+                                                                            : Model.Name.Substring(0, 1).ToUpper())
+                                    </span>
+
+                                </div>
+                            }
+
+                            <div class="camera-icon">
+                                📷
+                            </div>
+
+                        </div>
+
+                    </a>
+
+                    <div class="profile-name">
+
+                        <h3>
+                            @Model.Name
+                        </h3>
+
+                        <span>
+                            Premium Member
+                        </span>
+
+                    </div>
+
+                    <div class="profile-info-card">
+
+                        <div class="info-item">
+
+                            <label>
+                                Phone Number
+                            </label>
+
+                            <div>
+                                @Model.Phone
+                            </div>
+
+                        </div>
+
+                        <div class="info-item">
+
+                            <label>
+                                Notifications
+                            </label>
+
+                            <div>
+
+                                @(Model.NotificationPrefs
+                                                                ? "Enabled"
+                                                                : "Disabled")
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- RIGHT -->
+
+                <div class="profile-content">
+
+                    <h3 class="content-title">
+                        Account Information
+                    </h3>
+
+                    <div class="profile-grid">
+
+                        <div class="profile-box">
+
+                            <label>
+                                Full Name
+                            </label>
+
+                            <h4>
+                                @Model.Name
+                            </h4>
+
+                        </div>
+
+                        <div class="profile-box">
+
+                            <label>
+                                Phone Number
+                            </label>
+
+                            <h4>
+                                @Model.Phone
+                            </h4>
+
+                        </div>
+
+                    </div>
+
+                    <!-- NOTIFICATION -->
+
+                    <div class="notification-card">
+
+                        <div class="notification-left">
+
+                            <h5>
+                                Notifications
+                            </h5>
+
+                            <p>
+                                Receive reminders and library updates
+                            </p>
+
+                        </div>
+
+                        <div class="status-badge">
+
+                            @(Model.NotificationPrefs
+                                                        ? "Enabled"
+                                                        : "Disabled")
+
+                        </div>
+
+                    </div>
+
+                    <!-- BUTTONS -->
+
+                    <div class="action-buttons">
+
+                        <a asp-area="Member"
+                           asp-controller="Profile"
+                           asp-action="Edit"
+                           class="action-btn primary-btn">
+
+                            Edit Information
+
+                        </a>
+
+                        <a asp-area="Member"
+                           asp-controller="Profile"
+                           asp-action="ChangePassword"
+                           class="action-btn secondary-btn">
+
+                            Change Password
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
 
         </div>
 
-
-        <div class="mb-3">
-
-            <label asp-for="Phone"></label>
-
-            <input asp-for="Phone"
-                   class="form-control" />
-
-            <span asp-validation-for="Phone"
-                  class="text-danger"></span>
-
-        </div>
-
-
-        <div class="form-check mb-3">
-
-            <input asp-for="NotificationPrefs"
-                   class="form-check-input" />
-
-            <label asp-for="NotificationPrefs">
-            </label>
-
-        </div>
-
-
-        <button class="btn btn-primary">
-
-            Save Changes
-
-        </button>
-
-    </form>
+    </div>
 
 </div>

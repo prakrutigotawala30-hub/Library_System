@@ -110,7 +110,7 @@ namespace Library_Management_System.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Authors");
+                    b.ToTable("Authors", (string)null);
                 });
 
             modelBuilder.Entity("LibraryManagementSystem.Models.Book", b =>
@@ -174,7 +174,7 @@ namespace Library_Management_System.Migrations
 
                     b.HasIndex("DepartmentId");
 
-                    b.ToTable("Books");
+                    b.ToTable("Books", (string)null);
                 });
 
             modelBuilder.Entity("LibraryManagementSystem.Models.BorrowRecord", b =>
@@ -223,7 +223,7 @@ namespace Library_Management_System.Migrations
 
                     b.HasIndex("MemberId");
 
-                    b.ToTable("BorrowRecords");
+                    b.ToTable("BorrowRecords", (string)null);
                 });
 
             modelBuilder.Entity("LibraryManagementSystem.Models.Category", b =>
@@ -241,7 +241,7 @@ namespace Library_Management_System.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("LibraryManagementSystem.Models.Department", b =>
@@ -262,7 +262,7 @@ namespace Library_Management_System.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Department");
+                    b.ToTable("Department", (string)null);
                 });
 
             modelBuilder.Entity("LibraryManagementSystem.Models.Member", b =>
@@ -297,7 +297,7 @@ namespace Library_Management_System.Migrations
 
                     b.HasIndex("ApplicationUserId");
 
-                    b.ToTable("Members");
+                    b.ToTable("Members", (string)null);
                 });
 
             modelBuilder.Entity("LibraryManagementSystem.Models.Membership", b =>
@@ -334,7 +334,7 @@ namespace Library_Management_System.Migrations
 
                     b.HasIndex("MemberId");
 
-                    b.ToTable("Membership");
+                    b.ToTable("Membership", (string)null);
                 });
 
             modelBuilder.Entity("LibraryManagementSystem.Models.Notification", b =>
@@ -368,7 +368,7 @@ namespace Library_Management_System.Migrations
 
                     b.HasIndex("MemberId");
 
-                    b.ToTable("Notifications");
+                    b.ToTable("Notifications", (string)null);
                 });
 
             modelBuilder.Entity("LibraryManagementSystem.Models.Reservation", b =>
@@ -399,7 +399,7 @@ namespace Library_Management_System.Migrations
 
                     b.HasIndex("MemberId");
 
-                    b.ToTable("Reservations");
+                    b.ToTable("Reservations", (string)null);
                 });
 
             modelBuilder.Entity("Library_Management_System.Models.ContactMessage", b =>
@@ -438,7 +438,7 @@ namespace Library_Management_System.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ContactMessages");
+                    b.ToTable("ContactMessages", (string)null);
                 });
 
             modelBuilder.Entity("Library_Management_System.Models.Event", b =>
@@ -472,7 +472,7 @@ namespace Library_Management_System.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Events");
+                    b.ToTable("Events", (string)null);
                 });
 
             modelBuilder.Entity("Library_Management_System.Models.Wishlist", b =>
@@ -500,7 +500,7 @@ namespace Library_Management_System.Migrations
 
                     b.HasIndex("MemberId");
 
-                    b.ToTable("Wishlists");
+                    b.ToTable("Wishlists", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

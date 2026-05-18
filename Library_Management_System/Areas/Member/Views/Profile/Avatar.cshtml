@@ -1,30 +1,406 @@
 ﻿@model Library_Management_System.ViewModels.ProfileViewModel
 
-<div class="card p-4 shadow">
+@{
+    ViewData["Title"] = "Upload Avatar";
+}
 
-    <h3>Upload Profile Picture</h3>
+<style>
 
-    @if (TempData["img"] != null)
-    {
-        <img src="@TempData["img"]"
-             width="150"
-             height="150"
-             class="rounded-circle mb-3" />
+    html,
+    body {
+        margin: 0;
+        padding: 0;
+        background: #050816;
+        overflow-x: hidden;
     }
 
-    <form asp-action="UploadAvatar"
-          method="post"
-          enctype="multipart/form-data">
+    .avatar-page {
+        min-height: 100vh;
+        padding: 35px;
+        background: radial-gradient(circle at top right, rgba(147,51,234,.18), transparent 25%), radial-gradient(circle at bottom left, rgba(236,72,153,.12), transparent 30%), linear-gradient(to bottom,#050816,#0b1020);
+    }
 
-        <input asp-for="AvatarFile"
-               class="form-control mb-3" />
+    .avatar-wrapper {
+        max-width: 900px;
+        margin: auto;
+    }
 
-        <button class="btn btn-primary">
+    .avatar-card {
+        background: rgba(8,12,24,.96);
+        border-radius: 32px;
+        overflow: hidden;
+        box-shadow: 0 25px 60px rgba(0,0,0,.45);
+    }
 
-            Upload
+    /* HEADER */
 
-        </button>
+    .avatar-header {
+        padding: 35px 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px;
+        background: linear-gradient( 135deg, rgba(147,51,234,.15), rgba(217,70,239,.06));
+    }
 
-    </form>
+        .avatar-header h2 {
+            color: white;
+            font-size: 34px;
+            font-weight: 800;
+            margin: 0 0 8px;
+        }
+
+        .avatar-header p {
+            color: #9ca3af;
+            margin: 0;
+            font-size: 15px;
+        }
+
+    .back-btn {
+        height: 55px;
+        padding: 0 28px;
+        border-radius: 18px;
+        text-decoration: none;
+        border: none;
+        background: rgba(255,255,255,.05);
+        color: white;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: .3s;
+    }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,.1);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+    /* BODY */
+
+    .avatar-body {
+        padding: 50px 40px;
+        text-align: center;
+    }
+
+    .avatar-preview-wrap {
+        position: relative;
+        width: 220px;
+        height: 220px;
+        margin: auto;
+    }
+
+    .avatar-preview {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+        box-shadow: 0 20px 50px rgba(0,0,0,.5);
+    }
+
+    .empty-avatar {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background: linear-gradient(135deg,#9333ea,#d946ef);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 75px;
+        font-weight: 800;
+        box-shadow: 0 20px 50px rgba(0,0,0,.5);
+    }
+
+    .camera-badge {
+        position: absolute;
+        bottom: 12px;
+        right: 12px;
+        width: 55px;
+        height: 55px;
+        border-radius: 50%;
+        background: linear-gradient(135deg,#9333ea,#d946ef);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 22px;
+        box-shadow: 0 10px 25px rgba(168,85,247,.45);
+    }
+
+    .avatar-title {
+        margin-top: 30px;
+    }
+
+        .avatar-title h3 {
+            color: white;
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .avatar-title p {
+            color: #9ca3af;
+            margin: 0;
+            font-size: 15px;
+        }
+
+    /* UPLOAD AREA */
+
+    .upload-box {
+        margin-top: 40px;
+        padding: 35px;
+        border-radius: 28px;
+        background: rgba(255,255,255,.03);
+    }
+
+    .custom-file {
+        width: 100%;
+        padding: 22px;
+        border-radius: 22px;
+        background: rgba(255,255,255,.05);
+        color: white;
+        border: 2px dashed rgba(147,51,234,.35);
+        cursor: pointer;
+        font-size: 15px;
+        transition: .3s;
+    }
+
+        .custom-file:hover {
+            background: rgba(255,255,255,.08);
+            border-color: #9333ea;
+        }
+
+        .custom-file::file-selector-button {
+            border: none;
+            padding: 14px 22px;
+            border-radius: 14px;
+            margin-right: 18px;
+            background: linear-gradient(135deg,#9333ea,#d946ef);
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            transition: .3s;
+        }
+
+            .custom-file::file-selector-button:hover {
+                transform: scale(1.03);
+            }
+
+    .text-danger {
+        display: block;
+        margin-top: 10px;
+        text-align: left;
+    }
+
+    /* BUTTONS */
+
+    .avatar-actions {
+        margin-top: 35px;
+        display: flex;
+        justify-content: center;
+        gap: 18px;
+        flex-wrap: wrap;
+    }
+
+    .save-btn {
+        height: 58px;
+        padding: 0 35px;
+        border: none;
+        border-radius: 18px;
+        background: linear-gradient(135deg,#9333ea,#d946ef);
+        color: white;
+        font-size: 15px;
+        font-weight: 700;
+        transition: .3s;
+        box-shadow: 0 15px 30px rgba(168,85,247,.25);
+    }
+
+        .save-btn:hover {
+            transform: translateY(-4px);
+        }
+
+    .cancel-btn {
+        height: 58px;
+        padding: 0 35px;
+        border-radius: 18px;
+        text-decoration: none;
+        background: rgba(255,255,255,.05);
+        color: white;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        transition: .3s;
+    }
+
+        .cancel-btn:hover {
+            background: rgba(255,255,255,.1);
+            color: white;
+        }
+
+    /* RESPONSIVE */
+
+    @@media(max-width:768px) {
+
+        .avatar-page {
+            padding: 15px;
+        }
+
+        .avatar-header,
+        .avatar-body {
+            padding: 25px;
+        }
+
+        .avatar-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+            .avatar-header h2 {
+                font-size: 28px;
+            }
+
+        .avatar-preview-wrap {
+            width: 170px;
+            height: 170px;
+        }
+
+        .upload-box {
+            padding: 22px;
+        }
+    }
+
+</style>
+
+<div class="avatar-page">
+
+    <div class="avatar-wrapper">
+
+        <div class="avatar-card">
+
+            <!-- HEADER -->
+
+            <div class="avatar-header">
+
+                <div>
+
+                    <h2>
+                        Upload Profile Photo
+                    </h2>
+
+                    <p>
+                        Update your profile picture for your library account
+                    </p>
+
+                </div>
+
+                <a asp-area="Member" asp-controller="Profile" asp-action="Index" class="back-btn">
+
+                    ← Back To Profile
+
+                </a>
+
+            </div>
+
+            <!-- BODY -->
+
+            <div class="avatar-body">
+
+                <!-- PREVIEW -->
+
+                <div class="avatar-preview-wrap">
+
+                    @if (!string.IsNullOrEmpty(Model.ProfileImagePath))
+                    {
+                        <img src="@Model.ProfileImagePath"
+                             class="avatar-preview" />
+                    }
+                    else
+                    {
+                        <div class="empty-avatar">
+
+                            U
+
+                        </div>
+                    }
+
+                    <div class="camera-badge">
+                        📷
+                    </div>
+
+                </div>
+
+                <div class="avatar-title">
+
+                    <h3>
+                        Change Your Avatar
+                    </h3>
+
+                    <p>
+                        Choose a new profile image to personalize your account
+                    </p>
+
+                </div>
+
+                <!-- FORM -->
+
+                <form asp-action="Avatar"
+                      asp-controller="Profile"
+                      asp-area="Member"
+                      method="post"
+                      enctype="multipart/form-data"> 
+
+                    @Html.AntiForgeryToken()
+
+                    <div class="upload-box">
+
+                        <input asp-for="AvatarFile"
+                               type="file"
+                               class="custom-file"
+                               accept="image/*" />
+
+                        <span asp-validation-for="AvatarFile"
+                              class="text-danger"></span>
+
+                    </div>
+
+                    <!-- BUTTONS -->
+
+                    <div class="avatar-actions">
+
+                        <button type="submit"
+                                class="save-btn">
+
+                            Upload Photo
+
+                        </button>
+
+                        <a asp-area="Member"
+                           asp-controller="Profile"
+                           asp-action="Edit"
+                           class="cancel-btn">
+
+                            Cancel
+
+                        </a>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+}

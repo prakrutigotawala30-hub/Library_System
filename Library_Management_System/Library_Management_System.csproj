@@ -8,9 +8,13 @@
 
 	<ItemGroup>
 	  <Compile Remove="Areas\Member\Models\**" />
+	  <Compile Remove="wwwroot\imagess\**" />
 	  <Content Remove="Areas\Member\Models\**" />
+	  <Content Remove="wwwroot\imagess\**" />
 	  <EmbeddedResource Remove="Areas\Member\Models\**" />
+	  <EmbeddedResource Remove="wwwroot\imagess\**" />
 	  <None Remove="Areas\Member\Models\**" />
+	  <None Remove="wwwroot\imagess\**" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -40,11 +44,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\LibraryManagementSystem.ClassLibrary\LibraryManagementSystem.ClassLibrary.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="wwwroot\imagess\covers\" />
-	  <Folder Include="wwwroot\imagess\hero\" />
 	</ItemGroup>
 
 </Project>

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace LibraryManagementSystem.Models
 {
@@ -6,7 +7,9 @@ namespace LibraryManagementSystem.Models
     {
         public string FullName { get; set; }
 
-        //public string Address { get; set; }
+        public string? ProfileImagePath { get; set; }
+
+        public bool NotificationPrefs { get; set; }
 
     }
 }
