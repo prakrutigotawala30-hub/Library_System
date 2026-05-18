@@ -2,21 +2,38 @@
 
     <!-- LOGO -->
 
-    <div class="logo-wrap">
+    <a class="brand-logo"
+       asp-controller="Home"
+       asp-action="Index">
 
-        <div class="logo-symbol">
+        <div class="brand-icon">
             ∞
         </div>
 
-        <div class="logo-text">
+        <div class="brand-text">
 
-            <h4>BOOKVERSE</h4>
+            <h2>
+                BOOK<span>VERSE</span>
+            </h2>
 
-            <small>LIBRARY MANAGEMENT SYSTEM</small>
+            <p>
+                LIBRARY MANAGEMENT SYSTEM
+            </p>
 
         </div>
 
-    </div>
+    </a>
+
+    @* <!-- MOBILE BUTTON -->
+
+    <button class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#mainNavbar">
+
+        <span class="navbar-toggler-icon"></span>
+
+    </button> *@
 
 
     <!-- HOME -->
@@ -29,6 +46,7 @@
 
     </a>
 
+    <hr />
 
     <!-- MEMBER -->
 
@@ -121,10 +139,10 @@
 
         </a>
 
-        <a asp-area="Member"
+        <a class="menu-item"
+           asp-area="Member"
            asp-controller="Profile"
            asp-action="ChangePassword">
-            <i class="bi bi-lock"></i>
 
             <span>Change Password</span>
         </a>
@@ -240,3 +258,128 @@
     </div>
 
 </aside>
+<style>
+    /* =========================
+               LOGO
+            ==========================*/
+
+    .brand-logo {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom:20px;
+    }
+
+    .brand-icon {
+        width: 40px;
+        height: 40px;
+        /* border-radius: 18px; */
+        /* background: linear-gradient(135deg,#9333ea,#d946ef); */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #d946ef;
+        font-size: 50px;
+        font-weight: 800;
+        /* box-shadow: 0 10px 30px rgba(168,85,247,.35); */
+    }
+
+    .brand-text h2 {
+        margin: 0;
+        color: white;
+        font-size: 25px;
+        font-weight: 900;
+        letter-spacing: 1px;
+    }
+
+    .brand-text span {
+        color: #d946ef;
+    }
+
+    .brand-text p {
+        margin: 0;
+        color: #9ca3af;
+        font-size: 7px;
+        letter-spacing: 2px;
+    }
+
+    /* SIDEBAR LAYOUT */
+
+    .sidebar {
+        width: 245px;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background: linear-gradient(180deg,#0f172a,#111827);
+        padding: 24px 18px;
+        overflow-y: auto;
+        z-index: 9999;
+        border-right: 1px solid rgba(255,255,255,.06);
+    }
+
+    /* PAGE CONTENT */
+
+    .page-content {
+        margin-left: 280px;
+        min-height: 100vh;
+        width: calc(100% - 280px);
+    }
+
+    /* KEEP BODY SAME */
+
+    body {
+        background: #050816;
+        color: white;
+        overflow-x: hidden;
+    }
+
+    /* SIDEBAR MENU */
+
+    .menu-item {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 14px 16px;
+        margin-bottom: 8px;
+        border-radius: 16px;
+        text-decoration: none;
+        color: #d1d5db;
+        transition: .3s;
+    }
+
+        .menu-item:hover {
+            background: rgba(124,58,237,.15);
+            color: white;
+        }
+
+        .menu-item.active {
+            background: linear-gradient(135deg,#7c3aed,#9333ea);
+            color: white;
+        }
+
+    /* MOBILE */
+
+    @@media(max - width:992px) {
+
+        .sidebar {
+            width: 85px;
+        }
+
+        .page-content {
+            margin-left: 85px;
+            width: calc(100% - 85px);
+        }
+
+        .logo-text,
+        .menu-item span,
+        .menu-heading,
+        .badge-count {
+            display: none;
+        }
+
+        .menu-item {
+            justify-content: center;
+        }
+    }
+</style>

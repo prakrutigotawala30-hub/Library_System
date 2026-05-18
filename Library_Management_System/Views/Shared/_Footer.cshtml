@@ -1,61 +1,254 @@
-﻿<footer class="footer-section">
+﻿<head>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
 
-    <div class="container">
+<!-- =========================
+        PREMIUM FOOTER
+========================= -->
 
-        <div class="row gy-4">
+<footer class="premium-footer">
 
-            <div class="col-lg-4">
+    <div class="container-fluid px-4">
 
-                <h4>📚 BOOKVERSE</h4>
+        <div class="footer-wrapper">
 
-                <p>
-                    Modern digital library platform for readers,
-                    students and book lovers.
-                </p>
+            <div class="row gy-5">
+
+                <!-- LOGO SECTION -->
+
+                <div class="col-lg-4">
+
+                    <div class="footer-brand">
+
+                        <div class="footer-logo">
+
+                            <div class="footer-logo-icon">
+                                ∞
+                            </div>
+
+                            <div>
+
+                                <h2>
+                                    BOOK<span>VERSE</span>
+                                </h2>
+
+                                <p>
+                                    LIBRARY MANAGEMENT SYSTEM
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                        <div class="footer-description">
+
+                            Modern digital library platform for
+                            readers, students, researchers and
+                            knowledge lovers across the world.
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- QUICK LINKS -->
+
+                <div class="col-lg-2 col-md-6">
+
+                    <h5 class="footer-title">
+                        Quick Links
+                    </h5>
+
+                    <ul class="footer-links">
+
+                        <li>
+
+                            <a asp-controller="Home"
+                               asp-action="Index">
+
+                                Home
+
+                            </a>
+
+                        </li>
+
+                        <li>
+
+                            <a asp-controller="Home"
+                               asp-action="About">
+
+                                About Us
+
+                            </a>
+
+                        </li>
+
+                        <li>
+
+                            <a asp-controller="Contact"
+                               asp-action="Index">
+
+                                Contact
+
+                            </a>
+
+                        </li>
+
+                        <li>
+
+                            <a asp-controller="Home"
+                               asp-action="FAQ">
+
+                                FAQs
+
+                            </a>
+
+                        </li>
+
+                    </ul>
+
+                </div>
+
+                <!-- HELP -->
+
+                <div class="col-lg-2 col-md-6">
+
+                    <h5 class="footer-title">
+                        Help & Support
+                    </h5>
+
+                    <ul class="footer-links">
+
+                        <li>
+
+                            <a href="#">
+                                Help Center
+                            </a>
+
+                        </li>
+
+                        <li>
+
+                            <a href="#">
+                                Borrowing Rules
+                            </a>
+
+                        </li>
+
+                        <li>
+
+                            <a href="#">
+                                Fines & Policies
+                            </a>
+
+                        </li>
+
+                        <li>
+
+                            <a href="#">
+                                Privacy Policy
+                            </a>
+
+                        </li>
+
+                    </ul>
+
+                </div>
+
+                <!-- CONTACT -->
+
+                <div class="col-lg-2 col-md-6">
+
+                    <h5 class="footer-title">
+                        Contact Us
+                    </h5>
+
+                    <div class="footer-contact">
+
+                        <div class="contact-item">
+
+                            <i class="fa-solid fa-location-dot"></i>
+
+                            <span>
+                                123 Library Street,
+                                Knowledge City, India
+                            </span>
+
+                        </div>
+
+                        <div class="contact-item">
+
+                            <i class="fa-solid fa-phone"></i>
+
+                            <span>
+                                +91 98765 43210
+                            </span>
+
+                        </div>
+
+                        <div class="contact-item">
+
+                            <i class="fa-solid fa-envelope"></i>
+
+                            <span>
+                                support@bookverse.com
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- SOCIAL -->
+
+                <div class="col-lg-2 col-md-6">
+
+                    <h5 class="footer-title">
+                        Connect With Us
+                    </h5>
+
+                    <div class="social-icons">
+
+                        <a href="#">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+
+                        <a href="#">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+
+                        <a href="#">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+
+                        <a href="#">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+
+                        <a href="#">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+
+                    </div>
+
+                </div>
 
             </div>
 
-            <div class="col-lg-4">
+            <!-- COPYRIGHT -->
 
-                <h5>Quick Links</h5>
+            <div class="footer-bottom">
 
-                <ul class="footer-links">
+                <div>
+                    © 2026 BookVerse Library Management System.
+                    All rights reserved.
+                </div>
 
-                    <li>
-                        <a asp-controller="Home"
-                           asp-action="Index">
-                            Home
-                        </a>
-                    </li>
-
-                    <li>
-                        <a asp-controller="Catalog"
-                           asp-action="Index">
-                            Books
-                        </a>
-                    </li>
-
-                    <li>
-                        <a asp-controller="Events"
-                           asp-action="Index">
-                            Events
-                        </a>
-                    </li>
-
-                </ul>
-
-            </div>
-
-            <div class="col-lg-4">
-
-                <h5>Follow Us</h5>
-
-                <div class="social-icons">
-
-                    <i class="bi bi-facebook"></i>
-                    <i class="bi bi-instagram"></i>
-                    <i class="bi bi-twitter-x"></i>
-
+                <div>
+                    Made with ❤️ for knowledge lovers
                 </div>
 
             </div>
@@ -65,3 +258,221 @@
     </div>
 
 </footer>
+
+<style>
+
+    /* =========================
+                PREMIUM FOOTER
+        ========================== */
+
+    .premium-footer {
+        margin-top: 50px;
+        padding: 0 15px 20px;
+    }
+
+    .footer-wrapper {
+        background: linear-gradient(135deg,#0b1120,#121a35);
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 28px;
+        padding: 45px;
+        box-shadow: 0 0 40px rgba(124,58,237,0.12);
+        position: relative;
+        overflow: hidden;
+    }
+
+        .footer-wrapper::before {
+            content: "";
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(rgba(139,92,246,.18),transparent 70%);
+            top: -200px;
+            right: -150px;
+        }
+
+    /* LOGO */
+
+    .footer-logo {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 20px;
+    }
+
+    .footer-logo-icon {
+        width: 58px;
+        height: 58px;
+        border-radius: 18px;
+        background: linear-gradient(135deg,#7c3aed,#d946ef);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        color: white;
+        font-weight: bold;
+        box-shadow: 0 10px 30px rgba(168,85,247,.35);
+    }
+
+    .footer-logo h2 {
+        margin: 0;
+        color: white;
+        font-size: 28px;
+        font-weight: 800;
+        letter-spacing: 1px;
+    }
+
+        .footer-logo h2 span {
+            color: #d946ef;
+        }
+
+    .footer-logo p {
+        margin: 0;
+        color: #9ca3af;
+        font-size: 11px;
+        letter-spacing: 2px;
+    }
+
+    .footer-description {
+        color: #9ca3af;
+        line-height: 1.8;
+        max-width: 320px;
+        font-size: 15px;
+    }
+
+    /* TITLES */
+
+    .footer-title {
+        color: white;
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 22px;
+    }
+
+    /* LINKS */
+
+    .footer-links {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+        .footer-links li {
+            margin-bottom: 14px;
+        }
+
+        .footer-links a {
+            color: #9ca3af;
+            text-decoration: none;
+            transition: .3s;
+            position: relative;
+            padding-left: 0;
+        }
+
+            .footer-links a:hover {
+                color: #c084fc;
+                padding-left: 6px;
+            }
+
+    /* CONTACT */
+
+    .footer-contact {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .contact-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        color: #9ca3af;
+        line-height: 1.6;
+        font-size: 14px;
+    }
+
+        .contact-item i {
+            color: #a855f7;
+            margin-top: 4px;
+        }
+
+    /* SOCIAL */
+
+    .social-icons {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+        .social-icons a {
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.06);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: .35s;
+            font-size: 18px;
+        }
+
+            .social-icons a:hover {
+                transform: translateY(-5px);
+                background: linear-gradient(135deg,#7c3aed,#9333ea);
+                box-shadow: 0 10px 25px rgba(124,58,237,.35);
+            }
+
+    .social-icons {
+        display: flex;
+        gap: 12px;
+    }
+
+        .social-icons a {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.06);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: 0.3s;
+            font-size: 18px;
+        }
+
+            .social-icons a:hover {
+                background: linear-gradient(135deg,#7c3aed,#9333ea);
+                transform: translateY(-4px);
+            }
+
+    /* BOTTOM */
+
+    .footer-bottom {
+        margin-top: 40px;
+        padding-top: 22px;
+        border-top: 1px solid rgba(255,255,255,0.06);
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 15px;
+        color: #9ca3af;
+        font-size: 14px;
+    }
+
+    /* RESPONSIVE */
+
+    @@media(max-width:991px) {
+
+        .footer-wrapper {
+            padding: 35px 25px;
+        }
+
+        .footer-bottom {
+            flex-direction: column;
+        }
+    }
+
+</style>

@@ -11,12 +11,6 @@
     {
         profileImage = currentUser.ProfileImagePath;
     }
-
-    var currentController =
-        ViewContext.RouteData.Values["controller"]?.ToString();
-
-    var currentAction =
-        ViewContext.RouteData.Values["action"]?.ToString();
 }
 
 <style>
@@ -37,103 +31,32 @@
         position: sticky;
         top: 0;
         z-index: 99999;
-        background: rgba(5,8,22,.94);
-        backdrop-filter: blur(20px);
+        background: rgba(5,8,22,.96);
+        backdrop-filter: blur(18px);
         border-bottom: 1px solid rgba(255,255,255,.08);
-        padding: 14px 0;
+        padding: 16px 0;
     }
-
-    /* =========================
-           LOGO
-        ==========================*/
-
-    .brand-logo {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-    }
-
-    .brand-icon {
-        width: 56px;
-        height: 56px;
-        border-radius: 18px;
-        background: linear-gradient(135deg,#9333ea,#d946ef);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 28px;
-        font-weight: 800;
-        box-shadow: 0 10px 30px rgba(168,85,247,.35);
-    }
-
-    .brand-text h2 {
-        margin: 0;
-        color: white;
-        font-size: 28px;
-        font-weight: 800;
-        letter-spacing: 1px;
-    }
-
-    .brand-text span {
-        color: #d946ef;
-    }
-
-    .brand-text p {
-        margin: 0;
-        color: #9ca3af;
-        font-size: 11px;
-        letter-spacing: 2px;
-    }
-
-    /* =========================
-           NAV LINKS
-        ==========================*/
-
-    .navbar-nav {
-        gap: 10px;
-    }
-
-        .navbar-nav .nav-link {
-            color: rgba(255,255,255,.82) !important;
-            font-size: 15px;
-            font-weight: 600;
-            padding: 12px 18px !important;
-            border-radius: 14px;
-            transition: .35s;
-        }
-
-            .navbar-nav .nav-link:hover {
-                background: rgba(255,255,255,.06);
-                color: white !important;
-            }
-
-            .navbar-nav .nav-link.active {
-                background: linear-gradient(135deg, rgba(147,51,234,.25), rgba(217,70,239,.18));
-                color: white !important;
-                border: 1px solid rgba(255,255,255,.08);
-            }
-
     /* =========================
            SEARCH
         ==========================*/
 
     .search-box {
         position: relative;
-        width: 340px;
-        z-index: 1;
+        width: 430px;
     }
 
     .search-input {
         width: 100%;
-        height: 54px;
+        height: 58px;
         border-radius: 18px;
         border: 1px solid rgba(255,255,255,.08);
         background: rgba(255,255,255,.05);
         color: white;
-        padding: 0 52px 0 20px;
+        padding: 0 55px 0 22px;
         outline: none;
         transition: .3s;
+        font-size: 15px;
+        
     }
 
         .search-input:focus {
@@ -151,6 +74,7 @@
         right: 18px;
         transform: translateY(-50%);
         color: #9ca3af;
+        font-size: 18px;
         pointer-events: none;
     }
 
@@ -160,14 +84,13 @@
 
     .dropdown {
         position: relative;
-        z-index: 5;
     }
 
     .profile-trigger {
         display: flex;
         align-items: center;
         gap: 12px;
-        padding: 8px 14px;
+        padding: 8px 16px;
         border-radius: 50px;
         background: rgba(255,255,255,.05);
         border: 1px solid rgba(255,255,255,.08);
@@ -181,8 +104,8 @@
         }
 
     .profile-avatar {
-        width: 46px;
-        height: 46px;
+        width: 48px;
+        height: 48px;
         border-radius: 50%;
         object-fit: cover;
         border: 2px solid rgba(255,255,255,.15);
@@ -194,6 +117,15 @@
         font-weight: 700;
     }
 
+    .default-avatar {
+        background: white;
+        color: black;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+    }
+
     /* =========================
            DROPDOWN
         ==========================*/
@@ -203,7 +135,7 @@
         border: 1px solid rgba(255,255,255,.08);
         border-radius: 20px;
         padding: 12px;
-        min-width: 250px;
+        min-width: 240px;
         margin-top: 18px;
     }
 
@@ -223,43 +155,6 @@
     .dropdown-divider {
         border-color: rgba(255,255,255,.08);
     }
-
-    /* =========================
-           AUTH BUTTONS
-        ==========================*/
-
-    .auth-btn {
-        height: 52px;
-        padding: 0 26px;
-        border-radius: 16px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 700;
-        transition: .3s;
-    }
-
-    .login-btn {
-        background: rgba(255,255,255,.05);
-        border: 1px solid rgba(255,255,255,.08);
-        color: white;
-    }
-
-        .login-btn:hover {
-            background: white;
-            color: #7e22ce;
-        }
-
-    .register-btn {
-        background: linear-gradient(135deg,#9333ea,#d946ef);
-        color: white;
-        box-shadow: 0 12px 28px rgba(168,85,247,.28);
-    }
-
-        .register-btn:hover {
-            transform: translateY(-3px);
-            color: white;
-        }
 
     /* =========================
            TOGGLER
@@ -283,7 +178,7 @@
 
         .navbar-collapse {
             margin-top: 20px;
-            padding: 22px;
+            padding: 20px;
             border-radius: 24px;
             background: rgba(10,14,28,.98);
             border: 1px solid rgba(255,255,255,.08);
@@ -291,16 +186,16 @@
 
         .search-box {
             width: 100%;
-            margin: 20px 0;
-        }
-
-        .auth-mobile {
-            width: 100%;
         }
 
         .profile-trigger {
             width: 100%;
             justify-content: center;
+        }
+
+        .navbar-right {
+            flex-direction: column;
+            width: 100%;
         }
     }
 
@@ -310,132 +205,20 @@
 
     <div class="container-fluid px-4">
 
-        <!-- LOGO -->
-
-        <a class="brand-logo"
-           asp-area=""
-           asp-controller="Home"
-           asp-action="Index">
-
-            <div class="brand-icon">
-                ∞
-            </div>
-
-            <div class="brand-text">
-
-                <h2>
-                    BOOK<span>VERSE</span>
-                </h2>
-
-                <p>
-                    LIBRARY MANAGEMENT SYSTEM
-                </p>
-
-            </div>
-
-        </a>
-
-        <!-- MOBILE BUTTON -->
-
-        <button class="navbar-toggler"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#mainNavbar">
-
-            <span class="navbar-toggler-icon"></span>
-
-        </button>
+      
 
         <!-- NAVBAR -->
 
         <div class="collapse navbar-collapse"
              id="mainNavbar">
 
-            <!-- MENU -->
+            <!-- SEARCH LEFT -->
 
-            <ul class="navbar-nav mx-auto">
-
-                <li class="nav-item">
-
-                    <a class="nav-link @(currentController == "Home" && currentAction == "Index" ? "active" : "")"
-                       asp-controller="Home"
-                       asp-action="Index">
-
-                        Home
-
-                    </a>
-
-                </li>
-
-                <li class="nav-item">
-
-                    <a class="nav-link @(currentController == "Books" ? "active" : "")"
-                       asp-controller="Books"
-                       asp-action="Index">
-
-                        Books
-
-                    </a>
-
-                </li>
-
-                <li class="nav-item">
-
-                    <a class="nav-link @(currentController == "Categories" ? "active" : "")"
-                       asp-controller="Categories"
-                       asp-action="Index">
-
-                        Categories
-
-                    </a>
-
-                </li>
-
-                <li class="nav-item">
-
-                    <a class="nav-link @(currentController == "Events" ? "active" : "")"
-                       asp-controller="Events"
-                       asp-action="Index">
-
-                        Events
-
-                    </a>
-
-                </li>
-
-                <li class="nav-item">
-
-                    <a class="nav-link @(currentAction == "About" ? "active" : "")"
-                       asp-controller="Home"
-                       asp-action="About">
-
-                        About
-
-                    </a>
-
-                </li>
-
-                <li class="nav-item">
-
-                    <a class="nav-link @(currentController == "Contact" ? "active" : "")"
-                       asp-controller="Contact"
-                       asp-action="Index">
-
-                        Contact
-
-                    </a>
-
-                </li>
-
-            </ul>
-
-            <!-- SEARCH -->
-
-            <div class="search-box me-lg-4">
+            <div class="search-box">
 
                 <input type="text"
                        class="search-input"
-                       placeholder="Search books, authors, categories..." />
+                       placeholder="Search books, authors..." />
 
                 <span class="search-icon">
                     🔍
@@ -443,124 +226,90 @@
 
             </div>
 
-            <!-- USER -->
-            @if (User.Identity != null &&
-                        User.Identity.IsAuthenticated)
-            {
-                <div class="dropdown">
+            <!-- RIGHT SIDE -->
 
-                    <a href="javascript:void(0)"
-                       class="profile-trigger dropdown-toggle"
-                       data-bs-toggle="dropdown"
-                       role="button">
+            <div class="ms-auto d-flex align-items-center gap-4 navbar-right">
 
-                        <img src="@profileImage"
-                             class="profile-avatar" />
+                <!-- USER -->
+                @if (User.Identity != null &&
+                                User.Identity.IsAuthenticated)
+                {
+                    <div class="dropdown">
 
-                        <span class="profile-user">
+                        <a href="javascript:void(0)"
+                           class="profile-trigger dropdown-toggle"
+                           data-bs-toggle="dropdown">
 
-                            @currentUser?.FullName
+                            @if (!string.IsNullOrEmpty(currentUser?.ProfileImagePath))
+                            {
+                                <img src="@currentUser.ProfileImagePath"
+                                     class="profile-avatar" />
+                            }
+                            else
+                            {
+                                <div class="profile-avatar default-avatar">
 
-                        </span>
+                                    @(string.IsNullOrEmpty(currentUser?.FullName)
+                                                                ? "U"
+                                                                : currentUser.FullName.Substring(0, 1).ToUpper())
 
-                    </a>
+                                </div>
+                            }
 
-                    <ul class="dropdown-menu dropdown-menu-end">
+                            <span class="profile-user">
 
-                        <li>
+                                @currentUser?.FullName
 
-                            <a class="dropdown-item"
-                               asp-area="Member"
-                               asp-controller="Home"
-                               asp-action="Dashboard">
+                            </span>
 
-                                📊 Dashboard
+                        </a>
 
-                            </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
 
-                        </li>
+                            <li>
 
-                        <li>
+                                <a class="dropdown-item"
+                                   asp-area="Member"
+                                   asp-controller="Dashboard"
+                                   asp-action="Index">
 
-                            <a class="dropdown-item"
-                               asp-area="Member"
-                               asp-controller="Profile"
-                               asp-action="Edit">
+                                    📊 Dashboard
 
-                                👤 My Profile
+                                </a>
 
-                            </a>
+                            </li>
 
-                        </li>
+                            <li>
 
-                        <li>
+                                <a class="dropdown-item"
+                                   asp-area="Member"
+                                   asp-controller="Profile"
+                                   asp-action="Edit">
 
-                            <a class="dropdown-item"
-                               asp-area="Member"
-                               asp-controller="Profile"
-                               asp-action="Avatar">
+                                    👤 My Profile
 
-                                📷 Change Avatar
+                                </a>
 
-                            </a>
+                            </li>
 
-                        </li>
+                            <li>
 
-                        <li>
+                                <a class="dropdown-item"
+                                   asp-controller="Account"
+                                   asp-action="Logout">
 
-                            <a class="dropdown-item"
-                               asp-area="Member"
-                               asp-controller="Profile"
-                               asp-action="ChangePassword">
+                                    🚪 Logout
 
-                                🔒 Change Password
+                                </a>
 
-                            </a>
+                            </li>
 
-                        </li>
+                        </ul>
 
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
+                    </div>
+                }
 
-                        <li>
-
-                            <a class="dropdown-item"
-                               asp-controller="Account"
-                               asp-action="Logout">
-
-                                🚪 Logout
-
-                            </a>
-
-                        </li>
-
-                    </ul>
-
-                </div>
-            }
-            else
-            {
-                <div class="d-flex gap-3 flex-lg-row flex-column auth-mobile">
-
-                    <a class="auth-btn login-btn"
-                       asp-controller="Account"
-                       asp-action="Login">
-
-                        Login
-
-                    </a>
-
-                    <a class="auth-btn register-btn"
-                       asp-controller="Account"
-                       asp-action="Register">
-
-                        Get Started
-
-                    </a>
-
-                </div>
-            }
+            </div>
 
         </div>
 

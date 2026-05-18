@@ -1,372 +1,234 @@
-﻿@{
-    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+﻿
+
+@{
+    ViewData["Title"] = "Home";
+    Layout = "~/Views/Shared/_PublicLayout.cshtml";
 }
 
-<style>
+<link rel="stylesheet" href="~/css/frontend.css" />
 
-    .hero-section {
-        background: linear-gradient(135deg,#7e22ce,#9333ea);
-        border-radius: 30px;
-        padding: 50px;
-        position: relative;
-        overflow: hidden;
-        margin-bottom: 30px;
-    }
+<div class="dashboard-wrapper">
 
-        .hero-section h1 {
-            font-size: 52px;
-            font-weight: 800;
-            margin-bottom: 16px;
-        }
+    <!-- HERO SECTION -->
+    <div class="hero-grid">
 
-            .hero-section h1 span {
-                color: #facc15;
-            }
+        <div class="hero-card">
+            <div class="hero-content">
 
-        .hero-section p {
-            color: rgba(255,255,255,.82);
-            max-width: 600px;
-            line-height: 1.7;
-            margin-bottom: 25px;
-        }
+                @using System.Security.Claims
+                <div class="welcome-text">
+                    Welcome Back, @User.Identity?.Name 👋
+                </div>
 
-    .hero-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        background: white;
-        color: #7e22ce;
-        padding: 14px 24px;
-        border-radius: 16px;
-        font-weight: 700;
-        transition: .3s;
-    }
+                <h1>
+                    Knowledge is <span>Power</span>
+                </h1>
 
-        .hero-btn:hover {
-            transform: translateY(-3px);
-            color: #7e22ce;
-        }
+                <p>
+                    Explore the world's best books and
+                    expand your imagination.
+                </p>
 
-    .dashboard-grid {
-        display: grid;
-        grid-template-columns: 2fr 1fr;
-        gap: 25px;
-    }
+                <a asp-controller="Catalog"
+                   asp-action="Index"
+                   class="hero-btn">
+                    Explore Books →
+                </a>
 
-    .content-card,
-    .summary-card {
-        background: rgba(255,255,255,.05);
-        border: 1px solid rgba(255,255,255,.06);
-        border-radius: 26px;
-        padding: 24px;
-        margin-bottom: 25px;
-    }
+            </div>
 
-    .section-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 22px;
-    }
+            <div class="hero-image">
+                <img src="~/images/hero/hero.png" alt="Hero" />
+            </div>
+        </div>
 
-        .section-header h4 {
-            margin: 0;
-            font-size: 20px;
-            font-weight: 700;
-        }
+        <!-- QUICK SUMMARY -->
+        <div class="summary-card">
 
-        .section-header a {
-            color: #a855f7;
-            font-size: 14px;
-        }
+            <h3>Quick Summary</h3>
 
-    .books-row {
-        display: grid;
-        grid-template-columns: repeat(auto-fit,minmax(180px,1fr));
-        gap: 20px;
-    }
+            <div class="summary-item blue">
+                <div class="icon">📘</div>
+                <div>
+                    <h4>12</h4>
+                    <span>Books Borrowed</span>
+                </div>
+            </div>
 
-    .book-card {
-        background: rgba(255,255,255,.04);
-        border-radius: 20px;
-        overflow: hidden;
-        transition: .3s;
-    }
+            <div class="summary-item green">
+                <div class="icon">📗</div>
+                <div>
+                    <h4>3</h4>
+                    <span>Books Reserved</span>
+                </div>
+            </div>
 
-        .book-card:hover {
-            transform: translateY(-8px);
-        }
+            <div class="summary-item orange">
+                <div class="icon">⏰</div>
+                <div>
+                    <h4>2</h4>
+                    <span>Overdue Books</span>
+                </div>
+            </div>
 
-        .book-card img {
-            width: 100%;
-            height: 250px;
-            object-fit: cover;
-        }
+            <div class="summary-item red">
+                <div class="icon">₹</div>
+                <div>
+                    <h4>₹0.00</h4>
+                    <span>Total Fine</span>
+                </div>
+            </div>
 
-    .book-info {
-        padding: 16px;
-    }
+            <a href="#" class="dashboard-btn">
+                View My Dashboard →
+            </a>
 
-        .book-info h5 {
-            font-size: 17px;
-            margin-bottom: 5px;
-        }
+        </div>
 
-        .book-info p {
-            color: rgba(255,255,255,.6);
-            font-size: 14px;
-            margin-bottom: 0;
-        }
+    </div>
 
-    .summary-item {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        margin-bottom: 22px;
-    }
-
-    .summary-icon {
-        width: 55px;
-        height: 55px;
-        border-radius: 18px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 22px;
-        color: white;
-    }
-
-    .purple {
-        background: linear-gradient(135deg,#9333ea,#7e22ce);
-    }
-
-    .green {
-        background: linear-gradient(135deg,#10b981,#059669);
-    }
-
-    .orange {
-        background: linear-gradient(135deg,#f59e0b,#ea580c);
-    }
-
-    .red {
-        background: linear-gradient(135deg,#ef4444,#dc2626);
-    }
-
-    .dashboard-btn {
-        width: 100%;
-        margin-top: 10px;
-        background: linear-gradient(135deg,#7e22ce,#9333ea);
-        border: none;
-        border-radius: 16px;
-        color: white;
-        padding: 14px;
-        font-weight: 600;
-    }
-
-    .event-item,
-    .activity-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 16px 0;
-        border-bottom: 1px solid rgba(255,255,255,.05);
-    }
-
-    .event-date {
-        width: 70px;
-        height: 70px;
-        border-radius: 18px;
-        background: linear-gradient(135deg,#7e22ce,#9333ea);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        margin-right: 18px;
-    }
-
-        .event-date h3 {
-            margin: 0;
-            font-size: 24px;
-            font-weight: 800;
-        }
-
-    .activity-left {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-    }
-
-    .activity-icon {
-        width: 46px;
-        height: 46px;
-        border-radius: 14px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-    }
-
-    @@media(max-width:992px) {
-
-        .dashboard-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-
-</style>
-
-<!-- HERO -->
-
-<div class="hero-section">
-
-    <h1>
-        Knowledge is <span>Power</span>
-    </h1>
-
-    <p>
-        Explore thousands of books, discover new authors,
-        and manage your reading journey with BOOKVERSE.
-    </p>
-
-    <a asp-controller="Catalog"
-       asp-action="Index"
-       class="hero-btn">
-
-        Explore Books
-        <i class="fa fa-arrow-right"></i>
-
-    </a>
-
-</div>
-
-<!-- GRID -->
-
-<div class="dashboard-grid">
-
-    <!-- LEFT -->
-
-    <div>
+    <!-- CONTENT GRID -->
+    <div class="content-grid">
 
         <!-- CONTINUE READING -->
-
-        <div class="content-card">
+        <div class="card-section">
 
             <div class="section-header">
-
-                <h4>Continue Reading</h4>
-
+                <h3>Continue Reading</h3>
                 <a href="#">View All</a>
-
             </div>
 
             <div class="books-row">
 
                 <div class="book-card">
-
-                    <img src="https://m.media-amazon.com/images/I/71aFt4+OTOL.jpg" />
-
-                    <div class="book-info">
-
-                        <h5>The Alchemist</h5>
-
-                        <p>Paulo Coelho</p>
-
+                    <img src="~/images/covers/TheAlchemist.jpeg" />
+                    <h4>The Alchemist</h4>
+                    <p>Paulo Coelho</p>
+                    <div class="progress-bar">
+                        <span style="width:45%"></span>
                     </div>
-
+                    <small>45%</small>
                 </div>
 
                 <div class="book-card">
-
-                    <img src="https://m.media-amazon.com/images/I/71QKQ9mwV7L.jpg" />
-
-                    <div class="book-info">
-
-                        <h5>Deep Work</h5>
-
-                        <p>Cal Newport</p>
-
+                    <img src="~/images/covers/deepwork.jpeg" />
+                    <h4>Deep Work</h4>
+                    <p>Cal Newport</p>
+                    <div class="progress-bar">
+                        <span style="width:60%"></span>
                     </div>
-
+                    <small>60%</small>
                 </div>
 
                 <div class="book-card">
+                    <img src="~/images/covers/AtomicHabits.jpeg" />
+                    <h4>Atomic Habits</h4>
+                    <p>James Clear</p>
+                    <div class="progress-bar">
+                        <span style="width:30%"></span>
+                    </div>
+                    <small>30%</small>
+                </div>
 
-                    <img src="https://m.media-amazon.com/images/I/81wgcld4wxL.jpg" />
+                <div class="book-card">
+                    <img src="~/images/covers/RichDad.jpeg" />
+                    <h4>Rich Dad Poor Dad</h4>
+                    <p>Robert Kiyosaki</p>
+                    <div class="progress-bar">
+                        <span style="width:25%"></span>
+                    </div>
+                    <small>25%</small>
+                </div>
 
-                    <div class="book-info">
+            </div>
+        </div>
 
-                        <h5>Atomic Habits</h5>
+        <!-- EVENTS -->
+        <div class="card-section">
 
-                        <p>James Clear</p>
+            <div class="section-header">
+                <h3>Upcoming Events</h3>
+                <a href="#">View All</a>
+            </div>
 
+            <div class="event-list">
+
+                <div class="event-card">
+                    <div class="event-date">
+                        <h2>24</h2>
+                        <span>MAY</span>
                     </div>
 
+                    <div>
+                        <h4>Author Meet: Chetan Bhagat</h4>
+                        <p>Seminar Hall, Main Building</p>
+                        <small>11:00 AM - 01:00 PM</small>
+                    </div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-date">
+                        <h2>30</h2>
+                        <span>MAY</span>
+                    </div>
+
+                    <div>
+                        <h4>Book Fair 2025</h4>
+                        <p>Central Library Campus</p>
+                        <small>10:00 AM - 06:00 PM</small>
+                    </div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-date">
+                        <h2>05</h2>
+                        <span>JUN</span>
+                    </div>
+
+                    <div>
+                        <h4>Reading Competition</h4>
+                        <p>Seminar Hall, Main Building</p>
+                        <small>02:00 PM - 04:00 PM</small>
+                    </div>
                 </div>
 
             </div>
 
         </div>
 
-        <!-- EVENTS -->
-
-        <div class="content-card">
+        <!-- CATEGORIES -->
+        <div class="card-section">
 
             <div class="section-header">
-
-                <h4>Upcoming Events</h4>
-
+                <h3>Popular Categories</h3>
                 <a href="#">View All</a>
-
             </div>
 
-            <div class="event-item">
+            <div class="category-list">
 
-                <div class="activity-left">
-
-                    <div class="event-date">
-
-                        <h3>12</h3>
-
-                        <small>JUL</small>
-
-                    </div>
-
-                    <div>
-
-                        <h5>Book Reading Session</h5>
-
-                        <p class="text-light opacity-75">
-                            Weekly reading club event.
-                        </p>
-
-                    </div>
-
+                <div class="category-item">
+                    <span>📚 Fiction</span>
+                    <small>1200+ Books</small>
                 </div>
 
-            </div>
+                <div class="category-item">
+                    <span>🧪 Science</span>
+                    <small>980+ Books</small>
+                </div>
 
-            <div class="event-item">
+                <div class="category-item">
+                    <span>💻 Technology</span>
+                    <small>850+ Books</small>
+                </div>
 
-                <div class="activity-left">
+                <div class="category-item">
+                    <span>💼 Business</span>
+                    <small>760+ Books</small>
+                </div>
 
-                    <div class="event-date">
-
-                        <h3>25</h3>
-
-                        <small>JUL</small>
-
-                    </div>
-
-                    <div>
-
-                        <h5>Author Meet</h5>
-
-                        <p class="text-light opacity-75">
-                            Meet bestselling authors.
-                        </p>
-
-                    </div>
-
+                <div class="category-item">
+                    <span>🏛 History</span>
+                    <small>640+ Books</small>
                 </div>
 
             </div>
@@ -375,145 +237,33 @@
 
     </div>
 
-    <!-- RIGHT -->
+    <!-- NEW ARRIVALS -->
+    <div class="card-section mt-4">
 
-    <div>
-
-        <!-- SUMMARY -->
-
-        <div class="summary-card">
-
-            <h4 class="mb-4">
-                Quick Summary
-            </h4>
-
-            <div class="summary-item">
-
-                <div class="summary-icon purple">
-                    <i class="fa fa-book-open"></i>
-                </div>
-
-                <div>
-
-                    <h5>12</h5>
-
-                    <p>Books Borrowed</p>
-
-                </div>
-
-            </div>
-
-            <div class="summary-item">
-
-                <div class="summary-icon green">
-                    <i class="fa fa-bookmark"></i>
-                </div>
-
-                <div>
-
-                    <h5>3</h5>
-
-                    <p>Reserved</p>
-
-                </div>
-
-            </div>
-
-            <div class="summary-item">
-
-                <div class="summary-icon orange">
-                    <i class="fa fa-clock"></i>
-                </div>
-
-                <div>
-
-                    <h5>2</h5>
-
-                    <p>Overdue</p>
-
-                </div>
-
-            </div>
-
-            <div class="summary-item">
-
-                <div class="summary-icon red">
-                    ₹
-                </div>
-
-                <div>
-
-                    <h5>₹0.00</h5>
-
-                    <p>Total Fine</p>
-
-                </div>
-
-            </div>
-
-            <a asp-area="Member"
-               asp-controller="Dashboard"
-               asp-action="Index"
-               class="btn dashboard-btn">
-
-                View Dashboard →
-
-            </a>
-
+        <div class="section-header">
+            <h3>New Arrivals</h3>
+            <a href="#">View All</a>
         </div>
 
-        <!-- ACTIVITY -->
+        <div class="arrival-row">
 
-        <div class="content-card">
-
-            <div class="section-header">
-
-                <h4>Recent Activity</h4>
-
-            </div>
-
-            <div class="activity-item">
-
-                <div class="activity-left">
-
-                    <div class="activity-icon purple">
-
-                        <i class="fa fa-book"></i>
-
-                    </div>
-
-                    <div>
-                        Borrowed "Clean Code"
-                    </div>
-
-                </div>
-
-                <small>2h ago</small>
-
-            </div>
-
-            <div class="activity-item">
-
-                <div class="activity-left">
-
-                    <div class="activity-icon green">
-
-                        <i class="fa fa-heart"></i>
-
-                    </div>
-
-                    <div>
-                        Added "Atomic Habits"
-                    </div>
-
-                </div>
-
-                <small>1d ago</small>
-
-            </div>
-
+            <img src="~/images/covers/sapiens.jpeg" />
+            <img src="~/images/covers/thinkingfast.jpeg" />
+            <img src="~/images/covers/subtleart.jpeg" />
+            <img src="~/images/covers/AtomicHabits.jpeg" />
+            <img src="~/images/covers/5amclub.jpeg" />
+            <img src="~/images/covers/howtowin.jpeg" />
+            <img src="~/images/covers/psychology.jpeg" />
+            <img src="~/images/covers/startup.jpeg" />
+            <img src="~/images/covers/RichDad.jpeg" />
+            <img src="~/images/covers/AtomicHabits.jpeg" />
+            <img src="~/images/covers/deepwork.jpeg" />
+            <img src="~/images/covers/TheAlchemist.jpeg" />
         </div>
 
     </div>
 
 </div>
+<style>
+
+</style>

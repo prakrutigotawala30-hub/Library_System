@@ -21,13 +21,24 @@
 
 <body>
 
-    <partial name="_Navbar" />
+    <!-- SIDEBAR -->
+    <partial name="_Sidebar" />
 
-    <main>
-        @RenderBody()
-    </main>
+    <!-- PAGE CONTENT -->
+    <div class="page-content">
 
-    <partial name="_Footer" />
+        <!-- NAVBAR -->
+        <partial name="_Navbar" />
+
+        <!-- MAIN BODY -->
+        <main>
+            @RenderBody()
+        </main>
+
+        <!-- FOOTER -->
+        <partial name="_Footer" />
+
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -35,5 +46,6 @@
 
     <script src="~/js/catalog.js"></script>
     <script src="~/js/wishlist.js"></script>
+
 </body>
 </html>

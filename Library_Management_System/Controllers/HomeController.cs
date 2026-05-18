@@ -20,15 +20,37 @@ namespace Library_Management_System.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
+       
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public IActionResult FAQ()
+        {
+            return View();
+        }
+
+        public IActionResult About()
+        {
+            return View();
+        }
+
+        public IActionResult Hours()
+        {
+            return View();
+        }
+
+        public IActionResult Rules()
+        {
+            return View();
+        }
+
+        public IActionResult Privacy()
+        {
+            return View();
         }
     }
 }
