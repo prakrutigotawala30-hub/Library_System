@@ -1,6 +1,197 @@
 ﻿@{
     ViewData["Title"] = "Privacy Policy";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<style>
+
+    body {
+        background: #050816;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .privacy-section {
+        min-height: 100vh;
+        padding: 90px 0;
+        background: radial-gradient(circle at top right, rgba(124,58,237,0.18), transparent 30%), linear-gradient(135deg,#050816,#0b1120,#111827);
+    }
+
+    .privacy-header {
+        text-align: center;
+        margin-bottom: 60px;
+    }
+
+        .privacy-header h1 {
+            color: white;
+            font-size: 52px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+        }
+
+        .privacy-header p {
+            color: #9ca3af;
+            font-size: 18px;
+            max-width: 750px;
+            margin: auto;
+        }
+
+    /* CARD */
+
+    .privacy-card {
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 30px;
+        padding: 45px;
+        backdrop-filter: blur(14px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.35), 0 0 20px rgba(124,58,237,0.10);
+    }
+
+        .privacy-card h3 {
+            color: white;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 18px;
+            margin-top: 35px;
+        }
+
+            .privacy-card h3:first-child {
+                margin-top: 0;
+            }
+
+        .privacy-card p {
+            color: #d1d5db;
+            line-height: 1.9;
+            font-size: 16px;
+            margin-bottom: 18px;
+        }
+
+        .privacy-card ul {
+            padding-left: 20px;
+        }
+
+            .privacy-card ul li {
+                color: #d1d5db;
+                margin-bottom: 12px;
+                line-height: 1.8;
+            }
+
+    .highlight-text {
+        color: #c084fc;
+        font-weight: 600;
+    }
+
+    /* MOBILE */
+
+    @@media(max-width:768px) {
+
+        .privacy-section {
+            padding: 60px 0;
+        }
+
+        .privacy-header h1 {
+            font-size: 40px;
+        }
+
+        .privacy-header p {
+            font-size: 16px;
+        }
+
+        .privacy-card {
+            padding: 30px 22px;
+        }
+
+            .privacy-card h3 {
+                font-size: 24px;
+            }
+    }
+
+</style>
+
+<section class="privacy-section">
+
+    <div class="container">
+
+        <!-- HEADER -->
+
+        <div class="privacy-header">
+
+            <h1>Privacy Policy</h1>
+
+            <p>
+                Your privacy and data security are important to us.
+                This policy explains how BookVerse Library manages,
+                protects, and uses your information.
+            </p>
+
+        </div>
+
+        <!-- CONTENT -->
+
+        <div class="privacy-card">
+
+            <h3>Information Collection</h3>
+
+            <p>
+                BookVerse Library collects essential user information
+                such as names, email addresses, student details,
+                and borrowing records to provide library services.
+            </p>
+
+            <h3>How We Use Information</h3>
+
+            <p>
+                The collected information is used to:
+            </p>
+
+            <ul>
+                <li>Manage book borrowing and returns</li>
+                <li>Send notifications and reminders</li>
+                <li>Improve library services and user experience</li>
+                <li>Maintain account security and records</li>
+            </ul>
+
+            <h3>Data Protection</h3>
+
+            <p>
+                We use secure systems and authentication methods
+                to protect user data from unauthorized access,
+                misuse, or disclosure.
+            </p>
+
+            <h3>Cookies & Tracking</h3>
+
+            <p>
+                Our system may use cookies for login sessions,
+                personalization, and improving website performance.
+            </p>
+
+            <h3>User Responsibility</h3>
+
+            <p>
+                Users are responsible for maintaining the confidentiality
+                of their account credentials and activities performed
+                under their accounts.
+            </p>
+
+            <h3>Policy Updates</h3>
+
+            <p>
+                BookVerse Library reserves the right to update
+                this privacy policy whenever necessary.
+                Continued use of the system indicates acceptance
+                of updated policies.
+            </p>
+
+            <p class="mt-4">
+                <span class="highlight-text">
+                    Last Updated:
+                </span>
+                May 2026
+            </p>
+
+        </div>
+
+    </div>
+
+</section>

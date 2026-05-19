@@ -22,10 +22,7 @@ namespace Library_Management_System.Areas.Member.Controllers
             _signInManager = signInManager;
         }
 
-        // =========================
         // PROFILE PAGE
-        // =========================
-
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -44,9 +41,7 @@ namespace Library_Management_System.Areas.Member.Controllers
             return View(model);
         }
 
-        // =========================
         // EDIT PROFILE GET
-        // =========================
 
         [HttpGet]
         public async Task<IActionResult> Edit()
@@ -67,9 +62,7 @@ namespace Library_Management_System.Areas.Member.Controllers
             return View(model);
         }
 
-        // =========================
         // EDIT PROFILE POST
-        // =========================
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -95,9 +88,7 @@ namespace Library_Management_System.Areas.Member.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // =========================
         // AVATAR PAGE GET
-        // =========================
 
         [HttpGet]
         public async Task<IActionResult> Avatar()
@@ -115,9 +106,7 @@ namespace Library_Management_System.Areas.Member.Controllers
             return View(model);
         }
 
-        // =========================
         // AVATAR UPLOAD POST
-        // =========================
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -159,19 +148,14 @@ namespace Library_Management_System.Areas.Member.Controllers
             return RedirectToAction(nameof(Edit));
         }
 
-        // =========================
         // CHANGE PASSWORD GET
-        // =========================
 
         [HttpGet]
         public IActionResult ChangePassword()
         {
             return View();
         }
-
-        // =========================
         // CHANGE PASSWORD POST
-        // =========================
 
         [HttpPost]
         [ValidateAntiForgeryToken]

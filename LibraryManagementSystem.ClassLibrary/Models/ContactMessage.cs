@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Library_Management_System.Models
+namespace LibraryManagementSystem.ClassLibrary.Models
 {
     public class ContactMessage
     {

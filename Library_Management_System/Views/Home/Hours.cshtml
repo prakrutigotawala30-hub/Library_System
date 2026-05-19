@@ -1,45 +1,185 @@
 ﻿@{
-    ViewData["Title"] = "Hours";
+    ViewData["Title"] = "Library Hours";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<section class="py-5 bg-white min-vh-100">
+<style>
+
+    body {
+        background: #050816;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .hours-section {
+        min-height: 100vh;
+        padding: 90px 0;
+        background: radial-gradient(circle at top right, rgba(124,58,237,0.18), transparent 30%), linear-gradient(135deg,#050816,#0b1120,#111827);
+    }
+
+    .hours-header {
+        text-align: center;
+        margin-bottom: 60px;
+    }
+
+        .hours-header h1 {
+            color: #ffffff;
+            font-size: 52px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+        }
+
+        .hours-header p {
+            color: #9ca3af;
+            font-size: 18px;
+        }
+
+    /* TABLE CARD */
+
+    .hours-card {
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 28px;
+        overflow: hidden;
+        backdrop-filter: blur(12px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.35), 0 0 20px rgba(124,58,237,0.10);
+    }
+
+    /* TABLE */
+
+    .hours-table {
+        margin: 0;
+        color: white;
+    }
+
+        .hours-table thead {
+            background: linear-gradient(90deg,#7c3aed,#9333ea,#a855f7);
+        }
+
+            .hours-table thead th {
+                border: none;
+                padding: 22px;
+                font-size: 18px;
+                font-weight: 700;
+                text-align: center;
+                color: white;
+            }
+
+        .hours-table tbody tr {
+            background: transparent;
+            transition: 0.3s ease;
+        }
+
+            .hours-table tbody tr:hover {
+                background: rgba(255,255,255,0.05);
+            }
+
+        .hours-table tbody td {
+            border-color: rgba(255,255,255,0.08);
+            padding: 22px;
+            font-size: 16px;
+            color: #d1d5db;
+            text-align: center;
+        }
+
+    .closed-day {
+        color: #f87171 !important;
+        font-weight: 700;
+    }
+
+    .open-day {
+        color: #4ade80;
+        font-weight: 600;
+    }
+
+    /* MOBILE */
+
+    @@media(max-width:768px) {
+
+        .hours-section {
+            padding: 60px 0;
+        }
+
+        .hours-header h1 {
+            font-size: 38px;
+        }
+
+        .hours-header p {
+            font-size: 16px;
+        }
+
+        .hours-table thead th,
+        .hours-table tbody td {
+            padding: 16px;
+            font-size: 14px;
+        }
+    }
+
+</style>
+
+<section class="hours-section">
+
     <div class="container">
 
-        <div class="text-center mb-5">
-            <h1 class="fw-bold">Library Hours</h1>
-            <p class="text-muted">Opening and closing schedule</p>
+        <!-- HEADER -->
+
+        <div class="hours-header">
+
+            <h1>Library Hours</h1>
+
+            <p>
+                Opening and closing schedule of BookVerse Library
+            </p>
+
         </div>
 
-        <div class="table-responsive shadow rounded-4 overflow-hidden">
-            <table class="table table-bordered align-middle mb-0">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Day</th>
-                        <th>Opening</th>
-                        <th>Closing</th>
-                    </tr>
-                </thead>
+        <!-- TABLE -->
 
-                <tbody>
-                    <tr>
-                        <td>Monday - Friday</td>
-                        <td>8:00 AM</td>
-                        <td>8:00 PM</td>
-                    </tr>
+        <div class="hours-card">
 
-                    <tr>
-                        <td>Saturday</td>
-                        <td>9:00 AM</td>
-                        <td>5:00 PM</td>
-                    </tr>
+            <div class="table-responsive">
 
-                    <tr>
-                        <td>Sunday</td>
-                        <td colspan="2">Closed</td>
-                    </tr>
-                </tbody>
-            </table>
+                <table class="table hours-table align-middle">
+
+                    <thead>
+
+                        <tr>
+                            <th>Day</th>
+                            <th>Opening</th>
+                            <th>Closing</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+                            <td class="open-day">Monday - Friday</td>
+                            <td>8:00 AM</td>
+                            <td>8:00 PM</td>
+                        </tr>
+
+                        <tr>
+                            <td class="open-day">Saturday</td>
+                            <td>9:00 AM</td>
+                            <td>5:00 PM</td>
+                        </tr>
+
+                        <tr>
+                            <td class="closed-day">Sunday</td>
+                            <td colspan="2" class="closed-day">
+                                Closed
+                            </td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
         </div>
 
     </div>
+
 </section>

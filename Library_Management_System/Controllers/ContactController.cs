@@ -1,5 +1,5 @@
-﻿using Library_Management_System.Data;
-using Library_Management_System.Models;
+﻿using LibraryManagementSystem.ClassLibrary.Data;
+using LibraryManagementSystem.ClassLibrary.Models;
 using Library_Management_System.Services;
 using Library_Management_System.ViewModels;
 using Microsoft.AspNetCore.Mvc;

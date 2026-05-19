@@ -25,6 +25,7 @@
             background: #070b1a;
             color: white;
             font-family: 'Segoe UI', sans-serif;
+            overflow-x: hidden;
         }
 
         .layout-wrapper {
@@ -33,28 +34,34 @@
         }
 
         /* SIDEBAR */
-
-        /* SIDEBAR */
-
         .sidebar {
             width: 245px;
-            height: 100vh;
             position: fixed;
             top: 0;
             left: 0;
+            height: 100vh;
             background: linear-gradient(180deg,#0f172a,#111827);
             padding: 24px 18px;
-            overflow-y: auto;
-            z-index: 9999;
+            z-index: 1000;
             border-right: 1px solid rgba(255,255,255,.06);
+            overflow-y: auto;
+            scrollbar-width: none; 
+            -ms-overflow-style: none; 
+            pointer-events: auto;
         }
+
+            .sidebar::-webkit-scrollbar {
+                display: none;
+            }
 
         /* PAGE CONTENT */
 
         .main-content {
-            margin-left: 245px;
-            width: calc(100% - 245px);
+            margin-left: 260px;
+            width: calc(100% - 260px);
             padding: 25px;
+            position: relative;
+            z-index: 1;
         }
 
         /* LOGO */
@@ -173,6 +180,13 @@
                 background: rgba(239,68,68,.2);
                 color: white;
             }
+
+        .menu-item,
+        .logout-link,
+        .brand-logo {
+            position: relative;
+            z-index: 2000;
+        }
 
         /* RESPONSIVE */
 
@@ -401,7 +415,7 @@
 
             <!-- HOME -->
 
-            <a class="menu-item active"
+            <a class="menu-item"
                asp-controller="Home"
                asp-action="Index">
 
@@ -421,7 +435,7 @@
 
             <div class="menu-list">
 
-                <a class="menu-item"
+                <a class="menu-item active"
                    asp-area="Member"
                    asp-controller="Dashboard"
                    asp-action="Index">

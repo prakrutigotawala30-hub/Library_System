@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Library_Management_System.Migrations
+namespace LibraryManagementSystem.ClassLibrary.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
@@ -99,7 +99,7 @@ namespace Library_Management_System.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Department",
+                name: "Departments",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -109,7 +109,7 @@ namespace Library_Management_System.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Department", x => x.Id);
+                    table.PrimaryKey("PK_Departments", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -309,22 +309,23 @@ namespace Library_Management_System.Migrations
                         column: x => x.AuthorId,
                         principalTable: "Authors",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Books_Categories_CategoryId",
                         column: x => x.CategoryId,
                         principalTable: "Categories",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Books_Department_DepartmentId",
+                        name: "FK_Books_Departments_DepartmentId",
                         column: x => x.DepartmentId,
-                        principalTable: "Department",
-                        principalColumn: "Id");
+                        principalTable: "Departments",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Membership",
+                name: "Memberships",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -339,9 +340,9 @@ namespace Library_Management_System.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Membership", x => x.Id);
+                    table.PrimaryKey("PK_Memberships", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Membership_Members_MemberId",
+                        name: "FK_Memberships_Members_MemberId",
                         column: x => x.MemberId,
                         principalTable: "Members",
                         principalColumn: "Id",
@@ -373,13 +374,13 @@ namespace Library_Management_System.Migrations
                         column: x => x.BookId,
                         principalTable: "Books",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_BorrowRecords_Members_MemberId",
                         column: x => x.MemberId,
                         principalTable: "Members",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -497,9 +498,19 @@ namespace Library_Management_System.Migrations
                 column: "BookId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BorrowRecords_DueDate",
+                table: "BorrowRecords",
+                column: "DueDate");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BorrowRecords_MemberId",
                 table: "BorrowRecords",
                 column: "MemberId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BorrowRecords_ReturnedOn",
+                table: "BorrowRecords",
+                column: "ReturnedOn");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Members_ApplicationUserId",
@@ -507,8 +518,8 @@ namespace Library_Management_System.Migrations
                 column: "ApplicationUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Membership_MemberId",
-                table: "Membership",
+                name: "IX_Memberships_MemberId",
+                table: "Memberships",
                 column: "MemberId");
 
             migrationBuilder.CreateIndex(
@@ -565,7 +576,7 @@ namespace Library_Management_System.Migrations
                 name: "Events");
 
             migrationBuilder.DropTable(
-                name: "Membership");
+                name: "Memberships");
 
             migrationBuilder.DropTable(
                 name: "Notifications");
@@ -595,7 +606,7 @@ namespace Library_Management_System.Migrations
                 name: "Categories");
 
             migrationBuilder.DropTable(
-                name: "Department");
+                name: "Departments");
         }
     }
 }

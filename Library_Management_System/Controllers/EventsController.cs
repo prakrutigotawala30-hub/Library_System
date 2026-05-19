@@ -1,4 +1,4 @@
-using Library_Management_System.Data;
+using LibraryManagementSystem.ClassLibrary.Data;
 using Library_Management_System.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

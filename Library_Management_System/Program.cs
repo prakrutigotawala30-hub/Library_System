@@ -1,6 +1,6 @@
-using Library_Management_System.Data;
 using Library_Management_System.Models;
 using Library_Management_System.Services;
+using LibraryManagementSystem.ClassLibrary.Data;
 using LibraryManagementSystem.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -10,11 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // DATABASE
 builder.Services.AddDbContext<AppDbContext>(options =>
-{
     options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
-        sql => sql.CommandTimeout(120));
-});
+        builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // IDENTITY
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>

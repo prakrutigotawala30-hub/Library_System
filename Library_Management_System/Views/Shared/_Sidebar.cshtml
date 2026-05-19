@@ -103,6 +103,7 @@
 
 
         <a class="menu-item"
+           asp-area="Member"
            asp-controller="Reservation"
            asp-action="Index">
 
@@ -307,16 +308,25 @@
 
     .sidebar {
         width: 245px;
-        height: 100vh;
         position: fixed;
         top: 0;
         left: 0;
+        height: 100vh;
         background: linear-gradient(180deg,#0f172a,#111827);
         padding: 24px 18px;
-        overflow-y: auto;
         z-index: 9999;
         border-right: 1px solid rgba(255,255,255,.06);
+        /* SCROLL */
+        overflow-y: auto;
+        /* HIDE SCROLLBAR */
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE + Edge */
     }
+
+        /* Chrome + Safari */
+        .sidebar::-webkit-scrollbar {
+            display: none;
+        }
 
     /* PAGE CONTENT */
 

@@ -1,4 +1,4 @@
-﻿using LibraryManagementSystem.Data;
+﻿using LibraryManagementSystem.ClassLibrary.Data;
 using LibraryManagementSystem.Models;
 using LibraryManagementSystem.Services;
 using LibraryManagementSystem.ViewModels;
@@ -17,20 +17,24 @@ namespace LibraryManagementSystem.Controllers
         private readonly AppDbContext _context;
         private readonly ExportService _exportService;
 
-        public BooksController(AppDbContext context, ExportService exportService)
+        public BooksController(
+            AppDbContext context,
+            ExportService exportService)
         {
             _context = context;
             _exportService = exportService;
         }
 
+        // =========================
         // INDEX + SEARCH
+        // =========================
         public async Task<IActionResult> Index(string? search)
         {
-
             var query = _context.Books
                 .Include(b => b.Author)
                 .Include(b => b.Category)
                 .Include(b => b.Department)
+                .AsNoTracking()
                 .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(search))
@@ -39,23 +43,31 @@ namespace LibraryManagementSystem.Controllers
                     b.Title.Contains(search) ||
                     b.ISBN.Contains(search) ||
                     b.Author!.Name.Contains(search) ||
-                    b.Category!.Name.Contains(search)
-                    );
+                    b.Category!.Name.Contains(search) ||
+                    (b.Department != null &&
+                     b.Department.Name.Contains(search))
+                );
             }
 
-            var data = await query.ToListAsync();
+            var data = await query
+                .OrderByDescending(b => b.CreatedAt)
+                .ToListAsync();
 
             ViewBag.Search = search;
+
             return View(data);
         }
 
-        // DETAILS 
+        // =========================
+        // DETAILS
+        // =========================
         public async Task<IActionResult> Details(int id)
         {
             var book = await _context.Books
                 .Include(b => b.Author)
                 .Include(b => b.Category)
                 .Include(b => b.Department)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(b => b.Id == id);
 
             if (book == null)
@@ -65,80 +77,104 @@ namespace LibraryManagementSystem.Controllers
                 .Include(b => b.Member)
                 .Where(b => b.BookId == id)
                 .OrderByDescending(b => b.IssuedOn)
+                .AsNoTracking()
                 .ToListAsync();
+
             var vm = new BookDetailsViewModel
             {
                 Book = book,
-                BorrowHistory = borrowHistory ?? new List<BorrowRecord>()
+                BorrowHistory = borrowHistory
             };
 
             return View(vm);
         }
 
-        // ADD BOOK
+        // =========================
+        // CREATE GET
+        // =========================
         [HttpGet]
         public IActionResult Create()
         {
-            ViewBag.CategoryList = new SelectList(_context.Categories, "Id", "Name");
-
-            ViewBag.AuthorList = new SelectList(_context.Authors, "Id", "Name");
-
-            ViewBag.DepartmentList = new SelectList(_context.Departments, "Id", "Name");
+            LoadDropdowns();
 
             return View();
         }
 
+        // =========================
+        // CREATE POST
+        // =========================
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Book book)
         {
-            if (book.CategoryId == 0)
-                ModelState.AddModelError("CategoryId", "Select Category");
+            ValidateBook(book);
 
-            if (book.AuthorId == 0)
-                ModelState.AddModelError("AuthorId", "Select Author");
+            bool isbnExists = await _context.Books
+                .AnyAsync(b => b.ISBN == book.ISBN);
 
-            if (book.TotalCopies <= 0)
-                ModelState.AddModelError("TotalCopies", "Enter valid total copies");
+            if (isbnExists)
+            {
+                ModelState.AddModelError(
+                    "ISBN",
+                    "This ISBN already exists."
+                );
+            }
 
             book.AvailableCopies = book.TotalCopies;
 
             if (ModelState.IsValid)
             {
-                _context.Books.Add(book);
-                await _context.SaveChangesAsync();
+                try
+                {
+                    book.CreatedAt = DateTime.UtcNow;
 
-                TempData["Success"] = "Book added successfully!";
-                return RedirectToAction(nameof(Index));
+                    _context.Books.Add(book);
+
+                    await _context.SaveChangesAsync();
+
+                    TempData["Success"] =
+                        "Book added successfully!";
+
+                    return RedirectToAction(nameof(Index));
+                }
+                catch
+                {
+                    TempData["Error"] =
+                        "Something went wrong while saving.";
+                }
             }
 
-            ViewBag.CategoryList = new SelectList(_context.Categories, "Id", "Name", book.CategoryId);
-
-            ViewBag.AuthorList = new SelectList(_context.Authors, "Id", "Name", book.AuthorId);
-
-            ViewBag.DepartmentList = new SelectList(_context.Departments, "Id", "Name", book.DepartmentId);
+            LoadDropdowns(
+                book.CategoryId,
+                book.AuthorId,
+                book.DepartmentId);
 
             return View(book);
         }
-        // EDIT BOOK
 
+        // =========================
+        // EDIT GET
+        // =========================
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var book = await _context.Books.FindAsync(id);
+            var book = await _context.Books
+                .FindAsync(id);
 
             if (book == null)
                 return NotFound();
 
-            ViewBag.CategoryList = new SelectList(_context.Categories, "Id", "Name", book.CategoryId);
-
-            ViewBag.AuthorList = new SelectList(_context.Authors, "Id", "Name", book.AuthorId);
-
-            ViewBag.DepartmentList = new SelectList(_context.Departments, "Id", "Name", book.DepartmentId);
+            LoadDropdowns(
+                book.CategoryId,
+                book.AuthorId,
+                book.DepartmentId);
 
             return View(book);
         }
 
+        // =========================
+        // EDIT POST
+        // =========================
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Book book)
@@ -146,34 +182,60 @@ namespace LibraryManagementSystem.Controllers
             if (id != book.Id)
                 return NotFound();
 
-            if (book.CategoryId == 0)
-                ModelState.AddModelError("CategoryId", "Select Category");
+            ValidateBook(book);
 
-            if (book.AuthorId == 0)
-                ModelState.AddModelError("AuthorId", "Select Author");
+            bool isbnExists = await _context.Books
+                .AnyAsync(b =>
+                    b.ISBN == book.ISBN &&
+                    b.Id != book.Id);
 
-            if (book.TotalCopies <= 0)
-                ModelState.AddModelError("TotalCopies", "Enter valid total copies");
+            if (isbnExists)
+            {
+                ModelState.AddModelError(
+                    "ISBN",
+                    "This ISBN already exists."
+                );
+            }
+
+            if (book.AvailableCopies > book.TotalCopies)
+            {
+                ModelState.AddModelError(
+                    "AvailableCopies",
+                    "Available copies cannot exceed total copies."
+                );
+            }
 
             if (ModelState.IsValid)
             {
-                _context.Update(book);
-                await _context.SaveChangesAsync();
+                try
+                {
+                    _context.Update(book);
 
-                TempData["Success"] = "Book updated successfully!";
-                return RedirectToAction(nameof(Index));
+                    await _context.SaveChangesAsync();
+
+                    TempData["Success"] =
+                        "Book updated successfully!";
+
+                    return RedirectToAction(nameof(Index));
+                }
+                catch
+                {
+                    TempData["Error"] =
+                        "Something went wrong while updating.";
+                }
             }
 
-            ViewBag.CategoryList = new SelectList(_context.Categories, "Id", "Name", book.CategoryId);
-
-            ViewBag.AuthorList = new SelectList(_context.Authors, "Id", "Name", book.AuthorId);
-
-            ViewBag.DepartmentList = new SelectList(_context.Departments, "Id", "Name", book.DepartmentId);
+            LoadDropdowns(
+                book.CategoryId,
+                book.AuthorId,
+                book.DepartmentId);
 
             return View(book);
         }
 
-        // DELETE BOOK
+        // =========================
+        // DELETE GET
+        // =========================
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
@@ -181,6 +243,7 @@ namespace LibraryManagementSystem.Controllers
                 .Include(b => b.Author)
                 .Include(b => b.Category)
                 .Include(b => b.Department)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(b => b.Id == id);
 
             if (book == null)
@@ -189,6 +252,9 @@ namespace LibraryManagementSystem.Controllers
             return View(book);
         }
 
+        // =========================
+        // DELETE POST
+        // =========================
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(Book model)
@@ -200,19 +266,28 @@ namespace LibraryManagementSystem.Controllers
             if (book == null)
                 return NotFound();
 
-            if (book.BorrowRecords != null && book.BorrowRecords.Any())
+            if (book.BorrowRecords != null &&
+                book.BorrowRecords.Any())
             {
-                TempData["Error"] = "Cannot delete book with borrow history!";
+                TempData["Error"] =
+                    "Cannot delete book with borrow history!";
+
                 return RedirectToAction(nameof(Index));
             }
 
             _context.Books.Remove(book);
+
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Book deleted successfully!";
+            TempData["Success"] =
+                "Book deleted successfully!";
+
             return RedirectToAction(nameof(Index));
         }
 
+        // =========================
+        // MOST POPULAR BOOKS
+        // =========================
         public IActionResult MostPopularBooks()
         {
             var popularBooks = _context.BorrowRecords
@@ -234,11 +309,16 @@ namespace LibraryManagementSystem.Controllers
             return View(popularBooks);
         }
 
+        // =========================
+        // EXPORT EXCEL
+        // =========================
         public async Task<IActionResult> ExportExcel()
         {
             var books = await _context.Books
                 .Include(b => b.Author)
                 .Include(b => b.Category)
+                .Include(b => b.Department)
+                .AsNoTracking()
                 .ToListAsync();
 
             var file = _exportService.ExportBooks(books);
@@ -250,29 +330,44 @@ namespace LibraryManagementSystem.Controllers
             );
         }
 
+        // =========================
+        // IMPORT GET
+        // =========================
         [HttpGet]
         public IActionResult Import()
         {
             return View();
         }
 
+        // =========================
+        // IMPORT POST
+        // =========================
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Import(BookImportViewModel model)
+        public async Task<IActionResult> Import(
+            BookImportViewModel model)
         {
             try
             {
-                if (model.CsvFile == null || model.CsvFile.Length == 0)
+                if (model.CsvFile == null ||
+                    model.CsvFile.Length == 0)
                 {
-                    TempData["Error"] = "Please upload a CSV file.";
+                    TempData["Error"] =
+                        "Please upload a CSV file.";
+
                     return View(model);
                 }
 
                 var books = new List<Book>();
 
-                using var stream = new StreamReader(model.CsvFile.OpenReadStream());
+                using var stream =
+                    new StreamReader(
+                        model.CsvFile.OpenReadStream());
 
-                using var csv = new CsvReader(stream, CultureInfo.InvariantCulture);
+                using var csv =
+                    new CsvReader(
+                        stream,
+                        CultureInfo.InvariantCulture);
 
                 csv.Read();
                 csv.ReadHeader();
@@ -281,9 +376,11 @@ namespace LibraryManagementSystem.Controllers
                 {
                     try
                     {
-                        int authorId = csv.GetField<int>("AuthorId");
+                        int authorId =
+                            csv.GetField<int>("AuthorId");
 
-                        int categoryId = csv.GetField<int>("CategoryId");
+                        int categoryId =
+                            csv.GetField<int>("CategoryId");
 
                         int? departmentId = null;
 
@@ -291,7 +388,8 @@ namespace LibraryManagementSystem.Controllers
 
                         try
                         {
-                            departmentText = csv.GetField("DepartmentId");
+                            departmentText =
+                                csv.GetField("DepartmentId");
                         }
                         catch
                         {
@@ -300,24 +398,26 @@ namespace LibraryManagementSystem.Controllers
 
                         if (!string.IsNullOrWhiteSpace(departmentText))
                         {
-                            departmentId = int.Parse(departmentText);
+                            departmentId =
+                                int.Parse(departmentText);
                         }
 
-                        // Validate Author
-                        bool authorExists = await _context.Authors
-                            .AnyAsync(a => a.Id == authorId);
+                        bool authorExists =
+                            await _context.Authors
+                                .AnyAsync(a => a.Id == authorId);
 
-                        // Validate Category
-                        bool categoryExists = await _context.Categories
-                            .AnyAsync(c => c.Id == categoryId);
+                        bool categoryExists =
+                            await _context.Categories
+                                .AnyAsync(c => c.Id == categoryId);
 
-                        // Validate Department
                         bool departmentExists = true;
 
                         if (departmentId.HasValue)
                         {
-                            departmentExists = await _context.Departments
-                                .AnyAsync(d => d.Id == departmentId.Value);
+                            departmentExists =
+                                await _context.Departments
+                                    .AnyAsync(d =>
+                                        d.Id == departmentId.Value);
                         }
 
                         if (!authorExists ||
@@ -327,11 +427,12 @@ namespace LibraryManagementSystem.Controllers
                             continue;
                         }
 
-                        string isbn = csv.GetField("ISBN");
+                        string isbn =
+                            csv.GetField("ISBN");
 
-                        // Duplicate ISBN Check
-                        bool isbnExists = await _context.Books
-                            .AnyAsync(b => b.ISBN == isbn);
+                        bool isbnExists =
+                            await _context.Books
+                                .AnyAsync(b => b.ISBN == isbn);
 
                         if (isbnExists)
                         {
@@ -347,7 +448,11 @@ namespace LibraryManagementSystem.Controllers
                             DepartmentId = departmentId,
                             TotalCopies = csv.GetField<int>("TotalCopies"),
                             AvailableCopies = csv.GetField<int>("AvailableCopies"),
-                            IsFeatured = csv.GetField<bool>("IsFeatured")
+                            TotalPages = csv.GetField<int>("TotalPages"),
+                            Description = csv.GetField("Description"),
+                            CoverImageUrl = csv.GetField("CoverImageUrl"),
+                            IsFeatured = csv.GetField<bool>("IsFeatured"),
+                            CreatedAt = DateTime.UtcNow
                         };
 
                         books.Add(book);
@@ -382,7 +487,67 @@ namespace LibraryManagementSystem.Controllers
                 return View(model);
             }
         }
+
+        // =========================
+        // PRIVATE METHODS
+        // =========================
+
+        private void LoadDropdowns(
+            int? categoryId = null,
+            int? authorId = null,
+            int? departmentId = null)
+        {
+            ViewBag.CategoryList =
+                new SelectList(
+                    _context.Categories,
+                    "Id",
+                    "Name",
+                    categoryId);
+
+            ViewBag.AuthorList =
+                new SelectList(
+                    _context.Authors,
+                    "Id",
+                    "Name",
+                    authorId);
+
+            ViewBag.DepartmentList =
+                new SelectList(
+                    _context.Departments,
+                    "Id",
+                    "Name",
+                    departmentId);
+        }
+
+        private void ValidateBook(Book book)
+        {
+            if (book.CategoryId == 0)
+            {
+                ModelState.AddModelError(
+                    "CategoryId",
+                    "Select Category");
+            }
+
+            if (book.AuthorId == 0)
+            {
+                ModelState.AddModelError(
+                    "AuthorId",
+                    "Select Author");
+            }
+
+            if (book.TotalCopies <= 0)
+            {
+                ModelState.AddModelError(
+                    "TotalCopies",
+                    "Enter valid total copies");
+            }
+
+            if (book.TotalPages <= 0)
+            {
+                ModelState.AddModelError(
+                    "TotalPages",
+                    "Enter valid total pages");
+            }
+        }
     }
-
-
 }

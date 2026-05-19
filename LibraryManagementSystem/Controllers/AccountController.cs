@@ -45,7 +45,6 @@ namespace LibraryManagementSystem.Controllers
 
             var user = await _userManager.FindByEmailAsync(model.Email);
 
-            // EMAIL NOT FOUND
             if (user == null)
             {
                 ModelState.AddModelError(
@@ -56,12 +55,11 @@ namespace LibraryManagementSystem.Controllers
             }
 
             var result = await _signInManager.PasswordSignInAsync(
-                model.Email,
+                user.UserName,
                 model.Password,
                 model.RememberMe,
                 false);
 
-            // WRONG PASSWORD
             if (!result.Succeeded)
             {
                 ModelState.AddModelError(
@@ -71,7 +69,6 @@ namespace LibraryManagementSystem.Controllers
                 return View(model);
             }
 
-            // SUCCESS
             return RedirectToAction("Index", "Home");
         }
 

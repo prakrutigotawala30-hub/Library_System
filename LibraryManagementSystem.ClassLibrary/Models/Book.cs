@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using LibraryManagementSystem.ClassLibrary.Models;
 
 namespace LibraryManagementSystem.Models
 {
@@ -55,6 +56,6 @@ namespace LibraryManagementSystem.Models
 
         public List<BorrowRecord> BorrowRecords { get; set; } = new();
 
-        public ICollection<Reservation> Reservations { get; set; }
+        public ICollection<Reservation?> Reservations { get; set; } = null;
     }
 }

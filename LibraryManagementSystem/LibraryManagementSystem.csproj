@@ -33,6 +33,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LibraryManagementSystem.ClassLibrary\LibraryManagementSystem.ClassLibrary.csproj" />
+	 
   </ItemGroup>
 
 </Project>

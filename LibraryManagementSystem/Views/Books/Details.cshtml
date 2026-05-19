@@ -7,57 +7,158 @@
 <div class="container mt-4">
 
     <!-- HEADER -->
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>📖 Book Details</h2>
-        <a asp-action="Index" class="btn btn-outline-secondary">← Back</a>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary">📖 Book Details</h2>
+
+        <a asp-action="Index"
+           class="btn btn-outline-secondary">
+            ← Back
+        </a>
     </div>
 
-    <!-- BOOK INFO CARD -->
-    <div class="card shadow border-0 rounded-3 mb-4">
-        <div class="card-body">
+    <!-- MAIN CARD -->
+    <div class="card shadow border-0 rounded-4 overflow-hidden">
 
-            <div class="row">
+        <div class="row g-0">
 
-                <div class="col-md-8">
+            <!-- BOOK IMAGE -->
+            <div class="col-md-4 bg-light text-center p-4">
 
-                    <h3 class="text-primary">@Model.Book.Title</h3>
+                @if (!string.IsNullOrEmpty(Model.Book.CoverImageUrl))
+                {
+                    <img src="@Model.Book.CoverImageUrl"
+                         class="img-fluid rounded shadow-sm"
+                         style="max-height:400px; object-fit:cover;" />
+                }
+                else
+                {
+                    <img src="https://via.placeholder.com/300x400?text=No+Cover"
+                         class="img-fluid rounded shadow-sm" />
+                }
 
-                    <p class="mb-1">
-                        <strong>ISBN:</strong> @Model.Book.ISBN
-                    </p>
+            </div>
 
-                    <p class="mb-1">
-                        <strong>Author:</strong> @Model.Book.Author?.Name
-                    </p>
+            <!-- BOOK INFO -->
+            <div class="col-md-8">
 
-                    <p class="mb-1">
-                        <strong>Category:</strong> @Model.Book.Category?.Name
-                    </p>
+                <div class="card-body p-4">
 
-                    <p class="mb-1">
-                        <strong>Department:</strong> @Model.Book.Department?.Name
-                    </p>
+                    <!-- TITLE -->
+                    <div class="d-flex align-items-center mb-3">
 
-                </div>
+                        <h2 class="fw-bold text-dark mb-0">
+                            @Model.Book.Title
+                        </h2>
 
-                <div class="col-md-4 text-end">
-
-                    <div class="p-3 border rounded bg-light">
-
-                        <h6 class="text-muted">Availability</h6>
-
-                        <h4>
-                            @Model.Book.AvailableCopies / @Model.Book.TotalCopies
-                        </h4>
-
-                        @if (Model.Book.AvailableCopies > 0)
+                        @if (Model.Book.IsFeatured)
                         {
-                            <span class="badge bg-success px-3 py-2">Available</span>
+                            <span class="badge bg-warning text-dark ms-3 px-3 py-2">
+                                ⭐ Featured
+                            </span>
                         }
-                        else
-                        {
-                            <span class="badge bg-danger px-3 py-2">Not Available</span>
-                        }
+
+                    </div>
+
+                    <!-- BASIC INFO -->
+                    <div class="row mb-4">
+
+                        <div class="col-md-6">
+
+                            <p>
+                                <strong>ISBN:</strong>
+                                @Model.Book.ISBN
+                            </p>
+
+                            <p>
+                                <strong>Category:</strong>
+                                @Model.Book.Category?.Name
+                            </p>
+
+                            <p>
+                                <strong>Department:</strong>
+                                @Model.Book.Department?.Name
+                            </p>
+
+                            <p>
+                                <strong>Total Pages:</strong>
+                                @Model.Book.TotalPages
+                            </p>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <p>
+                                <strong>Total Copies:</strong>
+                                @Model.Book.TotalCopies
+                            </p>
+
+                            <p>
+                                <strong>Available Copies:</strong>
+                                @Model.Book.AvailableCopies
+                            </p>
+
+                            <p>
+                                <strong>Borrow Count:</strong>
+                                @Model.Book.BorrowCount
+                            </p>
+
+                            <p>
+                                <strong>Added On:</strong>
+                                @Model.Book.CreatedAt.ToString("dd MMM yyyy")
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <!-- DESCRIPTION -->
+                    <div class="mb-4">
+
+                        <h5 class="fw-bold text-primary">
+                            📘 Book Description
+                        </h5>
+
+                        <p class="text-muted">
+                            @(string.IsNullOrWhiteSpace(Model.Book.Description)
+                                                        ? "No description available."
+                                                        : Model.Book.Description)
+                        </p>
+
+                    </div>
+
+                    <!-- AUTHOR -->
+                    <div class="mb-4">
+
+                        <h5 class="fw-bold text-primary">
+                            ✍ Author Information
+                        </h5>
+
+                        <p>
+                            <strong>Name:</strong>
+                            @Model.Book.Author?.Name
+                        </p>
+
+                        <p class="text-muted">
+                            @(string.IsNullOrWhiteSpace(Model.Book.Author?.Bio)
+                                                        ? "No biography available."
+                                                        : Model.Book.Author?.Bio)
+                        </p>
+
+                    </div>
+
+                    <!-- DEPARTMENT -->
+                    <div class="mb-2">
+
+                        <h5 class="fw-bold text-primary">
+                            🏢 Department Information
+                        </h5>
+
+                        <p class="text-muted">
+                            @(string.IsNullOrWhiteSpace(Model.Book.Department?.Description)
+                                                        ? "No department description available."
+                                                        : Model.Book.Department?.Description)
+                        </p>
 
                     </div>
 
@@ -66,65 +167,85 @@
             </div>
 
         </div>
+
     </div>
 
     <!-- BORROW HISTORY -->
-    <div class="card shadow border-0 rounded-3">
+    <div class="card shadow border-0 rounded-4 mt-4">
 
-        <div class="card-header bg-dark text-white">
-            📊 Borrow History
+        <div class="card-header bg-dark text-white py-3">
+            <h5 class="mb-0">📊 Borrow History</h5>
         </div>
 
         <div class="card-body p-0">
 
             @if (Model.BorrowHistory != null && Model.BorrowHistory.Any())
             {
-                <table class="table table-hover table-bordered mb-0 align-middle">
+                <div class="table-responsive">
 
-                    <thead class="table-light">
-                        <tr>
-                            <th>Student</th>
-                            <th>Borrow Date</th>
-                            <th>Return Date</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
+                    <table class="table table-hover table-bordered align-middle mb-0">
 
-                    <tbody>
-                        @foreach (var item in Model.BorrowHistory)
-                        {
+                        <thead class="table-light">
                             <tr>
-
-                                <td>@item.Member?.Name</td>
-
-                                <td>@item.IssuedOn.ToString("dd MMM yyyy")</td>
-
-                                <td>
-                                    @(item.ReturnedOn.HasValue
-                                                                ? item.ReturnedOn.Value.ToString("dd MMM yyyy")
-                                                                : "-")
-                                </td>
-
-                                <td>
-                                    @if (item.Status == "Issued")
-                                    {
-                                        <span class="badge bg-warning text-dark px-3 py-2">Issued</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-success px-3 py-2">Returned</span>
-                                    }
-                                </td>
-
+                                <th>Student</th>
+                                <th>Issued On</th>
+                                <th>Returned On</th>
+                                <th>Status</th>
+                                <th>Fine</th>
                             </tr>
-                        }
-                    </tbody>
+                        </thead>
 
-                </table>
+                        <tbody>
+
+                            @foreach (var item in Model.BorrowHistory)
+                            {
+                                <tr>
+
+                                    <td>@item.Member?.Name</td>
+
+                                    <td>
+                                        @item.IssuedOn.ToString("dd MMM yyyy")
+                                    </td>
+
+                                    <td>
+                                        @(item.ReturnedOn.HasValue
+                                                                        ? item.ReturnedOn.Value.ToString("dd MMM yyyy")
+                                                                        : "-")
+                                    </td>
+
+                                    <td>
+
+                                        @if (item.Status == "Issued")
+                                        {
+                                            <span class="badge bg-warning text-dark px-3 py-2">
+                                                Issued
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success px-3 py-2">
+                                                Returned
+                                            </span>
+                                        }
+
+                                    </td>
+
+                                    <td>
+                                        ₹@item.FineAmount
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
             }
             else
             {
-                <div class="text-center p-4 text-muted">
+                <div class="text-center p-5 text-muted">
                     📭 No borrow history available
                 </div>
             }

@@ -1,165 +1,243 @@
-@model Library_Management_System.Models.Event
+@model LibraryManagementSystem.ClassLibrary.Models.Event
 
 @{
     ViewData["Title"] = "Event Details";
+
+    string speakerName = "James Clear";
+    string speakerDesc = "Bestselling author and productivity expert known for inspiring readers through modern self-improvement and leadership sessions.";
+    string speakerImage = "/images/speakers/james-clear.jpg";
+
+    if (Model.Title.Contains("Atomic Habits"))
+    {
+        speakerName = "James Clear";
+        speakerDesc = "Author of Atomic Habits and expert in habits, productivity, and continuous improvement.";
+        speakerImage = "/images/speakers/james-clear.jpg";
+    }
+    else if (Model.Title.Contains("Rich Dad"))
+    {
+        speakerName = "Robert Kiyosaki";
+        speakerDesc = "Entrepreneur and financial educator focused on wealth creation and financial freedom.";
+        speakerImage = "/images/speakers/robert-kiyosaki.jpg";
+    }
+    else if (Model.Title.Contains("Alchemist"))
+    {
+        speakerName = "Paulo Coelho";
+        speakerDesc = "Internationally celebrated novelist known for inspirational storytelling and life philosophy.";
+        speakerImage = "/images/speakers/paulo-coelho.jpg";
+    }
+    else if (Model.Title.Contains("Clean Code"))
+    {
+        speakerName = "Robert C. Martin";
+        speakerDesc = "Software architect and Clean Code mentor known for modern programming practices.";
+        speakerImage = "/images/speakers/uncle-bob.jpg";
+    }
+    else if (Model.Title.Contains("Wings of Fire"))
+    {
+        speakerName = "Dr. A.P.J Abdul Kalam";
+        speakerDesc = "Scientist, visionary leader, and former President of India who inspired millions of students.";
+        speakerImage = "/images/speakers/apj-kalam.jpg";
+    }
 }
 
 <style>
 
-    .event-details-page {
-        background: radial-gradient(circle at top left, rgba(139,92,246,.15), transparent 25%), linear-gradient(to bottom,#050816,#0b1023);
-        min-height: 100vh;
-        padding: 35px;
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
     }
+
+    body {
+        background: #070b1a;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .event-details-page {
+        min-height: 100vh;
+        padding: 30px;
+        background: radial-gradient(circle at top right, rgba(168,85,247,.16), transparent 25%), radial-gradient(circle at bottom left, rgba(236,72,153,.12), transparent 30%), linear-gradient(135deg,#070b1a,#0f172a);
+    }
+
+    /* GLASS */
 
     .glass-card {
-        background: rgba(255,255,255,.05);
+        background: rgba(255,255,255,.04);
         border: 1px solid rgba(255,255,255,.08);
-        backdrop-filter: blur(14px);
-        border-radius: 24px;
+        backdrop-filter: blur(16px);
+        border-radius: 30px;
+        box-shadow: 0 0 30px rgba(139,92,246,.10);
     }
 
-    /* TOP */
+    /* TOP SECTION */
 
     .event-top {
         padding: 35px;
-        margin-bottom: 25px;
+        margin-bottom: 28px;
+        position: relative;
+        overflow: hidden;
     }
 
+        .event-top::before {
+            content: "";
+            position: absolute;
+            width: 320px;
+            height: 320px;
+            border-radius: 50%;
+            background: rgba(168,85,247,.08);
+            top: -120px;
+            right: -120px;
+        }
+
     .event-cover {
-        width: 220px;
-        border-radius: 20px;
+        position: relative;
+        width: 100%;
+        border-radius: 26px;
         overflow: hidden;
-        flex-shrink: 0;
+        height: 360px;
+        box-shadow: 0 15px 35px rgba(0,0,0,.35);
     }
 
         .event-cover img {
             width: 100%;
-            height: 320px;
+            height: 100%;
             object-fit: cover;
+            transition: .6s;
+        }
+
+        .event-cover:hover img {
+            transform: scale(1.06);
         }
 
     .event-info {
-        padding-left: 35px;
+        padding-left: 20px;
+        position: relative;
+        z-index: 2;
     }
 
     .event-badge {
-        display: inline-block;
-        padding: 8px 18px;
-        border-radius: 30px;
-        background: rgba(168,85,247,.18);
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 18px;
+        border-radius: 50px;
+        background: rgba(139,92,246,.12);
+        border: 1px solid rgba(255,255,255,.06);
         color: #e9d5ff;
         font-size: 13px;
-        margin-bottom: 20px;
+        font-weight: 600;
+        margin-bottom: 24px;
     }
 
     .event-info h1 {
         color: white;
-        font-size: 55px;
-        font-weight: 800;
-        margin-bottom: 20px;
+        font-size: 58px;
+        line-height: 1.08;
+        font-weight: 900;
+        margin-bottom: 22px;
     }
 
     .event-meta {
         display: flex;
-        gap: 25px;
         flex-wrap: wrap;
-        color: #ddd6fe;
-        margin-bottom: 25px;
+        gap: 16px;
+        margin-bottom: 28px;
     }
+
+        .event-meta div {
+            padding: 12px 18px;
+            border-radius: 14px;
+            background: rgba(255,255,255,.03);
+            border: 1px solid rgba(255,255,255,.05);
+            color: #ddd6fe;
+            font-size: 14px;
+        }
 
     .event-desc {
         color: #d1d5db;
         line-height: 1.9;
         font-size: 16px;
-        max-width: 800px;
+        max-width: 95%;
     }
 
+    /* BUTTONS */
+
     .event-buttons {
-        margin-top: 30px;
+        margin-top: 34px;
         display: flex;
-        gap: 15px;
+        gap: 16px;
         flex-wrap: wrap;
     }
 
     .btn-main {
-        background: linear-gradient(135deg,#9333ea,#d946ef);
-        border: none;
+        background: linear-gradient(90deg,#7c3aed,#9333ea);
         color: white;
-        padding: 14px 28px;
-        border-radius: 14px;
+        padding: 14px 30px;
+        border-radius: 16px;
         text-decoration: none;
         font-weight: 700;
+        transition: .35s;
+        border: none;
+        box-shadow: 0 10px 25px rgba(139,92,246,.25);
     }
+
+        .btn-main:hover {
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 14px 30px rgba(139,92,246,.35);
+        }
 
     .btn-outline {
         background: rgba(255,255,255,.04);
-        border: 1px solid rgba(255,255,255,.12);
+        border: 1px solid rgba(255,255,255,.08);
         color: white;
         padding: 14px 28px;
-        border-radius: 14px;
+        border-radius: 16px;
         text-decoration: none;
+        transition: .35s;
     }
 
-    /* SIDE */
-
-    .side-card {
-        padding: 28px;
-        margin-bottom: 25px;
-    }
-
-        .side-card h4 {
+        .btn-outline:hover {
+            background: rgba(255,255,255,.08);
             color: white;
-            margin-bottom: 25px;
-            font-weight: 700;
-        }
-
-    .info-item {
-        margin-bottom: 22px;
-    }
-
-        .info-item small {
-            color: #a78bfa;
-            display: block;
-            margin-bottom: 6px;
-        }
-
-        .info-item div {
-            color: white;
-            font-size: 16px;
+            transform: translateY(-3px);
         }
 
     /* CONTENT */
 
     .content-card {
-        padding: 35px;
-        margin-bottom: 25px;
+        padding: 34px;
+        margin-bottom: 28px;
     }
 
         .content-card h3 {
             color: white;
-            margin-bottom: 20px;
-            font-weight: 700;
+            font-size: 30px;
+            margin-bottom: 22px;
+            font-weight: 800;
         }
 
         .content-card p {
             color: #d1d5db;
-            line-height: 1.9;
+            line-height: 1.95;
+            font-size: 15px;
         }
 
     /* SPEAKER */
 
     .speaker-box {
         display: flex;
-        gap: 25px;
         align-items: center;
+        gap: 28px;
     }
 
     .speaker-img {
-        width: 120px;
-        height: 120px;
+        width: 130px;
+        height: 130px;
         border-radius: 50%;
         overflow: hidden;
+        border: 4px solid rgba(139,92,246,.25);
+        box-shadow: 0 10px 30px rgba(139,92,246,.20);
+        flex-shrink: 0;
     }
 
         .speaker-img img {
@@ -170,13 +248,85 @@
 
     .speaker-info h4 {
         color: white;
-        font-size: 28px;
-        margin-bottom: 10px;
+        font-size: 32px;
+        margin-bottom: 12px;
+        font-weight: 800;
     }
 
     .speaker-info p {
         color: #d1d5db;
+        line-height: 1.9;
+        font-size: 15px;
+    }
+
+    /* SIDE */
+
+    .side-card {
+        padding: 28px;
+        margin-bottom: 24px;
+    }
+
+        .side-card h4 {
+            color: white;
+            margin-bottom: 24px;
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+    .info-item {
+        margin-bottom: 20px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+
+        .info-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .info-item small {
+            color: #a78bfa;
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .info-item div {
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+    /* VENUE */
+
+    .venue-img {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+        border-radius: 20px;
+        margin-bottom: 18px;
+    }
+
+    .venue-title {
+        color: white;
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .venue-location {
+        color: #d1d5db;
         line-height: 1.8;
+    }
+
+    /* RESPONSIVE */
+
+    @@media(max-width:1200px) {
+
+        .event-info h1 {
+            font-size: 46px;
+        }
     }
 
     @@media(max-width:991px) {
@@ -187,8 +337,48 @@
         }
 
             .event-info h1 {
-                font-size: 38px;
+                font-size: 40px;
             }
+
+        .speaker-box {
+            flex-direction: column;
+            text-align: center;
+        }
+    }
+
+    @@media(max-width:768px) {
+
+        .event-details-page {
+            padding: 18px;
+        }
+
+        .event-top,
+        .content-card,
+        .side-card {
+            padding: 24px;
+        }
+
+        .event-cover {
+            height: 280px;
+        }
+
+        .event-info h1 {
+            font-size: 34px;
+        }
+
+        .event-buttons {
+            flex-direction: column;
+        }
+
+        .btn-main,
+        .btn-outline {
+            width: 100%;
+            text-align: center;
+        }
+
+        .speaker-info h4 {
+            font-size: 26px;
+        }
     }
 
 </style>
@@ -197,7 +387,7 @@
 
     <div class="container-fluid">
 
-        <div class="row">
+        <div class="row g-4">
 
             <!-- MAIN -->
 
@@ -207,9 +397,9 @@
 
                 <div class="glass-card event-top">
 
-                    <div class="row align-items-center">
+                    <div class="row align-items-center g-4">
 
-                        <div class="col-lg-3">
+                        <div class="col-lg-4">
 
                             <div class="event-cover">
 
@@ -219,19 +409,19 @@
                                 }
                                 else
                                 {
-                                    <img src="/images/default-book.jpg" />
+                                    <img src="/images/default-event.jpg" />
                                 }
 
                             </div>
 
                         </div>
 
-                        <div class="col-lg-9">
+                        <div class="col-lg-8">
 
                             <div class="event-info">
 
                                 <div class="event-badge">
-                                    Author Session
+                                    ✨ Premium Author Session
                                 </div>
 
                                 <h1>@Model.Title</h1>
@@ -253,9 +443,7 @@
                                 </div>
 
                                 <div class="event-desc">
-
                                     @Model.Description
-
                                 </div>
 
                                 <div class="event-buttons">
@@ -300,17 +488,16 @@
 
                         <div class="speaker-img">
 
-                            <img src="/images/speaker.jpg" />
+                            <img src="@speakerImage" />
 
                         </div>
 
                         <div class="speaker-info">
 
-                            <h4>James Clear</h4>
+                            <h4>@speakerName</h4>
 
                             <p>
-                                Bestselling author and productivity expert.
-                                Known for Atomic Habits and personal development seminars.
+                                @speakerDesc
                             </p>
 
                         </div>
@@ -321,11 +508,9 @@
 
             </div>
 
-            <!-- RIGHT SIDE -->
+            <!-- SIDE -->
 
             <div class="col-lg-3">
-
-                <!-- SUMMARY -->
 
                 <div class="glass-card side-card">
 
@@ -353,14 +538,12 @@
 
                 </div>
 
-                <!-- REGISTRATION -->
-
                 <div class="glass-card side-card">
 
                     <h4>Registration</h4>
 
-                    <p style="color:#d1d5db;">
-                        Reserve your seat for this premium event experience.
+                    <p style="color:#d1d5db; line-height:1.8;">
+                        Reserve your seat now and join this premium literary experience.
                     </p>
 
                     <a href="#"
@@ -372,20 +555,18 @@
 
                 </div>
 
-                <!-- VENUE -->
-
                 <div class="glass-card side-card">
 
                     <h4>Venue</h4>
 
                     <img src="/images/hall.jpg"
-                         class="img-fluid rounded-4 mb-3" />
+                         class="venue-img" />
 
-                    <div style="color:white;font-weight:700;">
+                    <div class="venue-title">
                         BookVerse Community Hall
                     </div>
 
-                    <div style="color:#d1d5db;">
+                    <div class="venue-location">
                         @Model.Location
                     </div>
 

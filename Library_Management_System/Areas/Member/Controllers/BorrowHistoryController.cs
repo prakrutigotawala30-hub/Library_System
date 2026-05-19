@@ -1,9 +1,10 @@
-﻿using Library_Management_System.Data;
-using Library_Management_System.ViewModels;
+﻿using Library_Management_System.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using LibraryManagementSystem.ClassLibrary.Data;
+using LibraryManagementSystem.ClassLibrary.Models;
 
 namespace Library_Management_System.Areas.Member.Controllers
 {

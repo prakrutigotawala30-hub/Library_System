@@ -2,8 +2,9 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using LibraryManagementSystem.Models;
 
-namespace LibraryManagementSystem.Models
+namespace LibraryManagementSystem.ClassLibrary.Models
 {
     public class Notification
     {

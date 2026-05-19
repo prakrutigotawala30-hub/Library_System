@@ -1,8 +1,8 @@
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using LibraryManagementSystem.Data;
+using LibraryManagementSystem.ClassLibrary.Data;
 using LibraryManagementSystem.Models;
 using LibraryManagementSystem.Services;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,17 +16,14 @@ builder.Services.AddScoped<ExportService>();
 // DATABASE
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-{
     options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
-        sql => sql.CommandTimeout(120));
-});
+        builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // IDENTITY
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
-    options.SignIn.RequireConfirmedEmail = true;
+    options.SignIn.RequireConfirmedEmail = false;
 
     options.Password.RequireDigit = true;
     options.Password.RequiredLength = 6;

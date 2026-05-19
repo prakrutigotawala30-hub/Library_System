@@ -56,6 +56,26 @@
                     </select>
                 </div>
 
+                <!-- Total Pages -->
+                <div class="mb-3">
+                    <label asp-for="TotalPages"></label>
+                    <input asp-for="TotalPages" class="form-control" />
+                </div>
+
+                <!-- Description -->
+                <div class="mb-3">
+                    <label asp-for="Description"></label>
+                    <textarea asp-for="Description"
+                              class="form-control"
+                              rows="4"></textarea>
+                </div>
+
+                <!-- Cover Image -->
+                <div class="mb-3">
+                    <label asp-for="CoverImageUrl"></label>
+                    <input asp-for="CoverImageUrl" class="form-control" />
+                </div>
+
                 <!-- Total Copies -->
                 <div class="mb-3">
                     <label asp-for="TotalCopies"></label>
