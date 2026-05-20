@@ -1,4 +1,4 @@
-﻿using LibraryManagementSystem.ClassLibrary.Data;
+using LibraryManagementSystem.ClassLibrary.Data;
 using LibraryManagementSystem.ClassLibrary.Models;
 using LibraryManagementSystem.Services;
 using LibraryManagementSystem.ViewModels;
@@ -321,30 +321,6 @@ namespace LibraryManagementSystem.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // =========================
-        // MOST POPULAR BOOKS
-        // =========================
-        public async Task<IActionResult> MostPopularBooks()
-        {
-            var popularBooks = await _context.BorrowRecords
-                .Include(x => x.Book)
-                .GroupBy(x => new
-                {
-                    Title = x.Book != null ? x.Book.Title : "",
-                    ISBN = x.Book != null ? x.Book.ISBN : ""
-                })
-                .Select(g => new
-                {
-                    Title = g.Key.Title,
-                    ISBN = g.Key.ISBN,
-                    TotalBorrows = g.Count()
-                })
-                .OrderByDescending(x => x.TotalBorrows)
-                .Take(10)
-                .ToListAsync();
-
-            return View(popularBooks);
-        }
 
         // =========================
         // EXPORT EXCEL
