@@ -63,7 +63,7 @@ namespace LibraryManagementSystem.Controllers
                     UserName = model.Email,
                     Email = model.Email,
                     PhoneNumber = model.PhoneNumber,
-                    EmailConfirmed = false
+                    EmailConfirmed = true
                 };
 
                 var result = await _userManager.CreateAsync(user, model.Password);
@@ -72,35 +72,26 @@ namespace LibraryManagementSystem.Controllers
                 {
                     await _userManager.AddToRoleAsync(user, "Member");
 
-                    var token = await _userManager
-                        .GenerateEmailConfirmationTokenAsync(user);
+                    // Best-effort welcome email — never block registration if SMTP
+                    // is down or credentials aren't set. The account is already
+                    // created; failing here would leave the user confused.
+                    try
+                    {
+                        string body = $@"
+                            <h2>Library Management System</h2>
+                            <p>Welcome, {user.FullName}! Your account is ready.</p>";
 
-                    var confirmationLink = Url.Action(
-                        "ConfirmEmail",
-                        "Account",
-                        new
-                        {
-                            userId = user.Id,
-                            token = token
-                        },
-                        protocol: HttpContext.Request.Scheme);
+                        await _emailService.SendEmailAsync(
+                            user.Email,
+                            "Welcome to Library Management System",
+                            body);
+                    }
+                    catch
+                    {
+                        // SMTP failed — account exists, user can still log in.
+                    }
 
-                    string body = $@"
-                        <h2>Library Management System</h2>
-                        <p>Please confirm your email by clicking below:</p>
-
-                        <a href='{confirmationLink}'>
-                            Confirm Email
-                        </a>";
-
-                    await _emailService.SendEmailAsync(
-                        user.Email,
-                        "Confirm Your Email",
-                        body);
-
-                    TempData["Success"] =
-                        "Registration successful. Check your email.";
-
+                    TempData["Success"] = "Registration successful. Please log in.";
                     return RedirectToAction("Login");
                 }
 
@@ -163,14 +154,6 @@ namespace LibraryManagementSystem.Controllers
                 if (user == null)
                 {
                     ModelState.AddModelError("", "Account not found.");
-                    return View(model);
-                }
-
-                if (user != null && !await _userManager.IsEmailConfirmedAsync(user))
-                {
-                    ModelState.AddModelError("",
-                        "Please confirm your email first. Please check your inbox for the confirmation link.");
-
                     return View(model);
                 }
 

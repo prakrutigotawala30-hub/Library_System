@@ -1,0 +1,44 @@
+# EditorConfig — consistent indent, encoding, line-ending across IDEs.
+# Picked up automatically by Visual Studio, VS Code (with extension),
+# JetBrains Rider, and most editors. Keeps Mac and Windows team commits
+# from drifting on whitespace.
+
+root = true
+
+[*]
+indent_style              = space
+indent_size               = 4
+end_of_line               = lf
+charset                   = utf-8
+trim_trailing_whitespace  = true
+insert_final_newline      = true
+
+# Web/text formats use 2 spaces to match common web conventions
+[*.{json,yml,yaml,html,css,scss,js,ts,cshtml,razor,xml,csproj,config}]
+indent_size = 2
+
+# Markdown — trailing whitespace can be intentional (line breaks)
+[*.md]
+trim_trailing_whitespace = false
+
+# .NET code style — convention rules that match the project's existing style
+[*.cs]
+dotnet_sort_system_directives_first             = true
+csharp_new_line_before_open_brace               = all
+csharp_new_line_before_else                     = true
+csharp_new_line_before_catch                    = true
+csharp_new_line_before_finally                  = true
+csharp_indent_case_contents                     = true
+csharp_indent_switch_labels                     = true
+csharp_space_after_keywords_in_control_flow_statements = true
+csharp_preserve_single_line_blocks              = true
+
+# Use 'var' when type is apparent
+csharp_style_var_when_type_is_apparent          = true:suggestion
+
+# Solution / Visual Studio specific files keep CRLF so VS doesn't choke
+[*.sln]
+end_of_line = crlf
+
+[*.{bat,cmd,ps1}]
+end_of_line = crlf

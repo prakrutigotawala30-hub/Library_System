@@ -1,0 +1,58 @@
+# Auto-normalize line endings on commit. Without this, a Windows dev's CRLF
+# commits show up as "whole file changed" diffs for Mac/Linux teammates.
+* text=auto eol=lf
+
+# Windows-specific files keep CRLF so they run in cmd/PowerShell
+*.bat   text eol=crlf
+*.cmd   text eol=crlf
+*.ps1   text eol=crlf
+*.sln   text eol=crlf
+
+# Shell scripts must use LF or they'll fail on Mac/Linux
+*.sh    text eol=lf
+
+# .NET / web text files — explicit so eol stays LF everywhere
+*.cs       text eol=lf
+*.cshtml   text eol=lf
+*.razor    text eol=lf
+*.csproj   text eol=lf
+*.json     text eol=lf
+*.config   text eol=lf
+*.xml      text eol=lf
+*.md       text eol=lf
+*.yml      text eol=lf
+*.yaml     text eol=lf
+*.html     text eol=lf
+*.css      text eol=lf
+*.scss     text eol=lf
+*.js       text eol=lf
+*.ts       text eol=lf
+.gitignore text eol=lf
+.gitattributes text eol=lf
+.editorconfig  text eol=lf
+
+# Treat binaries as binary so git doesn't try to diff or eol-convert them
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.svg  binary
+*.pdf  binary
+*.zip  binary
+*.gz   binary
+*.7z   binary
+*.dll  binary
+*.exe  binary
+*.pdb  binary
+*.db   binary
+*.db-shm binary
+*.db-wal binary
+*.xlsx binary
+*.xls  binary
+*.docx binary
+*.doc  binary
+*.woff binary
+*.woff2 binary
+*.ttf  binary
+*.eot  binary

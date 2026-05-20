@@ -14,10 +14,30 @@ builder.Services.AddScoped<PdfReceiptService>();
 builder.Services.AddScoped<ExportService>();
 
 // DATABASE
+// Provider order: appsettings override -> SqlServer on Windows -> Sqlite elsewhere
+// (Mac/Linux). LocalDB doesn't exist outside Windows, so falling through to
+// Sqlite keeps the app runnable on macOS/Linux dev boxes.
+
+var configuredProvider = builder.Configuration.GetValue<string>("Database:Provider");
+var dbProvider = !string.IsNullOrWhiteSpace(configuredProvider)
+    ? configuredProvider
+    : (OperatingSystem.IsWindows() ? "SqlServer" : "Sqlite");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection")));
+{
+    if (string.Equals(dbProvider, "Sqlite", StringComparison.OrdinalIgnoreCase))
+    {
+        options.UseSqlite(
+            builder.Configuration.GetConnectionString("SqliteConnection")
+            ?? "Data Source=LibraryManagementDB.db");
+    }
+    else
+    {
+        options.UseSqlServer(
+            builder.Configuration.GetConnectionString("DefaultConnection"),
+            sql => sql.CommandTimeout(120));
+    }
+});
 
 // IDENTITY
 
@@ -35,9 +55,14 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 .AddDefaultTokenProviders();
 
 // COOKIE SETTINGS
+// Distinct cookie name so this admin app's session never collides with the
+// sibling user app (Library_Management_System) if both are ever hosted on
+// the same domain. Default Identity name is `.AspNetCore.Identity.Application`
+// — that would cause the two apps to fight over the same cookie.
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
+    options.Cookie.Name = ".LibraryAdmin.Auth";
     options.LoginPath = "/Account/Login";
     options.LogoutPath = "/Account/Logout";
     options.AccessDeniedPath = "/Account/AccessDenied";
@@ -55,9 +80,13 @@ else
 {
     app.UseExceptionHandler("/Home/Error500");
     app.UseHsts();
+    // HTTPS redirect only in non-dev. In Development a fresh Mac/Linux clone
+    // typically has no trusted dev cert (`dotnet dev-certs https --trust`),
+    // and unconditionally redirecting to https would either prompt cert
+    // warnings or break the request entirely. Production should always have
+    // a real cert, so redirect is correct there.
+    app.UseHttpsRedirection();
 }
-
-app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 
@@ -87,7 +116,18 @@ using (var scope = app.Services.CreateScope())
     var db = scope.ServiceProvider
         .GetRequiredService<AppDbContext>();
 
-    await db.Database.MigrateAsync();
+    // Migrations are SqlServer-specific (see AppDbContextModelSnapshot —
+    // uses SqlServer identity columns). On Sqlite (Mac/Linux dev) we
+    // bypass migrations and build the schema directly from the EF model
+    // so every table the project defines appears in the .db file.
+    if (db.Database.IsSqlite())
+    {
+        await db.Database.EnsureCreatedAsync();
+    }
+    else
+    {
+        await db.Database.MigrateAsync();
+    }
 
     var roleManager = scope.ServiceProvider
         .GetRequiredService<RoleManager<IdentityRole>>();

@@ -1,5 +1,6 @@
 ﻿using LibraryManagementSystem.ClassLibrary.Data;
 using LibraryManagementSystem.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -7,6 +8,7 @@ using LibraryManagementSystem.ClassLibrary.Models;
 
 namespace LibraryManagementSystem.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class ReportsController : Controller
     {
         private readonly AppDbContext _context;
@@ -45,17 +47,6 @@ namespace LibraryManagementSystem.Controllers
                 .OrderByDescending(x => x.TotalBooks)
                 .Take(10)
                 .ToListAsync();
-
-            if (!User.IsInRole("Admin"))
-            {
-                return RedirectToAction(
-                    "AccessDenied",
-                    "Account",
-                    new
-                    {
-                        message = "Only administrators can access Top Borrowers report."
-                    });
-            }
 
             return View(data);
         }

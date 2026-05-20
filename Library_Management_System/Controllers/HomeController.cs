@@ -2,11 +2,14 @@ using Library_Management_System.Models;
 using LibraryManagementSystem.ClassLibrary.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Library_Management_System.Controllers
 {
-    [Authorize]
+    // No class-level [Authorize] — HomeController serves the public site
+    // (Home/Index, FAQ, About, Hours, Rules, Privacy, Contact, Error).
+    // Adding [Authorize] here was the cause of "every menu click sends me to
+    // Login" — clicking FAQ/About/etc. would trip the auth filter even though
+    // those pages are meant to be browsable by anonymous visitors.
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
