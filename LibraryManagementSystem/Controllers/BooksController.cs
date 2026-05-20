@@ -41,9 +41,16 @@ namespace LibraryManagementSystem.Controllers
             {
                 query = query.Where(b =>
                     b.Title.Contains(search) ||
-                    b.ISBN.Contains(search) ||
-                    b.Author!.Name.Contains(search) ||
-                    b.Category!.Name.Contains(search) ||
+
+                    (b.ISBN != null &&
+                     b.ISBN.Contains(search)) ||
+
+                    (b.Author != null &&
+                     b.Author.Name.Contains(search)) ||
+
+                    (b.Category != null &&
+                     b.Category.Name.Contains(search)) ||
+
                     (b.Department != null &&
                      b.Department.Name.Contains(search))
                 );
@@ -180,10 +187,14 @@ namespace LibraryManagementSystem.Controllers
         public async Task<IActionResult> Edit(int id, Book book)
         {
             if (id != book.Id)
+            {
                 return NotFound();
+            }
 
+            // VALIDATION
             ValidateBook(book);
 
+            // CHECK DUPLICATE ISBN
             bool isbnExists = await _context.Books
                 .AnyAsync(b =>
                     b.ISBN == book.ISBN &&
@@ -193,44 +204,69 @@ namespace LibraryManagementSystem.Controllers
             {
                 ModelState.AddModelError(
                     "ISBN",
-                    "This ISBN already exists."
-                );
+                    "This ISBN already exists.");
             }
 
+            // CHECK AVAILABLE COPIES
             if (book.AvailableCopies > book.TotalCopies)
             {
                 ModelState.AddModelError(
                     "AvailableCopies",
-                    "Available copies cannot exceed total copies."
-                );
+                    "Available copies cannot exceed total copies.");
             }
 
-            if (ModelState.IsValid)
+            // MODEL VALIDATION
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(book);
+                LoadDropdowns(
+                    book.CategoryId,
+                    book.AuthorId,
+                    book.DepartmentId);
 
-                    await _context.SaveChangesAsync();
-
-                    TempData["Success"] =
-                        "Book updated successfully!";
-
-                    return RedirectToAction(nameof(Index));
-                }
-                catch
-                {
-                    TempData["Error"] =
-                        "Something went wrong while updating.";
-                }
+                return View(book);
             }
 
-            LoadDropdowns(
-                book.CategoryId,
-                book.AuthorId,
-                book.DepartmentId);
+            try
+            {
+                var existingBook = await _context.Books
+                    .FirstOrDefaultAsync(x => x.Id == id);
 
-            return View(book);
+                if (existingBook == null)
+                {
+                    return NotFound();
+                }
+
+                // UPDATE
+                existingBook.Title = book.Title;
+                existingBook.ISBN = book.ISBN;
+                existingBook.AuthorId = book.AuthorId;
+                existingBook.CategoryId = book.CategoryId;
+                existingBook.DepartmentId = book.DepartmentId;
+                existingBook.TotalPages = book.TotalPages;
+                existingBook.Description = book.Description;
+                existingBook.CoverImageUrl = book.CoverImageUrl;
+                existingBook.TotalCopies = book.TotalCopies;
+                existingBook.AvailableCopies = book.AvailableCopies;
+                existingBook.IsFeatured = book.IsFeatured;
+
+                await _context.SaveChangesAsync();
+
+                TempData["Success"] =
+                    "Book updated successfully!";
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+
+                LoadDropdowns(
+                    book.CategoryId,
+                    book.AuthorId,
+                    book.DepartmentId);
+
+                return View(book);
+            }
         }
 
         // =========================
@@ -288,13 +324,14 @@ namespace LibraryManagementSystem.Controllers
         // =========================
         // MOST POPULAR BOOKS
         // =========================
-        public IActionResult MostPopularBooks()
+        public async Task<IActionResult> MostPopularBooks()
         {
-            var popularBooks = _context.BorrowRecords
+            var popularBooks = await _context.BorrowRecords
+                .Include(x => x.Book)
                 .GroupBy(x => new
                 {
-                    x.Book.Title,
-                    x.Book.ISBN
+                    Title = x.Book != null ? x.Book.Title : "",
+                    ISBN = x.Book != null ? x.Book.ISBN : ""
                 })
                 .Select(g => new
                 {
@@ -304,7 +341,7 @@ namespace LibraryManagementSystem.Controllers
                 })
                 .OrderByDescending(x => x.TotalBorrows)
                 .Take(10)
-                .ToList();
+                .ToListAsync();
 
             return View(popularBooks);
         }

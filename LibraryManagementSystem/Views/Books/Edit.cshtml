@@ -12,8 +12,13 @@
         </div>
 
         <div class="card-body">
-
-            <form asp-action="Edit" method="post">
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger">
+                    @TempData["Error"]
+                </div>
+            }
+            <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
 
                 <input type="hidden" asp-for="Id" />
 
@@ -23,24 +28,34 @@
                 <div class="mb-3">
                     <label asp-for="Title"></label>
                     <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
                 </div>
 
                 <!-- ISBN -->
                 <div class="mb-3">
                     <label asp-for="ISBN"></label>
                     <input asp-for="ISBN" class="form-control" />
+                    <span asp-validation-for="ISBN" class="text-danger"></span>
                 </div>
 
                 <!-- Author -->
                 <div class="mb-3">
                     <label>Author</label>
-                    <select asp-for="AuthorId" class="form-select" asp-items="ViewBag.AuthorList"></select>
+                    <select asp-for="AuthorId" class="form-select" asp-items="ViewBag.AuthorList">
+                        <option value="">-- Select Author --</option>
+                    </select>
+
+                    <span asp-validation-for="AuthorId" class="text-danger"></span>
                 </div>
 
                 <!-- Category -->
                 <div class="mb-3">
                     <label>Category</label>
-                    <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.CategoryList"></select>
+                    <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.CategoryList">
+                        <option value="">-- Select Category --</option>
+                    </select>
+
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
                 </div>
 
                 <!-- Department -->
@@ -72,9 +87,27 @@
 
                 <!-- Cover Image -->
                 <div class="mb-3">
+
                     <label asp-for="CoverImageUrl"></label>
-                    <input asp-for="CoverImageUrl" class="form-control" />
+
+                    <input asp-for="CoverImageUrl"
+                           class="form-control" />
+
+                    <span asp-validation-for="CoverImageUrl"
+                          class="text-danger"></span>
+
                 </div>
+
+                @if (!string.IsNullOrWhiteSpace(Model.CoverImageUrl))
+                {
+                    <div class="mb-3">
+
+                        <img src="@Model.CoverImageUrl"
+                             width="150"
+                             class="img-thumbnail" />
+
+                    </div>
+                }
 
                 <!-- Total Copies -->
                 <div class="mb-3">
@@ -86,6 +119,7 @@
                 <div class="mb-3">
                     <label asp-for="AvailableCopies"></label>
                     <input asp-for="AvailableCopies" class="form-control" />
+                    <span asp-validation-for="AvailableCopies" class="text-danger"></span>
                 </div>
 
                 <div class="form-check mb-3">
