@@ -1,7 +1,7 @@
 using Library_Management_System.Models;
 using Library_Management_System.Services;
 using LibraryManagementSystem.ClassLibrary.Data;
-using LibraryManagementSystem.Models;
+using LibraryManagementSystem.ClassLibrary.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;

@@ -1,4 +1,4 @@
-﻿namespace LibraryManagementSystem.Models
+﻿namespace LibraryManagementSystem.ClassLibrary.Models
 {
     public enum ReservationStatus
     {

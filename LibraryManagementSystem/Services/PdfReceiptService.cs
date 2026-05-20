@@ -1,4 +1,4 @@
-﻿using LibraryManagementSystem.Models;
+﻿using LibraryManagementSystem.ClassLibrary.Models;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;

@@ -1,10 +1,10 @@
 ﻿using LibraryManagementSystem.ClassLibrary.Data;
-using LibraryManagementSystem.Models;
 using LibraryManagementSystem.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using LibraryManagementSystem.ClassLibrary.Models;
 
 namespace LibraryManagementSystem.Controllers
 {

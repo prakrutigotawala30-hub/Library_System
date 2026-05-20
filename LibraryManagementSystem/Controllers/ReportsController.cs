@@ -3,6 +3,7 @@ using LibraryManagementSystem.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using LibraryManagementSystem.ClassLibrary.Models;
 
 namespace LibraryManagementSystem.Controllers
 {

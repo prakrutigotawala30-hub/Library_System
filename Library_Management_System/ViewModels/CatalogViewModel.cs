@@ -1,4 +1,5 @@
-using LibraryManagementSystem.Models;
+
+using LibraryManagementSystem.ClassLibrary.Models;
 
 namespace Library_Management_System.ViewModels
 {
@@ -18,7 +19,7 @@ namespace Library_Management_System.ViewModels
 
         public int TotalPages { get; set; }
 
-        public List<BookDto> PagedBooks { get; set; } = new();
+        public List<Book> PagedBooks { get; set; } = new();
 
         public List<Category> Categories { get; set; } = new();
 

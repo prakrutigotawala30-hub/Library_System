@@ -1,5 +1,6 @@
 ﻿@model LibraryManagementSystem.ViewModels.DashboardViewModel
 
+
 <div class="container-fluid py-4">
 
     <!-- HEADER -->
@@ -147,7 +148,7 @@
     </div>
 
     <partial name="_ActivityFeed"
-             model="(List<LibraryManagementSystem.Models.BorrowRecord>)ViewBag.RecentBorrows" />
+             model="(List<LibraryManagementSystem.ClassLibrary.Models.BorrowRecord>)ViewBag.RecentBorrows" />
 
     <!-- MEMBERSHIP SECTION -->
     <div class="card border-0 shadow-sm mt-5 membership-banner">
@@ -407,7 +408,7 @@
 
                     <tbody>
 
-                        @foreach (var item in (List<LibraryManagementSystem.Models.BorrowRecord>)ViewBag.RecentBorrows)
+                        @foreach (var item in (List<LibraryManagementSystem.ClassLibrary.Models.BorrowRecord>)ViewBag.RecentBorrows)
                         {
                             <tr>
 
@@ -476,11 +477,11 @@
         <div class="card-body">
 
             @if (ViewBag.FeaturedBooks != null &&
-                        ((List<LibraryManagementSystem.Models.Book>)ViewBag.FeaturedBooks).Any())
+                        ((List<LibraryManagementSystem.ClassLibrary.Models.Book>)ViewBag.FeaturedBooks).Any())
             {
                 <div class="row">
 
-                    @foreach (var book in (List<LibraryManagementSystem.Models.Book>)ViewBag.FeaturedBooks)
+                    @foreach (var book in (List<LibraryManagementSystem.ClassLibrary.Models.Book>)ViewBag.FeaturedBooks)
                     {
                         <div class="col-md-4 mb-3">
 

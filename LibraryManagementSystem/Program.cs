@@ -1,5 +1,5 @@
 using LibraryManagementSystem.ClassLibrary.Data;
-using LibraryManagementSystem.Models;
+using LibraryManagementSystem.ClassLibrary.Models;
 using LibraryManagementSystem.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

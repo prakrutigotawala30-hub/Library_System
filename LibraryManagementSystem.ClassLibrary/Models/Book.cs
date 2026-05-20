@@ -1,11 +1,10 @@
-﻿using LibraryManagementSystem.Models;
+﻿
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using LibraryManagementSystem.ClassLibrary.Models;
 
-namespace LibraryManagementSystem.Models
+namespace LibraryManagementSystem.ClassLibrary.Models
 {
     public class Book
     {

@@ -1,6 +1,6 @@
-﻿using LibraryManagementSystem.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using LibraryManagementSystem.ClassLibrary.Models;
 
 namespace LibraryManagementSystem.ClassLibrary.Models
 {

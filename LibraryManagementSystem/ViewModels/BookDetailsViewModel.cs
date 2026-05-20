@@ -1,4 +1,4 @@
-﻿using LibraryManagementSystem.Models;
+﻿using LibraryManagementSystem.ClassLibrary.Models;
 using System.Collections.Generic;
 
 namespace LibraryManagementSystem.ViewModels

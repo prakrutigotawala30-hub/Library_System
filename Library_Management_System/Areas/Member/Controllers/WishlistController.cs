@@ -1,5 +1,4 @@
-﻿using Library_Management_System.Models;
-using LibraryManagementSystem.ClassLibrary.Data;
+﻿using LibraryManagementSystem.ClassLibrary.Data;
 using LibraryManagementSystem.ClassLibrary.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;

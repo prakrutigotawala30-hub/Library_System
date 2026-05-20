@@ -1,6 +1,6 @@
 using LibraryManagementSystem.ClassLibrary.Data;
 using Library_Management_System.ViewModels;
-using LibraryManagementSystem.Models;
+using LibraryManagementSystem.ClassLibrary.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -65,14 +65,6 @@ namespace Library_Management_System.Controllers
             var books = await booksQuery
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
-                .Select(b => new BookDto
-                {
-                    Id = b.Id,
-                    Title = b.Title,
-                    AuthorName = b.Author != null ? b.Author.Name : "",
-                    CategoryName = b.Category != null ? b.Category.Name : "",
-                    IsAvailable = b.AvailableCopies > 0
-                })
                 .ToListAsync();
 
             var vm = new CatalogViewModel

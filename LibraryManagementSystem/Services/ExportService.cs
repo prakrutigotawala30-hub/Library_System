@@ -1,5 +1,5 @@
 ﻿using ClosedXML.Excel;
-using LibraryManagementSystem.Models;
+using LibraryManagementSystem.ClassLibrary.Models;
 
 namespace LibraryManagementSystem.Services
 {

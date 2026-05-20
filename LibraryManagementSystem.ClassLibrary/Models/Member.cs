@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace LibraryManagementSystem.Models
+namespace LibraryManagementSystem.ClassLibrary.Models
 {
     public class Member
     {

@@ -1,5 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@inject UserManager<LibraryManagementSystem.Models.ApplicationUser> UserManager
+@inject UserManager<LibraryManagementSystem.ClassLibrary.Models.ApplicationUser> UserManager
 
 @{
     var currentUser = await UserManager.GetUserAsync(User);
