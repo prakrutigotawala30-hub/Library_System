@@ -1,10 +1,12 @@
 ﻿using LibraryManagementSystem.ClassLibrary.Data;
 using LibraryManagementSystem.ClassLibrary.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace LibraryManagementSystem.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class EventsController : Controller
     {
         private readonly AppDbContext _context;

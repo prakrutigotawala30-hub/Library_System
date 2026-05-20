@@ -505,23 +505,39 @@
 
                 </form>
 
-                <form asp-controller="Reservation"
-                      asp-action="Reserve"
-                      method="post">
+                @* Was: POST to /Reservation/Reserve — but ReservationController
+                   has no "Reserve" action AND lives in the Member area which
+                   the original form didn't specify (so the URL helper resolved
+                   wrong AND would 404). A GET link to the existing
+                   Member/Reservation/Create page is cleaner: it shows the book
+                   summary and a confirm button that POSTs to CreateReservation
+                   (the actual handler). Anonymous users hitting this link get
+                   bounced to Login first by [Authorize(Roles="Member")] — the
+                   bookId is preserved in the URL so they return to the right
+                   page after signing in.
+                   Keeps the upstream `premium-btn reserve-btn` styling + emoji. *@
+                @if (Model.IsAvailable)
+                {
+                    <a asp-area="Member"
+                       asp-controller="Reservation"
+                       asp-action="Create"
+                       asp-route-bookId="@Model.Id"
+                       class="premium-btn reserve-btn">
 
-                    <input type="hidden"
-                           name="BookId"
-                           value="@Model.Id" />
+                        📘 Reserve Book
 
-                    <button type="submit"
+                    </a>
+                }
+                else
+                {
+                    <button type="button"
                             class="premium-btn reserve-btn"
-                            @(Model.IsAvailable ? "" : "disabled")>
+                            disabled>
 
                         📘 Reserve Book
 
                     </button>
-
-                </form>
+                }
 
             </div>
 

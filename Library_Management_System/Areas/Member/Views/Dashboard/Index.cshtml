@@ -519,8 +519,10 @@
 
                 </a>
 
+                @* Controller name is singular ("Reservation") — using "Reservations"
+                   here was producing a 404 on the My Reservations button. *@
                 <a asp-area="Member"
-                   asp-controller="Reservations"
+                   asp-controller="Reservation"
                    asp-action="Index"
                    class="quick-btn">
 

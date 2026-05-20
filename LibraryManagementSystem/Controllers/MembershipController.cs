@@ -1,4 +1,5 @@
 ﻿using LibraryManagementSystem.ClassLibrary.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +7,7 @@ using LibraryManagementSystem.ClassLibrary.Models;
 
 namespace LibraryManagementSystem.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class MembershipController : Controller
     {
         private readonly AppDbContext _context;

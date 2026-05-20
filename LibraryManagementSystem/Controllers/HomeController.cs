@@ -88,10 +88,17 @@ namespace LibraryManagementSystem.Controllers
                 .Select(m => new DateTime(DateTime.Now.Year, m, 1).ToString("MMM"))
                 .ToList();
 
+            // FineAmount sum is materialized in memory via AsEnumerable() before
+            // the Sum projection. The previous `Sum(x => (decimal?)x.FineAmount) ?? 0`
+            // worked on SqlServer but Sqlite (used on Mac/Linux dev) doesn't
+            // always translate the nullable-decimal cast cleanly. Pulling into
+            // memory first is provider-agnostic and the row count per month is
+            // small enough that there's no real perf cost.
             ViewBag.FineData = months
                 .Select(month => context.BorrowRecords
                     .Where(x => x.IssuedOn.Month == month)
-                    .Sum(x => (decimal?)x.FineAmount) ?? 0)
+                    .AsEnumerable()
+                    .Sum(x => x.FineAmount))
                 .ToList();
 
             return View(model);
