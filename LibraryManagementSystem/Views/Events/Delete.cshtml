@@ -1,0 +1,242 @@
+﻿@model LibraryManagementSystem.ClassLibrary.Models.Event
+
+@{
+    ViewData["Title"] = "Delete Event";
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+    body {
+        background: #f4f7fb;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .delete-card {
+        border: none;
+        border-radius: 28px;
+        overflow: hidden;
+        box-shadow: 0 20px 45px rgba(15,23,42,0.08);
+    }
+
+    .delete-header {
+        background: linear-gradient(135deg,#dc2626,#ef4444);
+        color: white;
+        padding: 28px 32px;
+    }
+
+        .delete-header h3 {
+            margin: 0;
+            font-weight: 700;
+        }
+
+    .delete-body {
+        padding: 35px;
+        background: white;
+    }
+
+    .event-image {
+        width: 100%;
+        max-height: 420px;
+        object-fit: cover;
+        border-radius: 22px;
+        box-shadow: 0 10px 30px rgba(0,0,0,.08);
+    }
+
+    .event-title {
+        font-size: 34px;
+        font-weight: 800;
+        color: #0f172a;
+        margin-bottom: 12px;
+    }
+
+    .event-description {
+        color: #64748b;
+        line-height: 1.9;
+        font-size: 15px;
+    }
+
+    .info-box {
+        background: #f8fafc;
+        border-radius: 18px;
+        padding: 18px;
+        margin-bottom: 18px;
+        border: 1px solid #e2e8f0;
+    }
+
+    .info-label {
+        color: #64748b;
+        font-size: 13px;
+        margin-bottom: 6px;
+        font-weight: 600;
+    }
+
+    .info-value {
+        color: #0f172a;
+        font-size: 17px;
+        font-weight: 700;
+    }
+
+    .warning-box {
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        color: #b91c1c;
+        padding: 18px 20px;
+        border-radius: 18px;
+        font-weight: 600;
+        margin-bottom: 28px;
+    }
+
+    .btn-custom {
+        padding: 12px 22px;
+        border-radius: 14px;
+        font-weight: 600;
+    }
+
+</style>
+
+<div class="container py-4">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <h2 class="fw-bold text-danger">
+            🗑 Delete Event
+        </h2>
+
+        <a asp-action="Index"
+           class="btn btn-outline-secondary btn-custom">
+
+            ← Back
+
+        </a>
+
+    </div>
+
+    <!-- CARD -->
+    <div class="card delete-card">
+
+        <!-- HEADER -->
+        <div class="delete-header">
+
+            <h3>
+                Confirm Event Deletion
+            </h3>
+
+        </div>
+
+        <!-- BODY -->
+        <div class="delete-body">
+
+            <!-- WARNING -->
+            <div class="warning-box">
+
+                ⚠ Are you sure you want to permanently delete this event?
+
+            </div>
+
+            <div class="row g-4">
+
+                <!-- IMAGE -->
+                <div class="col-lg-5">
+
+                    <img src="@(string.IsNullOrEmpty(Model.ImagePath)
+                                                         ? "/images/no-event.jpg"
+                                                         : Model.ImagePath)"
+                         class="event-image"
+                         alt="@Model.Title" />
+
+                </div>
+
+                <!-- DETAILS -->
+                <div class="col-lg-7">
+
+                    <div class="event-title">
+                        @Model.Title
+                    </div>
+
+                    <div class="event-description mb-4">
+
+                        @(string.IsNullOrWhiteSpace(Model.Description)
+                                                ? "No description available."
+                                                : Model.Description)
+
+                    </div>
+
+                    <!-- DATE -->
+                    <div class="info-box">
+
+                        <div class="info-label">
+                            📅 Event Date
+                        </div>
+
+                        <div class="info-value">
+                            @Model.Date.ToString("dddd, dd MMMM yyyy")
+                        </div>
+
+                    </div>
+
+                    <!-- TIME -->
+                    <div class="info-box">
+
+                        <div class="info-label">
+                            ⏰ Event Time
+                        </div>
+
+                        <div class="info-value">
+                            @Model.Date.ToString("hh:mm tt")
+                        </div>
+
+                    </div>
+
+                    <!-- LOCATION -->
+                    <div class="info-box">
+
+                        <div class="info-label">
+                            📍 Location
+                        </div>
+
+                        <div class="info-value">
+                            @Model.Location
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- FORM -->
+            <form asp-action="Delete"
+                  method="post"
+                  class="mt-5">
+
+                <input type="hidden"
+                       asp-for="Id" />
+
+                <div class="d-flex justify-content-between">
+
+                    <a asp-action="Index"
+                       class="btn btn-secondary btn-custom">
+
+                        ⬅ Cancel
+
+                    </a>
+
+                    <button type="submit"
+                            class="btn btn-danger btn-custom">
+
+                        🗑 Yes, Delete Event
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

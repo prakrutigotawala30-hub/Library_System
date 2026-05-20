@@ -1,0 +1,251 @@
+﻿@model IEnumerable<LibraryManagementSystem.ClassLibrary.Models.Event>
+
+@{
+    ViewData["Title"] = "Past Events";
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border-radius: 16px;
+    }
+
+    .table {
+        min-width: 900px;
+    }
+
+        .table thead th {
+            font-family: 'Poppins', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .table tbody td {
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 14px;
+            vertical-align: middle;
+        }
+
+    .event-image {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 12px;
+        border: 1px solid #ddd;
+    }
+
+    .event-title {
+        font-weight: 700;
+        color: #212529;
+    }
+
+    .event-description {
+        max-width: 250px;
+        color: #6c757d;
+        font-size: 13px;
+    }
+
+    .badge-past {
+        background: #dc3545;
+        color: white;
+        padding: 8px 14px;
+        border-radius: 30px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    @@media(max-width:768px) {
+
+        .table th,
+        .table td {
+            white-space: nowrap;
+        }
+    }
+
+</style>
+
+<div class="container mt-4">
+
+    <!-- HEADER -->
+    <div class="row align-items-center mb-3">
+
+        <div class="col-md-6">
+            <h2 class="m-0">📅 Past Events</h2>
+        </div>
+
+        <div class="col-md-6 text-end">
+
+            <a asp-action="Index"
+               class="btn btn-secondary">
+
+                ← Back to Events
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- SEARCH -->
+    <div class="row mb-3">
+
+        <div class="col-md-6">
+
+            <input type="text"
+                   id="searchBox"
+                   class="form-control"
+                   placeholder="Search past events..." />
+
+        </div>
+
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-responsive">
+
+        <table class="table table-bordered table-striped table-hover align-middle"
+               id="eventsTable">
+
+            <thead class="table-dark">
+
+                <tr>
+
+                    <th>Image</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Date</th>
+                    <th>Location</th>
+                    <th>Actions</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+
+                        <!-- IMAGE -->
+                        <td>
+
+                            <img src="@(string.IsNullOrEmpty(item.ImagePath)
+                                                                     ? "/images/no-event.jpg"
+                                                                     : item.ImagePath)"
+                                 class="event-image" />
+
+                        </td>
+
+                        <!-- TITLE -->
+                        <td>
+
+                            <div class="event-title">
+                                @item.Title
+                            </div>
+
+                        </td>
+
+                        <!-- DESCRIPTION -->
+                        <td>
+
+                            <div class="event-description">
+
+                                @(item.Description.Length > 80
+                                                            ? item.Description.Substring(0, 80) + "..."
+                                                            : item.Description)
+
+                            </div>
+
+                        </td>
+
+                        <!-- DATE -->
+                        <td>
+
+                            <span class="badge-past">
+
+                                @item.Date.ToString("dd MMM yyyy")
+
+                            </span>
+
+                        </td>
+
+                        <!-- LOCATION -->
+                        <td>
+
+                            <i class="bi bi-geo-alt-fill text-danger"></i>
+
+                            @item.Location
+
+                        </td>
+
+                        <!-- ACTIONS -->
+                        <td class="text-nowrap">
+
+                            <a asp-action="Details"
+                               asp-route-id="@item.Id"
+                               class="btn btn-sm btn-primary me-1">
+
+                                <i class="bi bi-eye-fill"></i>
+
+                            </a>
+
+                            <a asp-action="Edit"
+                               asp-route-id="@item.Id"
+                               class="btn btn-sm btn-warning me-1">
+
+                                <i class="bi bi-pencil-square"></i>
+
+                            </a>
+
+                            <a asp-action="Delete"
+                               asp-route-id="@item.Id"
+                               class="btn btn-sm btn-danger">
+
+                                <i class="bi bi-trash-fill"></i>
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+@section Scripts {
+
+    <script>
+
+        $(function () {
+
+            $("#searchBox").on("keyup", function () {
+
+                let value = $(this).val().toLowerCase();
+
+                $("#eventsTable tbody tr").each(function () {
+
+                    let rowText = $(this).text().toLowerCase();
+
+                    $(this).toggle(rowText.includes(value));
+
+                });
+
+            });
+
+        });
+
+    </script>
+
+}

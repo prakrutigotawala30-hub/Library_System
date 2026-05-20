@@ -1,0 +1,340 @@
+﻿@model IEnumerable<LibraryManagementSystem.ClassLibrary.Models.Event>
+
+@{
+    ViewData["Title"] = "Events";
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+    /* =========================
+           TABLE RESPONSIVE
+        ========================= */
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border-radius: 16px;
+    }
+
+    .table {
+        min-width: 900px;
+    }
+
+        .table thead th {
+            font-family: 'Poppins', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .table tbody td {
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            vertical-align: middle;
+        }
+
+    .event-image {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 12px;
+        border: 1px solid #ddd;
+    }
+
+    .event-title {
+        font-weight: 700;
+        color: #212529;
+    }
+
+    .event-description {
+        max-width: 260px;
+        color: #6c757d;
+        font-size: 13px;
+    }
+
+    .badge-date {
+        background: #6f42c1;
+        color: white;
+        padding: 8px 14px;
+        border-radius: 30px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    @@media (max-width: 768px) {
+
+        .table th,
+        .table td {
+            white-space: nowrap;
+            font-size: 14px;
+            padding: 12px;
+        }
+
+        .table {
+            min-width: 850px;
+        }
+    }
+
+</style>
+
+<div class="container mt-4">
+
+    <!-- HEADER -->
+    <div class="row align-items-center mb-3">
+
+        <!-- LEFT -->
+        <div class="col-md-6">
+            <h2 class="m-0">🎉 Events List</h2>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="col-md-6 text-end">
+
+            <a asp-action="Past"
+               class="btn btn-dark me-2">
+
+                Past Events
+
+            </a>
+
+            <a asp-action="Create"
+               class="btn btn-primary">
+
+                + Add Event
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- SUCCESS MESSAGE -->
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+
+            @TempData["Success"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+
+        </div>
+    }
+
+    <!-- FILTERS -->
+    <div class="row mb-3">
+
+        <!-- SEARCH -->
+        <div class="col-md-6 mb-2">
+
+            <input type="text"
+                   id="searchBox"
+                   class="form-control"
+                   placeholder="Search by title or location..." />
+
+        </div>
+
+        <!-- DATE FILTER -->
+        <div class="col-md-6 mb-2">
+
+            <input type="date"
+                   id="dateFilter"
+                   class="form-control" />
+
+        </div>
+
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-responsive">
+
+        <div class="card-body">
+
+            <table class="table table-bordered table-striped table-hover align-middle"
+                   id="eventsTable">
+
+                <thead class="table-dark">
+
+                    <tr>
+
+                        <th>Image</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Date</th>
+                        <th>Location</th>
+                        <th>Actions</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+
+                            <!-- IMAGE -->
+                            <td>
+
+                                <img src="@(string.IsNullOrEmpty(item.ImagePath)
+                                                                             ? "/images/no-event.jpg"
+                                                                             : item.ImagePath)"
+                                     class="event-image" />
+
+                            </td>
+
+                            <!-- TITLE -->
+                            <td>
+
+                                <div class="event-title">
+                                    @item.Title
+                                </div>
+
+                            </td>
+
+                            <!-- DESCRIPTION -->
+                            <td>
+
+                                <div class="event-description">
+
+                                    @(item.Description.Length > 80
+                                                                    ? item.Description.Substring(0, 80) + "..."
+                                                                    : item.Description)
+
+                                </div>
+
+                            </td>
+
+                            <!-- DATE -->
+                            <td>
+
+                                <span class="badge-date">
+
+                                    @item.Date.ToString("dd MMM yyyy")
+
+                                </span>
+
+                            </td>
+
+                            <!-- LOCATION -->
+                            <td>
+
+                                <i class="bi bi-geo-alt-fill text-danger"></i>
+
+                                @item.Location
+
+                            </td>
+
+                            <!-- ACTIONS -->
+                            <td class="text-nowrap">
+
+                                <!-- VIEW -->
+                                <a asp-action="Details"
+                                   asp-route-id="@item.Id"
+                                   class="btn btn-sm btn-primary me-1"
+                                   title="View">
+
+                                    <i class="bi bi-eye-fill"></i>
+
+                                </a>
+
+                                <!-- EDIT -->
+                                <a asp-action="Edit"
+                                   asp-route-id="@item.Id"
+                                   class="btn btn-sm btn-warning me-1"
+                                   title="Edit">
+
+                                    <i class="bi bi-pencil-square"></i>
+
+                                </a>
+
+                                <!-- DELETE -->
+                                <a asp-action="Delete"
+                                   asp-route-id="@item.Id"
+                                   class="btn btn-sm btn-danger"
+                                   title="Delete">
+
+                                    <i class="bi bi-trash-fill"></i>
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+
+    <script>
+
+        $(function () {
+
+            // SEARCH FILTER
+            $("#searchBox").on("keyup", function () {
+
+                let value = $(this).val().toLowerCase();
+
+                $("#eventsTable tbody tr").each(function () {
+
+                    let rowText = $(this).text().toLowerCase();
+
+                    $(this).toggle(rowText.includes(value));
+
+                });
+
+            });
+
+            // DATE FILTER
+            $("#dateFilter").on("change", function () {
+
+                let selectedDate = $(this).val();
+
+                $("#eventsTable tbody tr").each(function () {
+
+                    let rowDate = $(this).find("td:eq(3)").text().trim();
+
+                    if (!selectedDate) {
+
+                        $(this).show();
+
+                    }
+                    else {
+
+                        let formattedDate = new Date(selectedDate)
+                            .toLocaleDateString('en-GB', {
+                                day: '2-digit',
+                                month: 'short',
+                                year: 'numeric'
+                            })
+                            .replace(/ /g, ' ');
+
+                        $(this).toggle(rowDate.includes(formattedDate));
+
+                    }
+
+                });
+
+            });
+
+        });
+
+    </script>
+
+}
