@@ -42,6 +42,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
         var sqliteConn = $"Data Source={sqliteFile};Cache=Shared;Pooling=False";
 
+        // Diagnostic: log the resolved Sqlite path so it's visible in the
+        // dotnet run terminal. Both admin and user apps should print the
+        // SAME absolute path. If they don't, the DB is being split.
+        Console.WriteLine($"[User App]  Sqlite database file: {sqliteFile}");
+        Console.WriteLine($"[User App]  Connection string:    {sqliteConn}");
+
         options.UseSqlite(sqliteConn);
 
         // Runs PRAGMA journal_mode=WAL + busy_timeout=5000 on every Sqlite
