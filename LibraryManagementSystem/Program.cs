@@ -34,6 +34,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         options.UseSqlite(
             builder.Configuration.GetConnectionString("SqliteConnection")
             ?? "Data Source=../LibraryManagementDB.db");
+
+        // Runs PRAGMA journal_mode=WAL + busy_timeout=5000 on every Sqlite
+        // connection EF opens. The startup PRAGMA alone is not enough
+        // because EF pools connections and pool entries created later
+        // wouldn't have the busy_timeout set.
+        options.AddInterceptors(new SqlitePragmaInterceptor());
     }
     else
     {
