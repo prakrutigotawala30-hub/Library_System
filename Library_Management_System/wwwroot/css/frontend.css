@@ -303,9 +303,9 @@ body {
 /* EVENTS */
 
 .event-column {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(320px,1fr));
+    gap: 22px;
 }
 
 .event-image-card {
@@ -366,6 +366,97 @@ body {
     color: #d1d5db;
     margin: 0;
     font-size: 14px;
+}
+
+/* ========================================
+   EVENT CARD FIX
+======================================== */
+
+.event-card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: linear-gradient(145deg,#131933,#1a2142);
+    border-radius: 22px;
+    padding: 20px;
+    border: 1px solid rgba(255,255,255,.06);
+    transition: all .3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+    .event-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at top right, rgba(139,92,246,.12), transparent 45%);
+        pointer-events: none;
+    }
+
+    .event-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(139,92,246,.25);
+        box-shadow: 0 15px 35px rgba(124,58,237,.15);
+    }
+
+.event-date {
+    min-width: 82px;
+    height: 82px;
+    border-radius: 22px;
+    background: linear-gradient(135deg,#7c3aed,#9333ea);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 25px rgba(124,58,237,.30);
+    flex-shrink: 0;
+}
+
+    .event-date h2 {
+        margin: 0;
+        font-size: 30px;
+        font-weight: 800;
+        color: white;
+        line-height: 1;
+    }
+
+    .event-date span {
+        font-size: 12px;
+        letter-spacing: 1px;
+        color: rgba(255,255,255,.85);
+        margin-top: 4px;
+        font-weight: 600;
+    }
+
+.event-card h4 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: white;
+}
+
+.event-card p {
+    color: #cbd5e1;
+    margin-bottom: 6px;
+    font-size: 15px;
+}
+
+.event-card small {
+    color: #94a3b8;
+    font-size: 13px;
+}
+
+@@media(max-width:768px) {
+
+    .event-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .event-date {
+        width: 72px;
+        height: 72px;
+    }
 }
 /* CATEGORY */
 .category-list {

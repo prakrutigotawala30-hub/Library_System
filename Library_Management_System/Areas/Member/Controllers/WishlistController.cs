@@ -1,7 +1,8 @@
-﻿using LibraryManagementSystem.ClassLibrary.Data;
+﻿using Library_Management_System.Models;
+using LibraryManagementSystem.ClassLibrary.Data;
 using LibraryManagementSystem.ClassLibrary.Models;
-using Library_Management_System.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -24,24 +25,23 @@ namespace Library_Management_System.Areas.Member.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var wishlistBooks = await _context.Wishlists
-                .Include(x => x.Book)
-                .ThenInclude(x => x.Author)
-                .Where(x => x.MemberId == userId)
-                .OrderByDescending(x => x.AddedOn)
+            var wishlist = await _context.Wishlists
+                .Include(w => w.Book)
+                    .ThenInclude(b => b.Author)
+                .Include(w => w.Book)
+                    .ThenInclude(b => b.Category)
+                .Where(w => w.MemberId == userId)
                 .ToListAsync();
 
-            return View(wishlistBooks);
+            return View(wishlist);
         }
 
         // ADD TO WISHLIST
-
         public async Task<IActionResult> Add(int bookId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             // CHECK EXIST
-
             var exists = await _context.Wishlists
                 .AnyAsync(x =>
                     x.MemberId == userId &&
@@ -60,28 +60,22 @@ namespace Library_Management_System.Areas.Member.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
 
         // REMOVE
-
-        public async Task<IActionResult> Remove(int bookId)
+        [HttpPost]
+        public async Task<IActionResult> Remove(int id)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var wishlist = await _context.Wishlists.FindAsync(id);
 
-            var wishlistItem = await _context.Wishlists
-                .FirstOrDefaultAsync(x =>
-                    x.MemberId == userId &&
-                    x.BookId == bookId);
-
-            if (wishlistItem != null)
+            if (wishlist != null)
             {
-                _context.Wishlists.Remove(wishlistItem);
-
+                _context.Wishlists.Remove(wishlist);
                 await _context.SaveChangesAsync();
             }
 
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
     }
 }

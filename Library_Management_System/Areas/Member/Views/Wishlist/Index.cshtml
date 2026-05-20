@@ -1,4 +1,8 @@
-﻿@model IEnumerable<LibraryManagementSystem.ClassLibrary.Models.Wishlist>
+﻿@{
+    Layout = "~/Areas/Member/Views/Shared/_MemberLayout.cshtml";
+}
+
+@model IEnumerable<LibraryManagementSystem.ClassLibrary.Models.Wishlist>
 
 @{
     ViewData["Title"] = "My Wishlist";
@@ -7,179 +11,355 @@
 <style>
 
     body {
-        background: #050816;
+        background: #f4f7fb;
+    }
+
+    .wishlist-header {
+        background: linear-gradient(135deg,#0f172a,#1e293b);
+        border-radius: 28px;
+        padding: 45px;
         color: white;
-        font-family: 'Segoe UI', sans-serif;
+        position: relative;
+        overflow: hidden;
     }
 
-    .wishlist-wrapper {
-        padding: 30px;
+        .wishlist-header::before {
+            content: "";
+            position: absolute;
+            width: 280px;
+            height: 280px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+            top: -120px;
+            right: -80px;
+        }
+
+    .wishlist-title {
+        font-size: 2.3rem;
+        font-weight: 800;
     }
 
-    .page-title {
-        font-size: 32px;
-        font-weight: 700;
-        margin-bottom: 30px;
+    .wishlist-subtitle {
+        color: rgba(255,255,255,0.75);
+        font-size: 1rem;
     }
 
-    .wishlist-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill,minmax(260px,1fr));
-        gap: 25px;
+    .browse-btn {
+        background: white;
+        color: #111827;
+        border-radius: 50px;
+        padding: 12px 28px;
+        font-weight: 600;
+        transition: 0.3s ease;
+        border: none;
+        text-decoration: none;
     }
+
+        .browse-btn:hover {
+            transform: translateY(-2px);
+            background: #f8fafc;
+            color: black;
+        }
 
     .wishlist-card {
-        background: linear-gradient(145deg,#0f172a,#111827);
-        border-radius: 22px;
+        border: none;
+        border-radius: 24px;
         overflow: hidden;
-        border: 1px solid rgba(255,255,255,0.05);
-        transition: 0.3s;
-        box-shadow: 0 0 20px rgba(139,92,246,0.08);
+        background: white;
+        transition: all 0.35s ease;
+        box-shadow: 0 10px 30px rgba(15,23,42,0.06);
+        height: 100%;
     }
 
         .wishlist-card:hover {
-            transform: translateY(-6px);
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(15,23,42,0.12);
         }
+
+    .book-image-wrapper {
+        position: relative;
+        overflow: hidden;
+    }
 
     .book-image {
         width: 100%;
-        height: 260px;
+        height: 340px;
         object-fit: cover;
+        transition: 0.4s ease;
     }
 
-    .card-body-custom {
-        padding: 20px;
+    .wishlist-card:hover .book-image {
+        transform: scale(1.05);
+    }
+
+    .wishlist-badge {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        background: rgba(15,23,42,0.9);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 50px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        backdrop-filter: blur(10px);
+    }
+
+    .card-content {
+        padding: 24px;
     }
 
     .book-title {
-        font-size: 20px;
+        font-size: 1.1rem;
         font-weight: 700;
-        margin-bottom: 8px;
+        color: #0f172a;
+        margin-bottom: 6px;
+        line-height: 1.4;
+        min-height: 48px;
     }
 
     .book-author {
-        color: #9ca3af;
-        margin-bottom: 15px;
+        color: #64748b;
+        font-size: 0.95rem;
+        margin-bottom: 18px;
     }
 
-    .added-date {
-        color: #9ca3af;
-        font-size: 13px;
+    .category-badge {
+        display: inline-block;
+        background: #eef2ff;
+        color: #4338ca;
+        padding: 8px 16px;
+        border-radius: 50px;
+        font-size: 0.82rem;
+        font-weight: 600;
         margin-bottom: 20px;
     }
 
-    .btn-group-custom {
-        display: flex;
-        gap: 12px;
+    .copies-box {
+        background: #f8fafc;
+        border-radius: 18px;
+        padding: 14px 18px;
+        margin-bottom: 20px;
     }
 
-    .btn-view {
-        flex: 1;
-        background: linear-gradient(90deg,#7c3aed,#9333ea);
-        border: none;
-        color: white;
-        padding: 10px;
-        border-radius: 12px;
-        text-decoration: none;
-        text-align: center;
-        font-weight: 600;
+    .copies-label {
+        color: #64748b;
+        font-size: 0.9rem;
     }
 
-    .btn-remove {
-        flex: 1;
-        background: #dc2626;
+    .copies-value {
+        font-weight: 700;
+        color: #16a34a;
+    }
+
+    .details-btn {
+        background: linear-gradient(135deg,#111827,#1f2937);
         border: none;
         color: white;
-        padding: 10px;
-        border-radius: 12px;
+        border-radius: 50px;
+        padding: 12px;
+        font-weight: 600;
+        transition: 0.3s ease;
         text-decoration: none;
         text-align: center;
-        font-weight: 600;
     }
+
+        .details-btn:hover {
+            transform: translateY(-2px);
+            color: white;
+        }
+
+    .remove-btn {
+        border-radius: 50px;
+        padding: 12px;
+        font-weight: 600;
+        transition: 0.3s ease;
+    }
+
+        .remove-btn:hover {
+            transform: translateY(-2px);
+        }
 
     .empty-box {
-        background: #111827;
-        border-radius: 20px;
-        padding: 40px;
+        background: white;
+        border-radius: 30px;
+        padding: 70px 40px;
         text-align: center;
-        color: #9ca3af;
+        box-shadow: 0 10px 30px rgba(15,23,42,0.05);
+    }
+
+    .empty-image {
+        width: 180px;
+        margin-bottom: 30px;
+    }
+
+    .empty-title {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #0f172a;
+    }
+
+    .empty-text {
+        color: #64748b;
+        margin-top: 10px;
+        margin-bottom: 30px;
     }
 
 </style>
 
-<div class="wishlist-wrapper">
+<section class="py-5">
+    <div class="container">
 
-    <div class="page-title">
-        ❤️ My Wishlist
-    </div>
+        <!-- HERO HEADER -->
+        <div class="wishlist-header mb-5">
 
-    @if (Model.Any())
-    {
-        <div class="wishlist-grid">
+            <div class="d-flex flex-wrap justify-content-between align-items-center">
 
-            @foreach (var item in Model)
-            {
-                <div class="wishlist-card">
+                <div>
+                    <h1 class="wishlist-title mb-2">
+                        My Wishlist
+                    </h1>
 
-                    <img src="@(item.Book.CoverImageUrl ?? "https://via.placeholder.com/300x400")"
-                         class="book-image" />
+                    <p class="wishlist-subtitle mb-0">
+                        Save your favourite books and access them anytime.
+                    </p>
+                </div>
 
-                    <div class="card-body-custom">
+                <div class="mt-4 mt-lg-0">
 
-                        <div class="book-title">
-                            @item.Book.Title
-                        </div>
+                    <a asp-controller="Books"
+                       asp-action="Index"
+                       class="browse-btn">
+                        Browse Books
+                    </a>
 
-                        <div class="book-author">
-                            by @item.Book.Author.Name
-                        </div>
+                </div>
 
-                        <div class="added-date">
-                            Added on @item.AddedOn.ToShortDateString()
-                        </div>
+            </div>
 
-                        <div class="btn-group-custom">
+        </div>
 
-                            <a asp-area=""
-                               asp-controller="Books"
+        @if (!Model.Any())
+        {
+            <!-- EMPTY STATE -->
+            <div class="empty-box">
+
+                <img src="/images/empty-wishlist.png"
+                     class="empty-image"
+                     alt="Empty Wishlist" />
+
+                <h2 class="empty-title">
+                    Your Wishlist is Empty
+                </h2>
+
+                <p class="empty-text">
+                    Explore the library and save books you want to read later.
+                </p>
+
+                <a asp-controller="Books"
+                   asp-action="Index"
+                   class="details-btn px-5 py-3">
+                    Explore Library
+                </a>
+
+            </div>
+        }
+        else
+        {
+            <!-- BOOK GRID -->
+            <div class="row g-4">
+
+                @foreach (var item in Model)
+                {
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+
+                        <div class="wishlist-card">
+
+                            <!-- IMAGE -->
+                            <a asp-controller="Books"
                                asp-action="Details"
-                               asp-route-id="@item.BookId"
-                               class="btn-view">
+                               asp-route-id="@item.Book.Id"
+                               class="text-decoration-none">
 
-                                View Book
+                                <div class="book-image-wrapper">
+
+                                    <img src="@(string.IsNullOrEmpty(item.Book.CoverImageUrl)
+                                                                                         ? "/images/no-book.png"
+                                                                                         : item.Book.CoverImageUrl)"
+                                         alt="@item.Book.Title"
+                                         class="book-image" />
+
+                                    <div class="wishlist-badge">
+                                        Saved
+                                    </div>
+
+                                </div>
 
                             </a>
 
-                            <a asp-action="Remove"
-                               asp-route-bookId="@item.BookId"
-                               class="btn-remove">
+                            <!-- CONTENT -->
+                            <div class="card-content d-flex flex-column h-100">
 
-                                Remove
+                                <div class="book-title">
+                                    @item.Book.Title
+                                </div>
 
-                            </a>
+                                <div class="book-author">
+                                    by @(item.Book.Author?.Name ?? "Unknown Author")
+                                </div>
+
+                                <div class="category-badge">
+                                    @(item.Book.Category?.Name ?? "General")
+                                </div>
+
+                                <div class="copies-box d-flex justify-content-between align-items-center">
+
+                                    <span class="copies-label">
+                                        Available Copies
+                                    </span>
+
+                                    <span class="copies-value">
+                                        @item.Book.AvailableCopies
+                                    </span>
+
+                                </div>
+
+                                <div class="d-grid gap-2 mt-auto">
+
+                                    <a asp-controller="Books"
+                                       asp-action="Details"
+                                       asp-route-id="@item.Book.Id"
+                                       class="details-btn">
+                                        View Details
+                                    </a>
+
+                                    <form asp-area="Member"
+                                          asp-controller="Wishlist"
+                                          asp-action="Remove"
+                                          method="post">
+
+                                        <input type="hidden"
+                                               name="id"
+                                               value="@item.Id" />
+
+                                        <button type="submit"
+                                                class="btn btn-outline-danger remove-btn w-100">
+                                            Remove From Wishlist
+                                        </button>
+
+                                    </form>
+
+                                </div>
+
+                            </div>
 
                         </div>
 
                     </div>
+                }
 
-                </div>
-            }
+            </div>
+        }
 
-        </div>
-    }
-    else
-    {
-        <div class="empty-box">
-
-            <h4>
-                Your wishlist is empty 💔
-            </h4>
-
-            <p>
-                Save books to your wishlist and they will appear here.
-            </p>
-
-        </div>
-    }
-
-</div>
+    </div>
+</section>
