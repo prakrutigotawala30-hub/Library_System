@@ -21,13 +21,32 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     if (string.Equals(dbProvider, "Sqlite", StringComparison.OrdinalIgnoreCase))
     {
-        // Path is relative to the project folder. "../LibraryManagementDB.db"
-        // points to the SOLUTION ROOT, so both admin and user apps share one
-        // file on Mac/Linux. Without this, admin-entered books wouldn't show
-        // on the user-facing app because each project wrote to its own .db.
-        options.UseSqlite(
-            builder.Configuration.GetConnectionString("SqliteConnection")
-            ?? "Data Source=../LibraryManagementDB.db");
+        // Absolute path to the SHARED Sqlite file at the solution root.
+        // ContentRootPath is the project directory at runtime; ".." goes up
+        // one level into the solution root where both apps can find the same
+        // file. Computing this absolutely (instead of using a relative
+        // "../LibraryManagementDB.db") removes every working-directory
+        // ambiguity — `dotnet run`, F5 from VS Code, IIS Express all resolve
+        // to the same physical file.
+        //
+        // Pooling=False is critical for the dev cross-app scenario: with
+        // pooling on, EF holds connections that may hold an old WAL snapshot
+        // — so the user app's read can miss the admin's recent write until
+        // the connection is recycled. With pooling off, every query opens a
+        // fresh connection and sees the latest committed state immediately.
+        //
+        // Cache=Shared lets multiple connections in the same process share
+        // the page cache, reducing disk reads.
+        var sqliteFile = Path.GetFullPath(
+            Path.Combine(builder.Environment.ContentRootPath, "..", "LibraryManagementDB.db"));
+
+        var sqliteConn = $"Data Source={sqliteFile};Cache=Shared;Pooling=False";
+
+        options.UseSqlite(sqliteConn);
+
+        // Runs PRAGMA journal_mode=WAL + busy_timeout=5000 on every Sqlite
+        // connection EF opens.
+        options.AddInterceptors(new SqlitePragmaInterceptor());
     }
     else
     {

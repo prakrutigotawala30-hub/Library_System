@@ -1,0 +1,57 @@
+using System.Data.Common;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+
+namespace LibraryManagementSystem.ClassLibrary.Data
+{
+    /// <summary>
+    /// Runs the concurrency PRAGMAs on every SqliteConnection EF opens —
+    /// not just the bootstrap one. Without this, EF's connection pool can
+    /// hand out connections that never had busy_timeout set, and any
+    /// SaveChanges that runs while the other app holds a lock throws
+    /// SQLITE_BUSY immediately instead of waiting.
+    ///
+    /// journal_mode is persisted in the .db file, so running it again is
+    /// a cheap no-op. busy_timeout is per-connection and MUST be set on
+    /// each one.
+    ///
+    /// Registered via .AddInterceptors(new SqlitePragmaInterceptor()) on
+    /// the Sqlite branch of AddDbContext in both apps' Program.cs.
+    /// </summary>
+    public class SqlitePragmaInterceptor : DbConnectionInterceptor
+    {
+        public override void ConnectionOpened(DbConnection connection, ConnectionEndEventData eventData)
+        {
+            ApplyPragmas(connection);
+        }
+
+        public override Task ConnectionOpenedAsync(
+            DbConnection connection,
+            ConnectionEndEventData eventData,
+            CancellationToken cancellationToken = default)
+        {
+            ApplyPragmas(connection);
+            return Task.CompletedTask;
+        }
+
+        private static void ApplyPragmas(DbConnection connection)
+        {
+            // This interceptor is wired up ONLY on the Sqlite branch in
+            // Program.cs, so we don't type-check the connection here (avoids
+            // pulling Microsoft.Data.Sqlite into the shared ClassLibrary).
+            // If you ever register this on a non-Sqlite provider, the PRAGMA
+            // statements would just error harmlessly the first time.
+            using var cmd = connection.CreateCommand();
+            cmd.CommandText =
+                "PRAGMA journal_mode = WAL;" +
+                "PRAGMA busy_timeout = 5000;" +
+                // foreign_keys is OFF by default in Sqlite (per-connection, not
+                // per-file). Without this, OnDelete(Restrict) in AppDbContext
+                // is silently ignored at the DB layer and you can end up with
+                // orphan rows (a Book referencing a deleted Author, etc.).
+                // EF still validates FKs at the model layer, so this is a
+                // defense-in-depth measure for any raw SQL or direct deletes.
+                "PRAGMA foreign_keys = ON;";
+            cmd.ExecuteNonQuery();
+        }
+    }
+}
