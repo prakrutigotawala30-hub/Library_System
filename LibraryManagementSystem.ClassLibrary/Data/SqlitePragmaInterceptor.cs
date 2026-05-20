@@ -43,7 +43,14 @@ namespace LibraryManagementSystem.ClassLibrary.Data
             using var cmd = connection.CreateCommand();
             cmd.CommandText =
                 "PRAGMA journal_mode = WAL;" +
-                "PRAGMA busy_timeout = 5000;";
+                "PRAGMA busy_timeout = 5000;" +
+                // foreign_keys is OFF by default in Sqlite (per-connection, not
+                // per-file). Without this, OnDelete(Restrict) in AppDbContext
+                // is silently ignored at the DB layer and you can end up with
+                // orphan rows (a Book referencing a deleted Author, etc.).
+                // EF still validates FKs at the model layer, so this is a
+                // defense-in-depth measure for any raw SQL or direct deletes.
+                "PRAGMA foreign_keys = ON;";
             cmd.ExecuteNonQuery();
         }
     }
