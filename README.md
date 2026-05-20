@@ -28,7 +28,7 @@ dotnet run
 That's it. No setup steps. On first run the app:
 
 1. Detects the OS → picks **SQLite** automatically (no LocalDB on Mac).
-2. Creates `LibraryManagementDB.db` in the project folder.
+2. Creates `LibraryManagementDB.db` at the **solution root** (shared by both apps).
 3. Builds the full schema from the EF model — every table the project defines.
 4. Seeds `Admin` and `Member` roles.
 
@@ -40,13 +40,16 @@ Open `LibraryManagementDB.db` in any SQLite browser:
 - **DB Browser for SQLite** (free, https://sqlitebrowser.org)
 - **TablePlus**, **DBeaver**, **JetBrains DataGrip**
 
-The file is created inside the project folder you `dotnet run` from:
+The file is created **once at the solution root** — both apps point at it via `../LibraryManagementDB.db`:
+
 ```
-LibraryManagementSystem/LibraryManagementDB.db          (admin app DB)
-Library_Management_System/LibraryManagementDB.db        (user app DB)
+Library_System/
+  LibraryManagementDB.db                  ← shared SQLite file (single source of truth)
+  LibraryManagementSystem/                ← admin app
+  Library_Management_System/              ← user app
 ```
 
-Each app has its own SQLite file in dev — they don't share data on Sqlite. On Windows LocalDB they share the `LibraryManagementDB` database.
+This way, when an admin adds a book in the admin app, it shows up immediately in the user-facing catalog. Same behavior as Windows + LocalDB where both apps already share the `LibraryManagementDB` database.
 
 ---
 
@@ -96,11 +99,10 @@ Leave blank for automatic OS-based selection. To force a provider on any OS:
 
 ## When the schema changes (model edits)
 
-On **Mac/Linux (SQLite)**: `EnsureCreated` only creates tables — it does **not** update an existing DB after a model change. Delete the file and run again:
+On **Mac/Linux (SQLite)**: `EnsureCreated` only creates tables — it does **not** update an existing DB after a model change. Delete the shared file at the solution root and run again:
 
 ```bash
-rm Library_Management_System/LibraryManagementDB.db
-rm LibraryManagementSystem/LibraryManagementDB.db
+rm LibraryManagementDB.db
 dotnet run
 ```
 
@@ -169,10 +171,9 @@ The project is dual-target (Mac and Windows). A few habits keep it that way.
 
 1. Add the C# class in `LibraryManagementSystem.ClassLibrary/Models/`.
 2. Add `public DbSet<YourEntity> YourEntities { get; set; }` to `AppDbContext`.
-3. On **Mac/Linux** (Sqlite): delete the `.db` file and `dotnet run`. `EnsureCreated` rebuilds with the new table.
+3. On **Mac/Linux** (Sqlite): delete the shared `.db` file at the solution root and `dotnet run`. `EnsureCreated` rebuilds with the new table.
    ```bash
-   rm Library_Management_System/LibraryManagementDB.db
-   rm LibraryManagementSystem/LibraryManagementDB.db
+   rm LibraryManagementDB.db
    dotnet run
    ```
 4. On **Windows** (SqlServer): generate a migration and apply.
