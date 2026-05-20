@@ -21,9 +21,13 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     if (string.Equals(dbProvider, "Sqlite", StringComparison.OrdinalIgnoreCase))
     {
+        // Path is relative to the project folder. "../LibraryManagementDB.db"
+        // points to the SOLUTION ROOT, so both admin and user apps share one
+        // file on Mac/Linux. Without this, admin-entered books wouldn't show
+        // on the user-facing app because each project wrote to its own .db.
         options.UseSqlite(
             builder.Configuration.GetConnectionString("SqliteConnection")
-            ?? "Data Source=LibraryManagementDB.db");
+            ?? "Data Source=../LibraryManagementDB.db");
     }
     else
     {
@@ -111,6 +115,15 @@ using (var scope = app.Services.CreateScope())
     if (db.Database.IsSqlite())
     {
         await db.Database.EnsureCreatedAsync();
+
+        // Concurrency fix: default Sqlite journal mode locks the whole file
+        // for writers, which makes the admin app's SaveChanges throw
+        // "database is locked" whenever the user app has the .db open.
+        // WAL allows one writer + concurrent readers, and busy_timeout
+        // tells Sqlite to wait up to 5s for a lock to clear before failing.
+        // journal_mode is persisted in the .db file once set.
+        await db.Database.ExecuteSqlRawAsync("PRAGMA journal_mode = WAL;");
+        await db.Database.ExecuteSqlRawAsync("PRAGMA busy_timeout = 5000;");
     }
     else
     {

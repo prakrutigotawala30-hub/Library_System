@@ -27,9 +27,13 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     if (string.Equals(dbProvider, "Sqlite", StringComparison.OrdinalIgnoreCase))
     {
+        // Path is relative to the project folder. "../LibraryManagementDB.db"
+        // points to the SOLUTION ROOT, so both admin and user apps share one
+        // file on Mac/Linux. Without this, admin-entered books wouldn't show
+        // on the user-facing app because each project wrote to its own .db.
         options.UseSqlite(
             builder.Configuration.GetConnectionString("SqliteConnection")
-            ?? "Data Source=LibraryManagementDB.db");
+            ?? "Data Source=../LibraryManagementDB.db");
     }
     else
     {
@@ -123,6 +127,19 @@ using (var scope = app.Services.CreateScope())
     if (db.Database.IsSqlite())
     {
         await db.Database.EnsureCreatedAsync();
+
+        // Concurrency fix: by default Sqlite uses rollback-journal mode which
+        // grabs an exclusive lock for writers and routinely throws
+        // "database is locked" (SQLITE_BUSY) when admin and user apps both
+        // have the same file open. WAL journal mode allows ONE writer +
+        // many concurrent readers. busy_timeout=5000 tells Sqlite to wait
+        // up to 5s for a lock to clear before failing.
+        // journal_mode is persisted in the .db file (one-time effect); setting
+        // it again is cheap. busy_timeout is per-connection so we set it here
+        // for the bootstrap connection; the EF interceptor below applies it
+        // to every connection the pool opens after this.
+        await db.Database.ExecuteSqlRawAsync("PRAGMA journal_mode = WAL;");
+        await db.Database.ExecuteSqlRawAsync("PRAGMA busy_timeout = 5000;");
     }
     else
     {
