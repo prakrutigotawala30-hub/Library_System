@@ -141,12 +141,7 @@ using (var scope = app.Services.CreateScope())
     {
         await db.Database.EnsureCreatedAsync();
 
-        // Concurrency fix: default Sqlite journal mode locks the whole file
-        // for writers, which makes the admin app's SaveChanges throw
-        // "database is locked" whenever the user app has the .db open.
-        // WAL allows one writer + concurrent readers, and busy_timeout
-        // tells Sqlite to wait up to 5s for a lock to clear before failing.
-        // journal_mode is persisted in the .db file once set.
+        // Concurrency fix: see SqlitePragmaInterceptor for details.
         await db.Database.ExecuteSqlRawAsync("PRAGMA journal_mode = WAL;");
         await db.Database.ExecuteSqlRawAsync("PRAGMA busy_timeout = 5000;");
     }
@@ -154,6 +149,11 @@ using (var scope = app.Services.CreateScope())
     {
         await db.Database.MigrateAsync();
     }
+
+    // Idempotent default data — only seeds tables that are empty.
+    // Lets a fresh clone show Books / Authors / Categories / Events on the
+    // user-facing pages immediately, before the admin has added anything.
+    await DbSeeder.SeedAsync(db);
 
     var roleManager =
         scope.ServiceProvider
