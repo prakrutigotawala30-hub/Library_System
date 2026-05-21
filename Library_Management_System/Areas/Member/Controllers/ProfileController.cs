@@ -1,6 +1,5 @@
-﻿using Library_Management_System.ViewModels;
+using Library_Management_System.ViewModels;
 using LibraryManagementSystem.ClassLibrary.Models;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,20 +14,29 @@ namespace Library_Management_System.Areas.Member.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public ProfileController(IWebHostEnvironment env,UserManager<ApplicationUser> userManager,SignInManager<ApplicationUser> signInManager)
+        public ProfileController(
+            IWebHostEnvironment env,
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager)
         {
             _env = env;
             _userManager = userManager;
             _signInManager = signInManager;
         }
 
-        // PROFILE PAGE
+        // 👤 PROFILE PAGE
+
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.GetUserAsync(User);
 
             if (user == null)
-                return RedirectToAction("Login", "Account");
+            {
+                return RedirectToAction(
+                    "Login",
+                    "Account",
+                    new { area = "" });
+            }
 
             var model = new ProfileViewModel
             {
@@ -41,7 +49,7 @@ namespace Library_Management_System.Areas.Member.Controllers
             return View(model);
         }
 
-        // EDIT PROFILE GET
+        // ✏️ EDIT PROFILE GET
 
         [HttpGet]
         public async Task<IActionResult> Edit()
@@ -49,7 +57,12 @@ namespace Library_Management_System.Areas.Member.Controllers
             var user = await _userManager.GetUserAsync(User);
 
             if (user == null)
-                return RedirectToAction("Login", "Account");
+            {
+                return RedirectToAction(
+                    "Login",
+                    "Account",
+                    new { area = "" });
+            }
 
             var model = new ProfileViewModel
             {
@@ -62,7 +75,7 @@ namespace Library_Management_System.Areas.Member.Controllers
             return View(model);
         }
 
-        // EDIT PROFILE POST
+        // ✏️ EDIT PROFILE POST
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -74,13 +87,30 @@ namespace Library_Management_System.Areas.Member.Controllers
             var user = await _userManager.GetUserAsync(User);
 
             if (user == null)
-                return RedirectToAction("Login", "Account");
+            {
+                return RedirectToAction(
+                    "Login",
+                    "Account",
+                    new { area = "" });
+            }
 
             user.FullName = model.Name;
             user.PhoneNumber = model.Phone;
             user.NotificationPrefs = model.NotificationPrefs;
 
-            await _userManager.UpdateAsync(user);
+            var result = await _userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+
+                return View(model);
+            }
+
+            await _signInManager.RefreshSignInAsync(user);
 
             TempData["success"] =
                 "Profile updated successfully";
@@ -88,7 +118,7 @@ namespace Library_Management_System.Areas.Member.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // AVATAR PAGE GET
+        // 🖼️ UPLOAD AVATAR GET
 
         [HttpGet]
         public async Task<IActionResult> Avatar()
@@ -96,7 +126,12 @@ namespace Library_Management_System.Areas.Member.Controllers
             var user = await _userManager.GetUserAsync(User);
 
             if (user == null)
-                return RedirectToAction("Login", "Account");
+            {
+                return RedirectToAction(
+                    "Login",
+                    "Account",
+                    new { area = "" });
+            }
 
             var model = new ProfileViewModel
             {
@@ -106,7 +141,7 @@ namespace Library_Management_System.Areas.Member.Controllers
             return View(model);
         }
 
-        // AVATAR UPLOAD POST
+        // 🖼️ UPLOAD AVATAR POST
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -115,51 +150,114 @@ namespace Library_Management_System.Areas.Member.Controllers
             var user = await _userManager.GetUserAsync(User);
 
             if (user == null)
-                return RedirectToAction("Login", "Account");
-
-            if (model.AvatarFile != null)
             {
-                var folder = Path.Combine(
-                    _env.WebRootPath,
-                    "images");
-
-                Directory.CreateDirectory(folder);
-
-                var fileName =
-                    Guid.NewGuid().ToString() +
-                    Path.GetExtension(model.AvatarFile.FileName);
-
-                var path = Path.Combine(folder, fileName);
-
-                using (var stream = new FileStream(path, FileMode.Create))
-                {
-                    await model.AvatarFile.CopyToAsync(stream);
-                }
-
-                user.ProfileImagePath =
-                    "/images/" + fileName;
-
-                await _userManager.UpdateAsync(user);
-
-                TempData["success"] =
-                    "Profile photo updated successfully";
+                return RedirectToAction(
+                    "Login",
+                    "Account",
+                    new { area = "" });
             }
 
-            return RedirectToAction(nameof(Edit));
+            if (model.AvatarFile == null)
+            {
+                TempData["error"] =
+                    "Please select an image";
+
+                return RedirectToAction(nameof(Edit));
+            }
+
+            // VALIDATE FILE TYPE
+
+            var allowedExtensions =
+                new[] { ".jpg", ".jpeg", ".png", ".webp" };
+
+            var extension =
+                Path.GetExtension(model.AvatarFile.FileName)
+                .ToLower();
+
+            if (!allowedExtensions.Contains(extension))
+            {
+                TempData["error"] =
+                    "Only JPG, PNG, and WEBP images are allowed";
+
+                return RedirectToAction(nameof(Edit));
+            }
+
+            // DELETE OLD IMAGE
+
+            if (!string.IsNullOrEmpty(user.ProfileImagePath))
+            {
+                var oldImagePath = Path.Combine(
+                    _env.WebRootPath,
+                    user.ProfileImagePath.TrimStart('/'));
+
+                if (System.IO.File.Exists(oldImagePath))
+                {
+                    System.IO.File.Delete(oldImagePath);
+                }
+            }
+
+            // CREATE FOLDER
+
+            var folder = Path.Combine(
+                _env.WebRootPath,
+                "images",
+                "profiles");
+
+            Directory.CreateDirectory(folder);
+
+            // GENERATE FILE NAME
+
+            var fileName =
+                Guid.NewGuid().ToString() + extension;
+
+            var filePath = Path.Combine(folder, fileName);
+
+            // SAVE IMAGE
+
+            using (var stream = new FileStream(
+                filePath,
+                FileMode.Create))
+            {
+                await model.AvatarFile.CopyToAsync(stream);
+            }
+
+            // SAVE DB PATH
+
+            user.ProfileImagePath =
+                "/images/profiles/" + fileName;
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+            {
+                TempData["error"] =
+                    "Failed to upload profile photo";
+
+                return RedirectToAction(nameof(Edit));
+            }
+
+            await _signInManager.RefreshSignInAsync(user);
+
+            TempData["success"] =
+                "Profile photo updated successfully";
+
+            return RedirectToAction(nameof(Index));
         }
 
-        // CHANGE PASSWORD GET
+        // 🔒 CHANGE PASSWORD GET
 
         [HttpGet]
         public IActionResult ChangePassword()
         {
             return View();
         }
-        // CHANGE PASSWORD POST
+
+        // 🔒 CHANGE PASSWORD POST
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        public async Task<IActionResult> ChangePassword(
+            ChangePasswordViewModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
@@ -167,9 +265,12 @@ namespace Library_Management_System.Areas.Member.Controllers
             var user = await _userManager.GetUserAsync(User);
 
             if (user == null)
+            {
                 return RedirectToAction(
                     "Login",
-                    "Account");
+                    "Account",
+                    new { area = "" });
+            }
 
             var result =
                 await _userManager.ChangePasswordAsync(
@@ -189,14 +290,12 @@ namespace Library_Management_System.Areas.Member.Controllers
                 return View(model);
             }
 
-            await _signInManager.SignOutAsync();
+            await _signInManager.RefreshSignInAsync(user);
 
             TempData["success"] =
                 "Password updated successfully";
 
-            return RedirectToAction(
-                "Login",
-                "Account");
+            return RedirectToAction(nameof(Index));
         }
     }
 }

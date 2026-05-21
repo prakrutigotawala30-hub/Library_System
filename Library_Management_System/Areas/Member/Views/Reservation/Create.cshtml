@@ -1,4 +1,4 @@
-﻿@{
+@{
     Layout = "~/Areas/Member/Views/Shared/_MemberLayout.cshtml";
 }
 
@@ -11,265 +11,265 @@
 <style>
 
     body {
-        background: #f4f7fb;
+        background: #050816;
+        color: white;
     }
 
-    .reserve-section {
-        padding: 60px 0;
-        min-height: 100vh;
+    .reserve-wrapper {
+        padding: 30px;
+    }
+
+    .page-title {
+        font-size: 34px;
+        font-weight: 800;
+        margin-bottom: 30px;
     }
 
     .reserve-card {
-        background: white;
-        border-radius: 32px;
-        overflow: hidden;
-        box-shadow: 0 20px 60px rgba(15,23,42,0.08);
+        background: linear-gradient(145deg,#0f172a,#111827);
+        border-radius: 24px;
+        padding: 28px;
+        border: 1px solid rgba(255,255,255,0.05);
+        transition: 0.3s;
     }
 
-    .book-image {
+        .reserve-card:hover {
+            transform: translateY(-5px);
+        }
+
+    .book-cover {
         width: 100%;
-        height: 100%;
-        min-height: 620px;
+        max-width: 260px;
+        height: 360px;
         object-fit: cover;
-    }
-
-    .reserve-content {
-        padding: 55px;
+        border-radius: 20px;
     }
 
     .reserve-badge {
         display: inline-block;
-        background: #ede9fe;
-        color: #6d28d9;
-        padding: 10px 18px;
-        border-radius: 50px;
-        font-size: 14px;
+        background: rgba(124,58,237,0.2);
+        color: #c4b5fd;
+        padding: 8px 18px;
+        border-radius: 30px;
+        font-size: 13px;
         font-weight: 700;
-        margin-bottom: 22px;
+        margin-bottom: 20px;
     }
 
     .book-title {
-        font-size: 3rem;
+        font-size: 34px;
         font-weight: 800;
-        color: #0f172a;
-        line-height: 1.2;
-        margin-bottom: 12px;
+        margin-bottom: 10px;
     }
 
     .book-author {
-        font-size: 1.1rem;
-        color: #64748b;
-        margin-bottom: 30px;
+        color: #9ca3af;
+        font-size: 16px;
+        margin-bottom: 25px;
     }
 
     .book-description {
-        color: #475569;
+        color: #d1d5db;
         line-height: 1.9;
-        font-size: 1rem;
+        margin-bottom: 30px;
+    }
+
+    .book-info {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
         margin-bottom: 35px;
     }
 
-    .book-meta {
-        display: grid;
-        grid-template-columns: repeat(2,1fr);
-        gap: 18px;
-        margin-bottom: 35px;
+    .info-box {
+        background: rgba(255,255,255,0.04);
+        padding: 16px 20px;
+        border-radius: 16px;
+        min-width: 180px;
     }
 
-    .meta-box {
-        background: #f8fafc;
-        padding: 20px;
-        border-radius: 18px;
-    }
-
-    .meta-title {
-        color: #64748b;
-        font-size: 14px;
+    .info-title {
+        color: #9ca3af;
+        font-size: 13px;
         margin-bottom: 8px;
     }
 
-    .meta-value {
-        color: #0f172a;
-        font-weight: 700;
+    .info-value {
         font-size: 18px;
+        font-weight: 700;
+    }
+
+    .available {
+        color: #10b981;
     }
 
     .reserve-btn {
         width: 100%;
         height: 60px;
         border: none;
-        border-radius: 18px;
+        border-radius: 16px;
         background: linear-gradient(135deg,#7c3aed,#9333ea);
         color: white;
         font-size: 18px;
         font-weight: 700;
-        transition: 0.3s ease;
+        transition: 0.3s;
     }
 
         .reserve-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 30px rgba(124,58,237,0.25);
+            box-shadow: 0 15px 30px rgba(124,58,237,0.3);
         }
 
-    .back-link {
+    .back-btn {
         display: inline-flex;
         align-items: center;
         gap: 8px;
         text-decoration: none;
-        color: #64748b;
+        color: #9ca3af;
         font-weight: 600;
-        margin-bottom: 30px;
+        margin-bottom: 25px;
     }
 
-        .back-link:hover {
-            color: #0f172a;
+        .back-btn:hover {
+            color: white;
         }
 
     @@media(max-width:991px) {
 
-        .book-image {
-            min-height: 400px;
-        }
-
-        .reserve-content {
-            padding: 35px;
+        .book-cover {
+            margin-bottom: 25px;
+            max-width: 100%;
+            height: auto;
         }
 
         .book-title {
-            font-size: 2.2rem;
-        }
-
-        .book-meta {
-            grid-template-columns: 1fr;
+            font-size: 28px;
         }
     }
-
 </style>
 
-<section class="reserve-section">
+<div class="reserve-wrapper">
 
-    <div class="container">
+    <a asp-controller="Books"
+       asp-action="Details"
+       asp-route-id="@Model.Id"
+       class="back-btn">
 
-        <a asp-controller="Books"
-           asp-action="Details"
-           asp-route-id="@Model.Id"
-           class="back-link">
+        ← Back To Book Details
 
-            ← Back to Book Details
+    </a>
 
-        </a>
+    <div class="page-title">
+        📚 Reserve Book
+    </div>
 
-        <div class="reserve-card">
+    <div class="reserve-card">
 
-            <div class="row g-0">
+        <div class="row align-items-center g-5">
 
-                <!-- IMAGE -->
-                <div class="col-lg-5">
+            <!-- IMAGE -->
+            <div class="col-lg-4 text-center">
 
-                    <img src="@(string.IsNullOrEmpty(Model.CoverImageUrl)
-                                                         ? "/images/no-book.png"
-                                                         : Model.CoverImageUrl)"
-                         class="book-image"
-                         alt="@Model.Title" />
+                <img src="@(string.IsNullOrEmpty(Model.CoverImageUrl)
+                                         ? "/images/no-book.png"
+                                         : Model.CoverImageUrl)"
+                     class="book-cover"
+                     alt="@Model.Title" />
 
+            </div>
+
+            <!-- CONTENT -->
+            <div class="col-lg-8">
+
+                <div class="reserve-badge">
+                    Premium Reservation
                 </div>
 
-                <!-- CONTENT -->
-                <div class="col-lg-7">
+                <div class="book-title">
+                    @Model.Title
+                </div>
 
-                    <div class="reserve-content">
+                <div class="book-author">
+                    by @(Model.Author?.Name ?? "Unknown Author")
+                </div>
 
-                        <div class="reserve-badge">
-                            Book Reservation
+                <div class="book-description">
+                    @(string.IsNullOrEmpty(Model.Description)
+                                        ? "No description available for this book."
+                                        : Model.Description)
+                </div>
+
+                <!-- INFO -->
+                <div class="book-info">
+
+                    <div class="info-box">
+
+                        <div class="info-title">
+                            Category
                         </div>
 
-                        <h1 class="book-title">
-                            @Model.Title
-                        </h1>
-
-                        <div class="book-author">
-                            by @(Model.Author?.Name ?? "Unknown Author")
+                        <div class="info-value">
+                            @(Model.Category?.Name ?? "General")
                         </div>
 
-                        <div class="book-description">
-                            @(string.IsNullOrEmpty(Model.Description)
-                                                        ? "No description available for this book."
-                                                        : Model.Description)
+                    </div>
+
+                    <div class="info-box">
+
+                        <div class="info-title">
+                            Available Copies
                         </div>
 
-                        <!-- META -->
-                        <div class="book-meta">
-
-                            <div class="meta-box">
-
-                                <div class="meta-title">
-                                    Category
-                                </div>
-
-                                <div class="meta-value">
-                                    @(Model.Category?.Name ?? "General")
-                                </div>
-
-                            </div>
-
-                            <div class="meta-box">
-
-                                <div class="meta-title">
-                                    Available Copies
-                                </div>
-
-                                <div class="meta-value text-success">
-                                    @Model.AvailableCopies
-                                </div>
-
-                            </div>
-
-                            <div class="meta-box">
-
-                                <div class="meta-title">
-                                    Total Pages
-                                </div>
-
-                                <div class="meta-value">
-                                    @Model.TotalPages
-                                </div>
-
-                            </div>
-
-                            <div class="meta-box">
-
-                                <div class="meta-title">
-                                    ISBN
-                                </div>
-
-                                <div class="meta-value">
-                                    @Model.ISBN
-                                </div>
-
-                            </div>
-
+                        <div class="info-value available">
+                            @Model.AvailableCopies
                         </div>
 
-                        <!-- BUTTON -->
-                        <form asp-action="CreateReservation"
-                              method="post">
+                    </div>
 
-                            <input type="hidden"
-                                   name="bookId"
-                                   value="@Model.Id" />
+                    <div class="info-box">
 
-                            <button type="submit"
-                                    class="reserve-btn">
+                        <div class="info-title">
+                            Total Pages
+                        </div>
 
-                                Confirm Reservation
+                        <div class="info-value">
+                            @Model.TotalPages
+                        </div>
 
-                            </button>
+                    </div>
 
-                        </form>
+                    <div class="info-box">
+
+                        <div class="info-title">
+                            ISBN
+                        </div>
+
+                        <div class="info-value">
+                            @Model.ISBN
+                        </div>
 
                     </div>
 
                 </div>
+
+                <!-- FORM -->
+                <form asp-action="CreateReservation"
+                      method="post">
+
+                    @Html.AntiForgeryToken()
+
+                    <input type="hidden"
+                           name="bookId"
+                           value="@Model.Id" />
+
+                    <button type="submit"
+                            class="reserve-btn">
+
+                        Confirm Reservation
+
+                    </button>
+
+                </form>
 
             </div>
 
@@ -277,4 +277,4 @@
 
     </div>
 
-</section>
+</div>

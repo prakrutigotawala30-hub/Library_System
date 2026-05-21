@@ -15,9 +15,7 @@ namespace Library_Management_System.Controllers
             _context = context;
         }
 
-        // =====================================================
-        // 📚 INDEX (BROWSE + FILTERS + PAGINATION)
-        // =====================================================
+        // 📚 INDEX 
         public async Task<IActionResult> Index(
             string? searchQuery,
             int? categoryId,
@@ -108,9 +106,7 @@ namespace Library_Management_System.Controllers
             return View(vm);
         }
 
-        // =====================================================
         // 📖 DETAILS PAGE
-        // =====================================================
         public async Task<IActionResult> Details(int id)
         {
             var book = await _context.Books
@@ -147,10 +143,7 @@ namespace Library_Management_System.Controllers
 
             return View(vm);
         }
-
-        // =====================================================
         // 📚 BY CATEGORY
-        // =====================================================
         public async Task<IActionResult> ByCategory()
         {
             var books = await _context.Books
@@ -169,9 +162,7 @@ namespace Library_Management_System.Controllers
             return View(vm);
         }
 
-        // =====================================================
         // 👨‍🏫 BY AUTHOR
-        // =====================================================
         public async Task<IActionResult> ByAuthor()
         {
             var books = await _context.Books
@@ -190,9 +181,7 @@ namespace Library_Management_System.Controllers
             return View(vm);
         }
 
-        // =====================================================
         // 🆕 NEW ARRIVALS (LAST 30 DAYS)
-        // =====================================================
         public async Task<IActionResult> NewArrivals()
         {
             var date = DateTime.Now.AddDays(-30);
@@ -204,36 +193,18 @@ namespace Library_Management_System.Controllers
                 .OrderByDescending(b => b.CreatedAt)
                 .ToListAsync();
 
-            return View("Index", new CatalogViewModel
+            var vm = new CatalogViewModel
             {
                 PagedBooks = books,
                 Categories = await _context.Categories.ToListAsync(),
                 Authors = await _context.Authors.ToListAsync()
-            });
+            };
+
+            return View(vm);
         }
 
-        // =====================================================
-        // 🔥 POPULAR BOOKS
-        // =====================================================
-        public async Task<IActionResult> Popular()
-        {
-            var books = await _context.Books
-                .Include(b => b.Category)
-                .Include(b => b.Author)
-                .OrderByDescending(b => b.BorrowCount)
-                .ToListAsync();
 
-            return View("Index", new CatalogViewModel
-            {
-                PagedBooks = books,
-                Categories = await _context.Categories.ToListAsync(),
-                Authors = await _context.Authors.ToListAsync()
-            });
-        }
-
-        // =====================================================
         // 🔍 SEARCH PAGE (OPTIONAL)
-        // =====================================================
         public async Task<IActionResult> Search(string q)
         {
             var books = await _context.Books

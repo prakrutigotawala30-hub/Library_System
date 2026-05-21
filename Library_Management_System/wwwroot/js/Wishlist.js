@@ -1,79 +1,60 @@
-﻿document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function () {
 
-    const buttons =
-        document.querySelectorAll(".wishlist-btn");
+  const wishlistButtons =
+    document.querySelectorAll(".wishlist-btn");
 
-    buttons.forEach(button => {
+  wishlistButtons.forEach(button => {
 
-        button.addEventListener("click", function (e) {
+    button.addEventListener("click", function (e) {
 
-            e.preventDefault();
+      e.preventDefault();
 
-            const bookId =
-                this.dataset.bookid;
+      const btn = this;
 
-            fetch("/Wishlist/Add", {
+      const bookId = btn.dataset.bookid;
 
-                method: "POST",
+      fetch('/Wishlist/ToggleWishlist', {
 
-                headers: {
-                    "Content-Type": "application/json"
-                },
+        method: 'POST',
 
-                body: JSON.stringify({
-                    bookId: bookId
-                })
+        headers: {
+          'Content-Type':
+            'application/x-www-form-urlencoded'
+        },
 
-            })
-                .then(response => {
+        body: `bookId=${bookId}`
 
-                    if (response.ok) {
+      })
 
-                        showToast(
-                            "Book added to wishlist ❤️"
-                        );
+        .then(response => response.json())
 
-                    }
-                    else {
+        .then(data => {
 
-                        showToast(
-                            "Something went wrong ❌"
-                        );
+          if (data.added) {
 
-                    }
+            btn.classList.add("active");
 
-                });
+            btn.innerHTML =
+              '<i class="fa-solid fa-heart"></i>';
+
+          } else {
+
+            btn.classList.remove("active");
+
+            btn.innerHTML =
+              '<i class="fa-regular fa-heart"></i>';
+          }
+
+        })
+
+        .catch(error => {
+
+          console.log(error);
 
         });
 
     });
 
+  });
+
 });
-
-// TOAST
-
-function showToast(message) {
-
-    const toast =
-        document.createElement("div");
-
-    toast.innerText = message;
-
-    toast.style.position = "fixed";
-    toast.style.bottom = "30px";
-    toast.style.right = "30px";
-    toast.style.background = "#7e22ce";
-    toast.style.color = "white";
-    toast.style.padding = "14px 22px";
-    toast.style.borderRadius = "12px";
-    toast.style.zIndex = "9999";
-
-    document.body.appendChild(toast);
-
-    setTimeout(() => {
-
-        toast.remove();
-
-    }, 3000);
-
-}

@@ -1,4 +1,4 @@
-﻿@model Library_Management_System.ViewModels.MemberDashboardViewModel
+@model Library_Management_System.ViewModels.MemberDashboardViewModel
 
 @{
     ViewData["Title"] = "My Dashboard";
@@ -519,8 +519,6 @@
 
                 </a>
 
-                @* Controller name is singular ("Reservation") — using "Reservations"
-                   here was producing a 404 on the My Reservations button. *@
                 <a asp-area="Member"
                    asp-controller="Reservation"
                    asp-action="Index"

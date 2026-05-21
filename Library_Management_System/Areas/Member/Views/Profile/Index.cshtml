@@ -1,0 +1,561 @@
+@model Library_Management_System.ViewModels.ProfileViewModel
+
+@{
+    ViewData["Title"] = "My Profile";
+    Layout = "~/Areas/Member/Views/Shared/_MemberLayout.cshtml";
+}
+
+<div class="profile-page">
+
+    <!-- HEADER -->
+
+    <div class="profile-header">
+
+        <div class="profile-cover"></div>
+
+        <div class="profile-user">
+
+            <!-- PROFILE IMAGE -->
+
+            <div class="profile-image-wrapper">
+
+                @if (!string.IsNullOrEmpty(Model.ProfileImagePath))
+                {
+                    <img src="@Model.ProfileImagePath"
+                         class="profile-image"
+                         alt="Profile Image" />
+                }
+                else
+                {
+                    <div class="profile-avatar">
+
+                        @(Model.Name?.Substring(0, 1).ToUpper())
+
+                    </div>
+                }
+
+            </div>
+
+            <!-- USER INFO -->
+
+            <div class="profile-user-info">
+
+                <h1>
+                    @Model.Name
+                </h1>
+
+                <p>
+                    Library Member
+                </p>
+
+            </div>
+
+            <!-- ACTION BUTTONS -->
+
+            <div class="profile-actions">
+
+                <a asp-area="Member"
+                   asp-controller="Profile"
+                   asp-action="Edit"
+                   class="btn-profile-primary">
+
+                    <i class="bi bi-pencil-square"></i>
+
+                    Edit Profile
+
+                </a>
+
+                <a asp-area="Member"
+                   asp-controller="Profile"
+                   asp-action="ChangePassword"
+                   class="btn-profile-secondary">
+
+                    <i class="bi bi-shield-lock"></i>
+
+                    Change Password
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- PROFILE GRID -->
+
+    <div class="profile-grid">
+
+        <!-- PERSONAL INFO -->
+
+        <div class="profile-card">
+
+            <div class="card-title">
+
+                <i class="bi bi-person-circle"></i>
+
+                Personal Information
+
+            </div>
+
+            <div class="info-list">
+
+                <div class="info-item">
+
+                    <div class="info-label">
+                        Full Name
+                    </div>
+
+                    <div class="info-value">
+                        @Model.Name
+                    </div>
+
+                </div>
+
+                <div class="info-item">
+
+                    <div class="info-label">
+                        Phone Number
+                    </div>
+
+                    <div class="info-value">
+                        @(string.IsNullOrEmpty(Model.Phone)
+                                                ? "Not Added"
+                                                : Model.Phone)
+                    </div>
+
+                </div>
+
+                <div class="info-item">
+
+                    <div class="info-label">
+                        Notification Preferences
+                    </div>
+
+                    <div class="info-value">
+
+                        @if (Model.NotificationPrefs)
+                        {
+                            <span class="status-badge success">
+                                Enabled
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="status-badge danger">
+                                Disabled
+                            </span>
+                        }
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- QUICK ACTIONS -->
+
+        <div class="profile-card">
+
+            <div class="card-title">
+
+                <i class="bi bi-lightning-charge"></i>
+
+                Quick Actions
+
+            </div>
+
+            <div class="quick-actions">
+
+                <a asp-area="Member"
+                   asp-controller="Profile"
+                   asp-action="Avatar"
+                   class="quick-action-box">
+
+                    <div class="quick-icon purple">
+                        <i class="bi bi-image"></i>
+                    </div>
+
+                    <div>
+
+                        <h5>
+                            Update Avatar
+                        </h5>
+
+                        <p>
+                            Upload profile image
+                        </p>
+
+                    </div>
+
+                </a>
+
+                <a asp-area="Member"
+                   asp-controller="Wishlist"
+                   asp-action="Index"
+                   class="quick-action-box">
+
+                    <div class="quick-icon pink">
+                        <i class="bi bi-heart"></i>
+                    </div>
+
+                    <div>
+
+                        <h5>
+                            Wishlist
+                        </h5>
+
+                        <p>
+                            View saved books
+                        </p>
+
+                    </div>
+
+                </a>
+
+                <a asp-area="Member"
+                   asp-controller="Borrow"
+                   asp-action="History"
+                   class="quick-action-box">
+
+                    <div class="quick-icon blue">
+                        <i class="bi bi-clock-history"></i>
+                    </div>
+
+                    <div>
+
+                        <h5>
+                            Borrow History
+                        </h5>
+
+                        <p>
+                            View previous borrows
+                        </p>
+
+                    </div>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+
+    .profile-page {
+        width: 100%;
+    }
+
+    /* HEADER */
+
+    .profile-header {
+        position: relative;
+        border-radius: 30px;
+        overflow: hidden;
+        margin-bottom: 30px;
+        background: #111827;
+        border: 1px solid rgba(255,255,255,.06);
+    }
+
+    .profile-cover {
+        height: 220px;
+        background: radial-gradient(circle at top left, rgba(147,51,234,.5), transparent 35%), radial-gradient(circle at bottom right, rgba(59,130,246,.35), transparent 35%), linear-gradient(135deg,#111827,#1f2937);
+    }
+
+    .profile-user {
+        position: relative;
+        padding: 0 35px 35px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 25px;
+        flex-wrap: wrap;
+        margin-top: -70px;
+    }
+
+    /* IMAGE */
+
+    .profile-image-wrapper {
+        position: relative;
+    }
+
+    .profile-image,
+    .profile-avatar {
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        border: 6px solid #111827;
+        object-fit: cover;
+        box-shadow: 0 15px 35px rgba(0,0,0,.35);
+    }
+
+    .profile-avatar {
+        background: linear-gradient(135deg,#7c3aed,#9333ea);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 50px;
+        font-weight: 800;
+        color: white;
+    }
+
+    /* USER INFO */
+
+    .profile-user-info {
+        flex: 1;
+        min-width: 250px;
+    }
+
+        .profile-user-info h1 {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 6px;
+            color: white;
+        }
+
+        .profile-user-info p {
+            margin: 0;
+            color: #9ca3af;
+            font-size: 16px;
+        }
+
+    /* ACTIONS */
+
+    .profile-actions {
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap;
+    }
+
+    .btn-profile-primary,
+    .btn-profile-secondary {
+        height: 52px;
+        padding: 0 24px;
+        border-radius: 16px;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: .3s;
+    }
+
+    .btn-profile-primary {
+        background: linear-gradient(135deg,#7c3aed,#9333ea);
+        color: white;
+    }
+
+        .btn-profile-primary:hover {
+            transform: translateY(-2px);
+            color: white;
+            box-shadow: 0 15px 30px rgba(147,51,234,.35);
+        }
+
+    .btn-profile-secondary {
+        background: rgba(255,255,255,.06);
+        color: #d1d5db;
+        border: 1px solid rgba(255,255,255,.08);
+    }
+
+        .btn-profile-secondary:hover {
+            background: rgba(255,255,255,.12);
+            color: white;
+        }
+
+    /* GRID */
+
+    .profile-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 25px;
+    }
+
+    /* CARD */
+
+    .profile-card {
+        background: linear-gradient(145deg,#111827,#1f2937);
+        border-radius: 28px;
+        padding: 30px;
+        border: 1px solid rgba(255,255,255,.06);
+    }
+
+    .card-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 25px;
+        color: white;
+    }
+
+        .card-title i {
+            color: #9333ea;
+        }
+
+    /* INFO */
+
+    .info-list {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .info-item {
+        background: rgba(255,255,255,.03);
+        border: 1px solid rgba(255,255,255,.05);
+        border-radius: 18px;
+        padding: 18px;
+    }
+
+    .info-label {
+        color: #9ca3af;
+        font-size: 14px;
+        margin-bottom: 6px;
+    }
+
+    .info-value {
+        color: white;
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    /* STATUS */
+
+    .status-badge {
+        padding: 8px 14px;
+        border-radius: 30px;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+        .status-badge.success {
+            background: rgba(34,197,94,.15);
+            color: #4ade80;
+        }
+
+        .status-badge.danger {
+            background: rgba(239,68,68,.15);
+            color: #f87171;
+        }
+
+    /* QUICK ACTIONS */
+
+    .quick-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .quick-action-box {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        background: rgba(255,255,255,.03);
+        border: 1px solid rgba(255,255,255,.05);
+        border-radius: 20px;
+        padding: 18px;
+        text-decoration: none;
+        transition: .3s;
+    }
+
+        .quick-action-box:hover {
+            transform: translateY(-3px);
+            border-color: rgba(147,51,234,.4);
+            background: rgba(147,51,234,.08);
+        }
+
+        .quick-action-box h5 {
+            color: white;
+            margin: 0 0 4px;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .quick-action-box p {
+            margin: 0;
+            color: #9ca3af;
+            font-size: 14px;
+        }
+
+    .quick-icon {
+        width: 58px;
+        height: 58px;
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        color: white;
+        flex-shrink: 0;
+    }
+
+        .quick-icon.purple {
+            background: linear-gradient(135deg,#7c3aed,#9333ea);
+        }
+
+        .quick-icon.pink {
+            background: linear-gradient(135deg,#ec4899,#db2777);
+        }
+
+        .quick-icon.blue {
+            background: linear-gradient(135deg,#2563eb,#3b82f6);
+        }
+
+    /* RESPONSIVE */
+
+    @@media(max-width:991px) {
+
+        .profile-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .profile-user {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .profile-actions {
+            justify-content: center;
+        }
+    }
+
+    @@media(max-width:576px) {
+
+        .profile-cover {
+            height: 180px;
+        }
+
+        .profile-image,
+        .profile-avatar {
+            width: 110px;
+            height: 110px;
+        }
+
+        .profile-avatar {
+            font-size: 38px;
+        }
+
+        .profile-user-info h1 {
+            font-size: 28px;
+        }
+
+        .profile-card {
+            padding: 22px;
+        }
+
+        .btn-profile-primary,
+        .btn-profile-secondary {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+</style>
