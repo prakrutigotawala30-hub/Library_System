@@ -48,6 +48,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
         var sqliteConn = $"Data Source={sqliteFile};Cache=Shared;Pooling=False";
 
+        // Diagnostic: log the resolved Sqlite path so it's visible in the
+        // dotnet run terminal. Both admin and user apps should print the
+        // SAME absolute path. If they don't, the DB is being split.
+        Console.WriteLine($"[Admin App] Sqlite database file: {sqliteFile}");
+        Console.WriteLine($"[Admin App] Connection string:    {sqliteConn}");
+
         options.UseSqlite(sqliteConn);
 
         // Runs PRAGMA journal_mode=WAL + busy_timeout=5000 on every Sqlite
@@ -147,16 +153,7 @@ using (var scope = app.Services.CreateScope())
     {
         await db.Database.EnsureCreatedAsync();
 
-        // Concurrency fix: by default Sqlite uses rollback-journal mode which
-        // grabs an exclusive lock for writers and routinely throws
-        // "database is locked" (SQLITE_BUSY) when admin and user apps both
-        // have the same file open. WAL journal mode allows ONE writer +
-        // many concurrent readers. busy_timeout=5000 tells Sqlite to wait
-        // up to 5s for a lock to clear before failing.
-        // journal_mode is persisted in the .db file (one-time effect); setting
-        // it again is cheap. busy_timeout is per-connection so we set it here
-        // for the bootstrap connection; the EF interceptor below applies it
-        // to every connection the pool opens after this.
+        // Concurrency fix: see SqlitePragmaInterceptor for details.
         await db.Database.ExecuteSqlRawAsync("PRAGMA journal_mode = WAL;");
         await db.Database.ExecuteSqlRawAsync("PRAGMA busy_timeout = 5000;");
     }
@@ -164,6 +161,11 @@ using (var scope = app.Services.CreateScope())
     {
         await db.Database.MigrateAsync();
     }
+
+    // Idempotent default data — only seeds tables that are empty.
+    // Lets a fresh clone show Books / Authors / Categories / Events on the
+    // user-facing pages immediately, before the admin has added anything.
+    await DbSeeder.SeedAsync(db);
 
     var roleManager = scope.ServiceProvider
         .GetRequiredService<RoleManager<IdentityRole>>();
