@@ -1,8 +1,8 @@
 using LibraryManagementSystem.ClassLibrary.Data;
 using Library_Management_System.ViewModels;
-using LibraryManagementSystem.ClassLibrary.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace Library_Management_System.Controllers
 {
@@ -15,12 +15,15 @@ namespace Library_Management_System.Controllers
             _context = context;
         }
 
-        // BROWSE BOOKS
+        // =====================================================
+        // 📚 INDEX (BROWSE + FILTERS + PAGINATION)
+        // =====================================================
         public async Task<IActionResult> Index(
             string? searchQuery,
             int? categoryId,
             int? authorId,
             string? sortBy,
+            string? availability,
             int pageNumber = 1)
         {
             const int pageSize = 8;
@@ -40,26 +43,30 @@ namespace Library_Management_System.Controllers
 
             // CATEGORY FILTER
             if (categoryId.HasValue)
-            {
                 booksQuery = booksQuery.Where(b => b.CategoryId == categoryId.Value);
-            }
 
             // AUTHOR FILTER
             if (authorId.HasValue)
-            {
                 booksQuery = booksQuery.Where(b => b.AuthorId == authorId.Value);
+
+            // AVAILABILITY
+            if (!string.IsNullOrEmpty(availability))
+            {
+                if (availability == "available")
+                    booksQuery = booksQuery.Where(b => b.AvailableCopies > 0);
+                else if (availability == "unavailable")
+                    booksQuery = booksQuery.Where(b => b.AvailableCopies <= 0);
             }
 
             // SORTING
             booksQuery = sortBy switch
             {
-                "title"   => booksQuery.OrderBy(b => b.Title),
-                "new"     => booksQuery.OrderByDescending(b => b.CreatedAt),
+                "title" => booksQuery.OrderBy(b => b.Title),
+                "newest" => booksQuery.OrderByDescending(b => b.CreatedAt),
                 "popular" => booksQuery.OrderByDescending(b => b.BorrowCount),
-                _         => booksQuery.OrderByDescending(b => b.Id),
+                _ => booksQuery.OrderByDescending(b => b.Id),
             };
 
-            // PAGINATION
             int totalBooks = await booksQuery.CountAsync();
 
             var books = await booksQuery
@@ -67,112 +74,212 @@ namespace Library_Management_System.Controllers
                 .Take(pageSize)
                 .ToListAsync();
 
+            // USER WISHLIST
+            var userId = User.Identity?.IsAuthenticated == true
+                ? User.FindFirstValue(ClaimTypes.NameIdentifier)
+                : null;
+
+            List<int> wishlistIds = new();
+
+            if (userId != null)
+            {
+                wishlistIds = await _context.Wishlists
+                    .Where(w => w.MemberId == userId)
+                    .Select(w => w.BookId)
+                    .ToListAsync();
+            }
+
             var vm = new CatalogViewModel
             {
                 SearchQuery = searchQuery,
                 CategoryId = categoryId,
                 AuthorId = authorId,
                 SortBy = sortBy,
+                Availability = availability,
                 PageNumber = pageNumber,
                 TotalPages = (int)Math.Ceiling(totalBooks / (double)pageSize),
                 PagedBooks = books,
                 Categories = await _context.Categories.ToListAsync(),
-                Authors = await _context.Authors.ToListAsync(),
+                Authors = await _context.Authors.ToListAsync()
             };
+
+            ViewBag.WishlistIds = wishlistIds;
 
             return View(vm);
         }
 
-        // BOOK DETAILS PAGE
+        // =====================================================
+        // 📖 DETAILS PAGE
+        // =====================================================
         public async Task<IActionResult> Details(int id)
         {
             var book = await _context.Books
-                .Include(b => b.Author)
                 .Include(b => b.Category)
+                .Include(b => b.Author)
                 .FirstOrDefaultAsync(b => b.Id == id);
 
             if (book == null)
                 return NotFound();
 
-            var viewModel = new BookDetailsViewModel
+            var userId = User.Identity?.IsAuthenticated == true
+                ? User.FindFirstValue(ClaimTypes.NameIdentifier)
+                : null;
+
+            bool isWishlisted = false;
+
+            if (userId != null)
+            {
+                isWishlisted = await _context.Wishlists
+                    .AnyAsync(w => w.BookId == id && w.MemberId == userId);
+            }
+
+            var vm = new BookDetailsViewModel
             {
                 Id = book.Id,
                 Title = book.Title,
-                AuthorName = book.Author != null ? book.Author.Name : "Unknown",
-                CategoryName = book.Category != null ? book.Category.Name : "Uncategorized",
-                Description = book.Description ?? string.Empty,
-                CoverImageUrl = book.CoverImageUrl ?? string.Empty,
-                IsAvailable = book.AvailableCopies > 0
+                Description = book.Description,
+                CoverImageUrl = book.CoverImageUrl,
+                AuthorName = book.Author?.Name,
+                CategoryName = book.Category?.Name,
+                IsAvailable = book.AvailableCopies > 0,
+                //IsWishlisted = isWishlisted
             };
 
-            return View(viewModel);
+            return View(vm);
         }
 
-        // ADD TO WISHLIST (basic version)
-        [HttpPost]
-        public IActionResult AddToWishlist(int bookId)
+        // =====================================================
+        // 📚 BY CATEGORY
+        // =====================================================
+        public async Task<IActionResult> ByCategory()
         {
-            // TODO: replace with real user-based wishlist logic
-            TempData["Success"] = "Book Added to wishList";
-            return RedirectToAction("Details", new { id = bookId });
-        }
+            var books = await _context.Books
+                .Include(b => b.Category)
+                .Include(b => b.Author)
+                .OrderBy(b => b.Category.Name)
+                .ToListAsync();
 
-        // RESERVE BOOK (basic version)
-        [HttpPost]
-        public async Task<IActionResult> Reserve(int bookId)
-        {
-            var book = await _context.Books.FirstOrDefaultAsync(b => b.Id == bookId);
-
-            if (book == null)
-                return NotFound();
-
-            if (book.AvailableCopies <= 0)
+            var vm = new CatalogViewModel
             {
-                TempData["Error"] = "Book is not available for reservation.";
-                return RedirectToAction("Details", new { id = bookId });
-            }
+                PagedBooks = books,
+                Categories = await _context.Categories.ToListAsync(),
+                Authors = await _context.Authors.ToListAsync()
+            };
 
-            // Mark reserved (simple logic — decrement copies)
-            book.AvailableCopies--;
-            await _context.SaveChangesAsync();
-
-            TempData["Success"] = "Book reserved successfully!";
-            return RedirectToAction("Details", new { id = bookId });
+            return View(vm);
         }
 
-        // BY CATEGORY
-        public async Task<IActionResult> ByCategory(int id)
+        // =====================================================
+        // 👨‍🏫 BY AUTHOR
+        // =====================================================
+        public async Task<IActionResult> ByAuthor()
         {
-            var category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
-
-            if (category == null)
-                return NotFound();
-
             var books = await _context.Books
-                .Include(b => b.Author)
                 .Include(b => b.Category)
-                .Where(b => b.CategoryId == id)
+                .Include(b => b.Author)
+                .OrderBy(b => b.Author.Name)
                 .ToListAsync();
 
-            ViewBag.CategoryName = category.Name;
-            return View(books);
+            var vm = new CatalogViewModel
+            {
+                PagedBooks = books,
+                Categories = await _context.Categories.ToListAsync(),
+                Authors = await _context.Authors.ToListAsync()
+            };
+
+            return View(vm);
         }
 
-        // BY AUTHOR
-        public async Task<IActionResult> ByAuthor(int id)
+        // =====================================================
+        // 🆕 NEW ARRIVALS (LAST 30 DAYS)
+        // =====================================================
+        public async Task<IActionResult> NewArrivals()
         {
-            var author = await _context.Authors.FirstOrDefaultAsync(a => a.Id == id);
-
-            if (author == null)
-                return NotFound();
+            var date = DateTime.Now.AddDays(-30);
 
             var books = await _context.Books
-                .Include(b => b.Author)
                 .Include(b => b.Category)
-                .Where(b => b.AuthorId == id)
+                .Include(b => b.Author)
+                .Where(b => b.CreatedAt >= date)
+                .OrderByDescending(b => b.CreatedAt)
                 .ToListAsync();
 
-            ViewBag.AuthorName = author.Name;
+            return View("Index", new CatalogViewModel
+            {
+                PagedBooks = books,
+                Categories = await _context.Categories.ToListAsync(),
+                Authors = await _context.Authors.ToListAsync()
+            });
+        }
+
+        // =====================================================
+        // 🔥 POPULAR BOOKS
+        // =====================================================
+        public async Task<IActionResult> Popular()
+        {
+            var books = await _context.Books
+                .Include(b => b.Category)
+                .Include(b => b.Author)
+                .OrderByDescending(b => b.BorrowCount)
+                .ToListAsync();
+
+            return View("Index", new CatalogViewModel
+            {
+                PagedBooks = books,
+                Categories = await _context.Categories.ToListAsync(),
+                Authors = await _context.Authors.ToListAsync()
+            });
+        }
+
+        // =====================================================
+        // 🔍 SEARCH PAGE (OPTIONAL)
+        // =====================================================
+        public async Task<IActionResult> Search(string q)
+        {
+            var books = await _context.Books
+                .Include(b => b.Category)
+                .Include(b => b.Author)
+                .Where(b => b.Title.Contains(q))
+                .ToListAsync();
+
+            return View("Index", new CatalogViewModel
+            {
+                SearchQuery = q,
+                PagedBooks = books,
+                Categories = await _context.Categories.ToListAsync(),
+                Authors = await _context.Authors.ToListAsync()
+            });
+        }
+
+        public async Task<IActionResult> MostPopularBooks()
+        {
+            var books = await _context.BorrowRecords
+
+                .GroupBy(x => x.BookId)
+
+                .Select(g => new MostPopularBookViewModel
+                {
+                    BookId = g.Key,
+
+                    Title = g.FirstOrDefault().Book.Title,
+
+                    ISBN = g.FirstOrDefault().Book.ISBN,
+
+                    AuthorName = g.FirstOrDefault().Book.Author.Name,
+
+                    CategoryName = g.FirstOrDefault().Book.Category.Name,
+
+                    CoverImageUrl = g.FirstOrDefault().Book.CoverImageUrl,
+
+                    TotalBorrows = g.Count()
+                })
+
+                .OrderByDescending(x => x.TotalBorrows)
+
+                .Take(10)
+
+                .ToListAsync();
+
             return View(books);
         }
     }

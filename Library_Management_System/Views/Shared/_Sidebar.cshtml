@@ -92,6 +92,7 @@
 
 
         <a class="menu-item"
+           asp-area="Member"
            asp-controller="Wishlist"
            asp-action="Index">
 
@@ -189,8 +190,8 @@
 
 
         <a class="menu-item"
-           asp-controller="Category"
-           asp-action="Index">
+           asp-controller="Catalog"
+           asp-action="ByCategory">
 
             <i class="bi bi-grid"></i>
 
@@ -200,8 +201,8 @@
 
 
         <a class="menu-item"
-           asp-controller="Author"
-           asp-action="Index">
+           asp-controller="Catalog"
+           asp-action="ByAuthor">
 
             <i class="bi bi-person"></i>
 
@@ -211,7 +212,7 @@
 
 
         <a class="menu-item"
-           asp-controller="Books"
+           asp-controller="Catalog"
            asp-action="NewArrivals">
 
             <i class="bi bi-stars"></i>
@@ -222,7 +223,7 @@
 
 
         <a class="menu-item"
-           asp-controller="Books"
+           asp-controller="Catalog"
            asp-action="MostPopularBooks">
 
             <i class="bi bi-fire"></i>

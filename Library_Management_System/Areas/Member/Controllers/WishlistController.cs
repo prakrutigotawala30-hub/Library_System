@@ -1,7 +1,6 @@
-﻿using LibraryManagementSystem.ClassLibrary.Data;
+using LibraryManagementSystem.ClassLibrary.Data;
 using LibraryManagementSystem.ClassLibrary.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -19,7 +18,7 @@ namespace Library_Management_System.Areas.Member.Controllers
             _context = context;
         }
 
-        // INDEX
+        // GET: Wishlist
         public async Task<IActionResult> Index()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -35,46 +34,40 @@ namespace Library_Management_System.Areas.Member.Controllers
             return View(wishlist);
         }
 
-        // ADD TO WISHLIST
-        public async Task<IActionResult> Add(int bookId)
+        // AJAX TOGGLE (IMPORTANT FIX)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Toggle(int bookId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            // CHECK EXIST
-            var exists = await _context.Wishlists
-                .AnyAsync(x =>
-                    x.MemberId == userId &&
-                    x.BookId == bookId);
+            if (userId == null)
+                return Unauthorized();
 
-            if (!exists)
+            var existing = await _context.Wishlists
+                .FirstOrDefaultAsync(w => w.BookId == bookId && w.MemberId == userId);
+
+            bool added;
+
+            if (existing == null)
             {
-                var wishlist = new Wishlist
+                _context.Wishlists.Add(new Wishlist
                 {
-                    MemberId = userId,
-                    BookId = bookId
-                };
+                    BookId = bookId,
+                    MemberId = userId
+                });
 
-                _context.Wishlists.Add(wishlist);
-
-                await _context.SaveChangesAsync();
+                added = true;
             }
-
-            return RedirectToAction(nameof(Index));
-        }
-
-        // REMOVE
-        [HttpPost]
-        public async Task<IActionResult> Remove(int id)
-        {
-            var wishlist = await _context.Wishlists.FindAsync(id);
-
-            if (wishlist != null)
+            else
             {
-                _context.Wishlists.Remove(wishlist);
-                await _context.SaveChangesAsync();
+                _context.Wishlists.Remove(existing);
+                added = false;
             }
 
-            return RedirectToAction(nameof(Index));
+            await _context.SaveChangesAsync();
+
+            return Json(new { added });
         }
     }
 }

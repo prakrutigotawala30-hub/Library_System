@@ -18,6 +18,7 @@ namespace Library_Management_System.ViewModels
         public int PageNumber { get; set; } = 1;
 
         public int TotalPages { get; set; }
+        public bool IsWishlisted { get; set; }
 
         public List<Book> PagedBooks { get; set; } = new();
 
