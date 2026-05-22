@@ -1,4 +1,6 @@
-﻿@{
+@model Library_Management_System.ViewModels.HomePageViewModel
+
+@{
     ViewData["Title"] = "Home";
     Layout = "~/Views/Shared/_PublicLayout.cshtml";
 }
@@ -7,210 +9,171 @@
 
 <div class="dashboard-wrapper">
 
+    <!-- HERO -->
     <!-- HERO SECTION -->
-    <div class="hero-grid">
+
+    <section class="hero-section">
 
         <div class="hero-card">
-            <div class="hero-content">
 
-                @using System.Security.Claims
-                <div class="welcome-text">
-                    Welcome Back, @User.Identity?.Name 👋
+            <!-- LEFT CONTENT -->
+
+            <div class="hero-left">
+
+                <div class="welcome-badge">
+
+                    <i class="bi bi-stars"></i>
+
+                    Welcome Back,
+                    @User.Identity?.Name 👋
+
                 </div>
 
                 <h1>
-                    Knowledge is <span>Power</span>
+
+                    Knowledge is
+
+                    <span>Power</span>
+
                 </h1>
 
                 <p>
-                    Explore the world's best books and
-                    expand your imagination.
+                    Explore the world’s best books,
+                    discover new authors, and unlock
+                    endless imagination through reading.
                 </p>
 
-                <a asp-controller="Catalog"
-                   asp-action="Index"
-                   class="hero-btn">
-                    Explore Books →
-                </a>
+                <div class="hero-buttons">
 
-            </div>
+                    <a asp-controller="Catalog" asp-action="Index" class="hero-btn">
 
-            <div class="hero-image">
-                <img src="~/images/hero/hero.png" alt="Hero" />
-            </div>
-        </div>
+                        Explore Books
 
-        <!-- QUICK SUMMARY -->
-        <div class="summary-card">
+                        <i class="bi bi-arrow-right"></i>
 
-            <h3>Quick Summary</h3>
+                    </a>
 
-            <div class="summary-item blue">
-                <div class="icon">📘</div>
-                <div>
-                    <h4>12</h4>
-                    <span>Books Borrowed</span>
+                    @if (User.Identity != null &&
+                                        User.Identity.IsAuthenticated &&
+                                        !User.IsInRole("Member"))
+                    {
+                        <a asp-controller="Membership" asp-action="Index" class="membership-btn">
+
+                            <i class="bi bi-gem"></i>
+
+                            Get Membership
+
+                        </a>
+                    }
+
                 </div>
+
             </div>
 
-            <div class="summary-item green">
-                <div class="icon">📗</div>
-                <div>
-                    <h4>3</h4>
-                    <span>Books Reserved</span>
-                </div>
+            <!-- RIGHT IMAGE -->
+
+            <div class="hero-right">
+
+                <img src="~/images/hero/hero.png" alt="Library Hero" />
+
             </div>
 
-            <div class="summary-item orange">
-                <div class="icon">⏰</div>
-                <div>
-                    <h4>2</h4>
-                    <span>Overdue Books</span>
-                </div>
-            </div>
+            <!-- GLOW -->
 
-            <div class="summary-item red">
-                <div class="icon">₹</div>
-                <div>
-                    <h4>₹0.00</h4>
-                    <span>Total Fine</span>
-                </div>
-            </div>
-
-            <a href="/Member" class="dashboard-btn">
-                View My Dashboard →
-            </a>
+            <div class="hero-glow glow-1"></div>
+            <div class="hero-glow glow-2"></div>
 
         </div>
 
-    </div>
+    </section>
 
-    <!-- CONTENT GRID -->
-
+    <!-- CONTENT -->
     <div class="hero-grid mt-4">
 
-        <!-- LEFT SIDE -->
+        <!-- LEFT -->
         <div class="card-section">
 
             <!-- CONTINUE READING -->
             <div class="section-header">
-                <h3>Continue Reading</h3>
 
-                @* Was: asp-controller="Books" asp-action="ContinueReading".
-                   BooksController doesn't exist in user app and there's no
-                   ContinueReading action anywhere — point to the catalog
-                   instead so the View All link doesn't 404. *@
-                <a asp-controller="Catalog"
-                   asp-action="Index">
-                    View All
+                <h3>📖 Pick Up Where You Left Off</h3>
+
+                <a asp-controller="Catalog" asp-action="Index">
+
+                    View All →
+
                 </a>
+
             </div>
+
             <div class="books-row">
 
-                <div class="book-card">
-                    <img src="~/images/covers/TheAlchemist.jpeg" />
-                    <h4>The Alchemist</h4>
-                    <p>Paulo Coelho</p>
+                @foreach (var book in Model.ContinueReadingBooks)
+                {
+                    <div class="book-card">
 
-                    <div class="progress-bar">
-                        <span style="width:45%"></span>
+                        <img src="@(string.IsNullOrEmpty(book.CoverImageUrl)
+                                                                                                  ? "/images/default-book.png"
+                                                                                                  : book.CoverImageUrl)" alt="@book.Title" />
+
+                        <h4 title="@book.Title">
+                            @book.Title
+                        </h4>
+
+                        <p>
+                            @(book.Author?.Name ?? "Unknown Author")
+                        </p>
+
+                        <div class="book-status">
+
+                            <span class="status-dot"></span>
+
+                            Last opened recently
+
+                        </div>
+
                     </div>
-
-                    <small>45%</small>
-                </div>
-
-                <div class="book-card">
-                    <img src="~/images/covers/deepwork.jpeg" />
-                    <h4>Deep Work</h4>
-                    <p>Cal Newport</p>
-
-                    <div class="progress-bar">
-                        <span style="width:60%"></span>
-                    </div>
-
-                    <small>60%</small>
-                </div>
-
-                <div class="book-card">
-                    <img src="~/images/covers/AtomicHabits.jpeg" />
-                    <h4>Atomic Habits</h4>
-                    <p>James Clear</p>
-
-                    <div class="progress-bar">
-                        <span style="width:30%"></span>
-                    </div>
-
-                    <small>30%</small>
-                </div>
-
-                <div class="book-card">
-                    <img src="~/images/covers/startup.jpeg" />
-                    <h4>Start Up</h4>
-                    <p>James Clear</p>
-
-                    <div class="progress-bar">
-                        <span style="width:20%"></span>
-                    </div>
-
-                    <small>20%</small>
-                </div>
-
-                <div class="book-card">
-                    <img src="~/images/covers/AtomicHabits.jpeg" />
-                    <h4>Atomic Habits</h4>
-                    <p>James Clear</p>
-
-                    <div class="progress-bar">
-                        <span style="width:30%"></span>
-                    </div>
-
-                    <small>30%</small>
-                </div>
+                }
 
             </div>
 
         </div>
 
-        <!-- RIGHT SIDE -->
+        <!-- RIGHT -->
         <div class="summary-card">
 
-            <h3>Popular Categories</h3>
+            <div class="section-header">
 
-            <div class="summary-item blue">
-                <div class="icon">📚</div>
+                <h3>🔥 Popular Categories</h3>
 
-                <div>
-                    <h4>Fiction</h4>
-                    <span>1200+ Books</span>
-                </div>
+                <a asp-controller="Catalog" asp-action="ByCategory">
+
+                    View All →
+
+                </a>
+
             </div>
 
-            <div class="summary-item green">
-                <div class="icon">💻</div>
+            @foreach (var category in Model.PopularCategories.Take(4))
+            {
+                <div class="summary-item">
 
-                <div>
-                    <h4>Technology</h4>
-                    <span>850+ Books</span>
+                    <div class="icon">
+                        @category.IconClass
+                    </div>
+
+                    <div class="summary-content">
+
+                        <h4>@category.CategoryName</h4>
+
+                        <span>
+                            @category.BookCount+ Books
+                        </span>
+
+                    </div>
+
                 </div>
-            </div>
-
-            <div class="summary-item orange">
-                <div class="icon">🧪</div>
-
-                <div>
-                    <h4>Science</h4>
-                    <span>980+ Books</span>
-                </div>
-            </div>
-
-            <div class="summary-item red">
-                <div class="icon">💼</div>
-
-                <div>
-                    <h4>Business</h4>
-                    <span>760+ Books</span>
-                </div>
-            </div>
+            }
         </div>
 
     </div>
@@ -218,15 +181,18 @@
     <!-- EVENTS -->
     <div class="card-section mt-4">
 
-
         <div class="section-header">
-            <h3>Upcoming Events</h3>
 
-            <a asp-controller="Events"
-               asp-action="Index">
-                View All
+            <h3>📅 Upcoming Events</h3>
+
+            <a asp-controller="Events" asp-action="Index">
+
+                View All →
+
             </a>
+
         </div>
+
         <div class="event-column">
 
             <div class="event-card">
@@ -260,6 +226,7 @@
             </div>
 
             <div class="event-card">
+
                 <div class="event-date">
                     <h2>05</h2>
                     <span>JUN</span>
@@ -267,35 +234,25 @@
 
                 <div>
                     <h4>Reading Competition</h4>
-                    <p>Seminar Hall, Main Building</p>
+                    <p>Seminar Hall</p>
                     <small>02:00 PM - 04:00 PM</small>
                 </div>
+
             </div>
 
             <div class="event-card">
+
                 <div class="event-date">
                     <h2>12</h2>
                     <span>JUN</span>
                 </div>
 
                 <div>
-                    <h4> Coding & AI Workshop</h4>
-                    <p>Tech Lab </p>
-                    <small>• 09:00 AM - 12:00 PM</small>
-                </div>
-            </div>
-
-            <div class="event-card">
-                <div class="event-date">
-                    <h2>18</h2>
-                    <span>JUN</span>
+                    <h4>Coding & AI Workshop</h4>
+                    <p>Tech Lab</p>
+                    <small>09:00 AM - 12:00 PM</small>
                 </div>
 
-                <div>
-                    <h4>Startup Networking Meetup</h4>
-                    <p> Innovation Hub </p>
-                    <small>02:00 PM - 04:00 PM</small>
-                </div>
             </div>
 
         </div>
@@ -305,36 +262,29 @@
     <!-- NEW ARRIVALS -->
     <div class="card-section mt-4">
 
-        <!-- NEW ARRIVALS -->
         <div class="section-header">
-            <h3>New Arrivals</h3>
 
-            @* CatalogController.NewArrivals exists; BooksController in user app does not. *@
-            <a asp-controller="Catalog"
-               asp-action="NewArrivals">
-                View All
+            <h3>✨ New Arrivals</h3>
+
+            <a asp-controller="Catalog" asp-action="NewArrivals">
+
+                View All →
+
             </a>
+
         </div>
 
         <div class="arrival-row">
 
-            <img src="~/images/covers/sapiens.jpeg" />
-            <img src="~/images/covers/thinkingfast.jpeg" />
-            <img src="~/images/covers/subtleart.jpeg" />
-            <img src="~/images/covers/AtomicHabits.jpeg" />
-            <img src="~/images/covers/5amclub.jpeg" />
-            <img src="~/images/covers/howtowin.jpeg" />
-            <img src="~/images/covers/psychology.jpeg" />
-            <img src="~/images/covers/startup.jpeg" />
-            <img src="~/images/covers/RichDad.jpeg" />
-            <img src="~/images/covers/AtomicHabits.jpeg" />
-            <img src="~/images/covers/deepwork.jpeg" />
-            <img src="~/images/covers/TheAlchemist.jpeg" />
+            @foreach (var book in Model.NewArrivals)
+            {
+                <img src="@(string.IsNullOrEmpty(book.CoverImageUrl)
+                                                                          ? "/images/default-book.png"
+                                                                          : book.CoverImageUrl)" alt="@book.Title" />
+            }
+
         </div>
 
     </div>
 
 </div>
-<style>
-
-</style>

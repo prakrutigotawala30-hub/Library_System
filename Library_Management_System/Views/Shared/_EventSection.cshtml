@@ -1,0 +1,36 @@
+<div class="card-section mt-4">
+
+    <div class="section-header">
+        <h3>Upcoming Events</h3>
+
+        <a asp-controller="Events"
+           asp-action="Index">
+            View All
+        </a>
+    </div>
+
+    <div class="event-column">
+
+        @foreach (var item in Model.Events)
+        {
+            <div class="event-card">
+
+                <div class="event-date">
+                    <h2>@item.EventDate.Day</h2>
+                    <span>@item.EventDate.ToString("MMM").ToUpper()</span>
+                </div>
+
+                <div>
+                    <h4>@item.Title</h4>
+                    <p>@item.Location</p>
+                    <small>
+                        @item.EventDate.ToString("hh:mm tt")
+                    </small>
+                </div>
+
+            </div>
+        }
+
+    </div>
+
+</div>

@@ -1,8 +1,9 @@
-﻿using LibraryManagementSystem.Models;
+using System.Reflection.Emit;
+using LibraryManagementSystem.ClassLibrary.Models;
+using LibraryManagementSystem.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using LibraryManagementSystem.ClassLibrary.Models;
 
 namespace LibraryManagementSystem.ClassLibrary.Data
 {
@@ -38,6 +39,7 @@ namespace LibraryManagementSystem.ClassLibrary.Data
         public DbSet<Event> Events { get; set; }
 
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+        public DbSet<MembershipPayment> MembershipPayments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -133,6 +135,10 @@ namespace LibraryManagementSystem.ClassLibrary.Data
 
             modelBuilder.Entity<Membership>()
                 .Property(m => m.Fee)
+                .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<MembershipPayment>()
+                .Property(x => x.Amount)
                 .HasColumnType("decimal(18,2)");
         }
     }

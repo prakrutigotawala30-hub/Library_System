@@ -156,8 +156,8 @@
             <!-- IMAGE -->
             <div class="book-cover">
                 <img src="@(string.IsNullOrEmpty(Model.CoverImageUrl)
-                                                 ? "/images/default-book.jpg"
-                                                 : Model.CoverImageUrl)" />
+                                                                      ? "/images/default-book.jpg"
+                                                                      : Model.CoverImageUrl)" />
             </div>
 
             <!-- INFO -->
@@ -188,8 +188,8 @@
                             data-bookid="@Model.Id">
 
                         <i class="@(Model.IsWishlisted
-                                   ? "fa-solid fa-heart"
-                                   : "fa-regular fa-heart")"></i>
+                                                              ? "fa-solid fa-heart"
+                                                              : "fa-regular fa-heart")"></i>
 
                     </button>
 
@@ -220,4 +220,3 @@
 
 <!-- ✅ WISHLIST SCRIPT (FULL FIXED) -->
 <script src="~/js/wishlist.js"></script>
-

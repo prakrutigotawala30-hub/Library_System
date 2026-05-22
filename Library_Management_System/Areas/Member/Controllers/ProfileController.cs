@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Library_Management_System.Areas.Member.Controllers
 {
     [Area("Member")]
-    [Authorize(Roles = "Member")]
+    [Authorize(Roles = "Member,user")]
     public class ProfileController : Controller
     {
         private readonly IWebHostEnvironment _env;

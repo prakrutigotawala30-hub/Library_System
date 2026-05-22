@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Library_Management_System.Areas.Member.Controllers
 {
     [Area("Member")]
-    [Authorize(Roles = "Member")]
+    [Authorize(Roles = "Member,user")]
     public class WishlistController : Controller
     {
         private readonly AppDbContext _context;

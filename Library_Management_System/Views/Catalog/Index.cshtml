@@ -564,155 +564,155 @@
     }
 </style>
 <body>
-<div class="catalog-page">
+    <div class="catalog-page">
 
-    <!-- HERO -->
+        <!-- HERO -->
 
-    <section class="catalog-hero">
+        <section class="catalog-hero">
 
-        <div class="hero-content">
+            <div class="hero-content">
 
-            <div class="hero-badge">
-                ✨ PREMIUM DIGITAL LIBRARY
+                <div class="hero-badge">
+                    ✨ PREMIUM DIGITAL LIBRARY
+                </div>
+
+                <h1>
+                    Discover Your
+                    <span>Next Favorite Book</span>
+                </h1>
+
+                <p>
+                    Browse premium collections, explore authors,
+                    discover categories and find inspiring reads
+                    crafted for passionate readers.
+                </p>
+
             </div>
 
-            <h1>
-                Discover Your
-                <span>Next Favorite Book</span>
-            </h1>
+        </section>
 
-            <p>
-                Browse premium collections, explore authors,
-                discover categories and find inspiring reads
-                crafted for passionate readers.
-            </p>
+        <!-- FILTER -->
+
+        <div class="filter-box">
+
+            <h3 class="filter-title">
+                Browse Collection
+            </h3>
+
+            <form method="get" asp-action="Index" class="row g-3">
+
+                <!-- Search -->
+
+                <div class="col-lg-3">
+                    <input type="text"
+                           name="SearchQuery"
+                           value="@Model.SearchQuery"
+                           class="form-control custom-input"
+                           placeholder="Search books..." />
+                </div>
+
+                <!-- Category -->
+
+                <div class="col-lg-2">
+                    <select name="CategoryId" class="form-select custom-select">
+
+                        <option value="">All Categories</option>
+
+                        @foreach (var c in Model.Categories)
+                        {
+                            <option value="@c.Id"
+                                    selected="@(Model.CategoryId == c.Id)">
+                                @c.Name
+                            </option>
+                        }
+
+                    </select>
+                </div>
+
+                <!-- Author -->
+
+                <div class="col-lg-2">
+                    <select name="AuthorId" class="form-select custom-select">
+
+                        <option value="">All Authors</option>
+
+                        @foreach (var a in Model.Authors)
+                        {
+                            <option value="@a.Id"
+                                    selected="@(Model.AuthorId == a.Id)">
+                                @a.Name
+                            </option>
+                        }
+
+                    </select>
+                </div>
+
+                <!-- Availability -->
+
+                <div class="col-lg-2">
+                    <select name="Availability" class="form-select custom-select">
+
+                        <option value="">All</option>
+
+                        <option value="available"
+                                selected="@(Model.Availability == "available")">
+                            Available
+                        </option>
+
+                        <option value="unavailable"
+                                selected="@(Model.Availability == "unavailable")">
+                            Unavailable
+                        </option>
+
+                    </select>
+                </div>
+
+                <!-- Sort -->
+
+                <div class="col-lg-2">
+                    <select name="SortBy" class="form-select custom-select">
+
+                        <option value="">Sort By</option>
+
+                        <option value="title"
+                                selected="@(Model.SortBy == "title")">
+                            Title
+                        </option>
+
+                        <option value="newest"
+                                selected="@(Model.SortBy == "newest")">
+                            Newest
+                        </option>
+
+                        <option value="popular"
+                                selected="@(Model.SortBy == "popular")">
+                            Popular
+                        </option>
+
+                    </select>
+                </div>
+
+                <!-- Button -->
+
+                <div class="col-lg-1 d-grid">
+                    <button type="submit" class="search-btn">
+                        Search
+                    </button>
+                </div>
+
+            </form>
 
         </div>
 
-    </section>
+        <!-- BOOKS -->
+        @if (Model.PagedBooks != null && Model.PagedBooks.Count > 0)
+        {
+            <div class="books-grid">
 
-    <!-- FILTER -->
-
-    <div class="filter-box">
-
-        <h3 class="filter-title">
-            Browse Collection
-        </h3>
-
-        <form method="get" asp-action="Index" class="row g-3">
-
-            <!-- Search -->
-
-            <div class="col-lg-3">
-                <input type="text"
-                       name="SearchQuery"
-                       value="@Model.SearchQuery"
-                       class="form-control custom-input"
-                       placeholder="Search books..." />
-            </div>
-
-            <!-- Category -->
-
-            <div class="col-lg-2">
-                <select name="CategoryId" class="form-select custom-select">
-
-                    <option value="">All Categories</option>
-
-                    @foreach (var c in Model.Categories)
-                    {
-                        <option value="@c.Id"
-                                selected="@(Model.CategoryId == c.Id)">
-                            @c.Name
-                        </option>
-                    }
-
-                </select>
-            </div>
-
-            <!-- Author -->
-
-            <div class="col-lg-2">
-                <select name="AuthorId" class="form-select custom-select">
-
-                    <option value="">All Authors</option>
-
-                    @foreach (var a in Model.Authors)
-                    {
-                        <option value="@a.Id"
-                                selected="@(Model.AuthorId == a.Id)">
-                            @a.Name
-                        </option>
-                    }
-
-                </select>
-            </div>
-
-            <!-- Availability -->
-
-            <div class="col-lg-2">
-                <select name="Availability" class="form-select custom-select">
-
-                    <option value="">All</option>
-
-                    <option value="available"
-                            selected="@(Model.Availability == "available")">
-                        Available
-                    </option>
-
-                    <option value="unavailable"
-                            selected="@(Model.Availability == "unavailable")">
-                        Unavailable
-                    </option>
-
-                </select>
-            </div>
-
-            <!-- Sort -->
-
-            <div class="col-lg-2">
-                <select name="SortBy" class="form-select custom-select">
-
-                    <option value="">Sort By</option>
-
-                    <option value="title"
-                            selected="@(Model.SortBy == "title")">
-                        Title
-                    </option>
-
-                    <option value="newest"
-                            selected="@(Model.SortBy == "newest")">
-                        Newest
-                    </option>
-
-                    <option value="popular"
-                            selected="@(Model.SortBy == "popular")">
-                        Popular
-                    </option>
-
-                </select>
-            </div>
-
-            <!-- Button -->
-
-            <div class="col-lg-1 d-grid">
-                <button type="submit" class="search-btn">
-                    Search
-                </button>
-            </div>
-
-        </form>
-
-    </div>
-
-    <!-- BOOKS -->
-    @if (Model.PagedBooks != null && Model.PagedBooks.Count > 0)
-    {
-        <div class="books-grid">
-
-            @foreach (var book in Model.PagedBooks)
-            {
-                <div class="book-card">
-                    <!-- WISHLIST BUTTON -->
+                @foreach (var book in Model.PagedBooks)
+                {
+                    <div class="book-card">
+                        <!-- WISHLIST BUTTON -->
 
                         <div class="wishlist-container">
 
@@ -721,126 +721,125 @@
                                     data-bookid="@book.Id">
 
                                 <i class="@(ViewBag.WishlistIds.Contains(book.Id)
-                                                  ? "fa-solid fa-heart"
-                                                  : "fa-regular fa-heart")"></i>
+                                                                                     ? "fa-solid fa-heart"
+                                                                                     : "fa-regular fa-heart")"></i>
 
                             </button>
 
                         </div>
 
-                    <!-- BOOK IMAGE -->
+                        <!-- BOOK IMAGE -->
 
-                    <div class="book-image">
+                        <div class="book-image">
 
-                        <img src="@(string.IsNullOrEmpty(book.CoverImageUrl)
-                                                 ? "/images/default-book.jpg"
-                                                 : book.CoverImageUrl)" />
-
-                    </div>
-
-                    <!-- CONTENT -->
-
-                    <div class="book-content">
-
-                        <!-- BOOK TITLE -->
-
-                        <h2 class="book-title">
-                            @book.Title
-                        </h2>
-
-                        <!-- STATUS BOXES -->
-
-                        <div class="status-wrapper">
-
-                            <div class="status-box available-box">
-
-                                <small>Available</small>
-
-                                <span>
-                                    📚 @book.AvailableCopies Left
-                                </span>
-
-                            </div>
-
-                            <div class="status-box borrow-box">
-
-                                <small>Borrows</small>
-
-                                <span>
-                                    🔥 @book.BorrowCount Times
-                                </span>
-
-                            </div>
+                            <img src="@(string.IsNullOrEmpty(book.CoverImageUrl)
+                                                                                  ? "/images/default-book.jpg"
+                                                                                  : book.CoverImageUrl)" />
 
                         </div>
 
-                        <!-- BUTTON -->
+                        <!-- CONTENT -->
 
-                        <a asp-action="Details"
-                           asp-route-id="@book.Id"
-                           class="explore-btn">
+                        <div class="book-content">
 
-                            Explore Book →
+                            <!-- BOOK TITLE -->
 
-                        </a>
+                            <h2 class="book-title">
+                                @book.Title
+                            </h2>
+
+                            <!-- STATUS BOXES -->
+
+                            <div class="status-wrapper">
+
+                                <div class="status-box available-box">
+
+                                    <small>Available</small>
+
+                                    <span>
+                                        📚 @book.AvailableCopies Left
+                                    </span>
+
+                                </div>
+
+                                <div class="status-box borrow-box">
+
+                                    <small>Borrows</small>
+
+                                    <span>
+                                        🔥 @book.BorrowCount Times
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                            <!-- BUTTON -->
+
+                            <a asp-action="Details"
+                               asp-route-id="@book.Id"
+                               class="explore-btn">
+
+                                Explore Book →
+
+                            </a>
+
+                        </div>
 
                     </div>
 
-                </div>
+                }
 
-            }
+            </div>
+        }
+        else
+        {
+            <div class="empty-box">
 
-        </div>
-    }
-    else
-    {
-        <div class="empty-box">
+                <img src="https://cdn-icons-png.flaticon.com/512/7486/7486740.png"
+                     width="120" />
 
-            <img src="https://cdn-icons-png.flaticon.com/512/7486/7486740.png"
-                 width="120" />
+                <h3>No Books Found</h3>
 
-            <h3>No Books Found</h3>
+                <p>
+                    Try changing filters or search keywords.
+                </p>
 
-            <p>
-                Try changing filters or search keywords.
-            </p>
+            </div>
+        }
 
-        </div>
-    }
+        <!-- PAGINATION -->
 
-    <!-- PAGINATION -->
+        <div class="pagination-box">
 
-    <div class="pagination-box">
+            <div class="page-text">
+                Current Page : @Model.PageNumber
+            </div>
 
-        <div class="page-text">
-            Current Page : @Model.PageNumber
-        </div>
+            <div class="d-flex gap-2">
 
-        <div class="d-flex gap-2">
+                <a asp-action="Index"
+                   asp-route-PageNumber="@(Model.PageNumber - 1)"
+                   class="page-btn @(Model.PageNumber <= 1 ? "disabled" : "")">
 
-            <a asp-action="Index"
-               asp-route-PageNumber="@(Model.PageNumber - 1)"
-               class="page-btn @(Model.PageNumber <= 1 ? "disabled" : "")">
+                    ← Previous
 
-                ← Previous
+                </a>
 
-            </a>
+                <a asp-action="Index"
+                   asp-route-PageNumber="@(Model.PageNumber + 1)"
+                   class="page-btn">
 
-            <a asp-action="Index"
-               asp-route-PageNumber="@(Model.PageNumber + 1)"
-               class="page-btn">
+                    Next →
 
-                Next →
+                </a>
 
-            </a>
+            </div>
 
         </div>
 
     </div>
-
-</div>
     <script src="~/js/wishlist.js"></script>
 
-    
-</body>
 
+</body>

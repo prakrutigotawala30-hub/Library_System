@@ -1,4 +1,4 @@
-﻿<head>
+<head>
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
@@ -253,64 +253,90 @@
 </footer>
 
 <style>
-
-    /* =========================
-                PREMIUM FOOTER
-        ========================== */
+    /* =========================================
+       PREMIUM FOOTER
+    ========================================= */
 
     .premium-footer {
-        margin-top: 50px;
-        padding: 0 15px 20px;
+        margin-top: 60px;
+        padding: 0 24px 24px;
+        transition: .35s;
     }
+
+    /* =========================================
+       FOOTER WRAPPER
+    ========================================= */
 
     .footer-wrapper {
-        background: linear-gradient(135deg,#0b1120,#121a35);
-        border: 1px solid rgba(255,255,255,0.06);
-        border-radius: 28px;
-        padding: 45px;
-        box-shadow: 0 0 40px rgba(124,58,237,0.12);
         position: relative;
         overflow: hidden;
+        border-radius: 32px;
+        padding: 50px;
+        background: linear-gradient(135deg,#0b1120,#121a35);
+        border: 1px solid var(--border-color);
+        box-shadow: 0 0 40px rgba(124,58,237,.14);
+        transition: .35s;
     }
 
-        .footer-wrapper::before {
-            content: "";
-            position: absolute;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(rgba(139,92,246,.18),transparent 70%);
-            top: -200px;
-            right: -150px;
-        }
+    /* LIGHT MODE */
 
-    /* LOGO */
+    body.light-mode .footer-wrapper {
+        background: linear-gradient(135deg,#ffffff,#f8fafc);
+        box-shadow: 0 15px 35px rgba(0,0,0,.06);
+    }
+
+    /* GLOW EFFECT */
+
+    .footer-wrapper::before {
+        content: "";
+        position: absolute;
+        width: 420px;
+        height: 420px;
+        border-radius: 50%;
+        background: radial-gradient(rgba(139,92,246,.18),transparent 70%);
+        top: -200px;
+        right: -160px;
+    }
+
+    /* =========================================
+       BRAND SECTION
+    ========================================= */
+
+    .footer-brand {
+        position: relative;
+        z-index: 2;
+    }
 
     .footer-logo {
         display: flex;
         align-items: center;
-        gap: 14px;
-        margin-bottom: 20px;
+        gap: 16px;
+        margin-bottom: 22px;
     }
 
+    /* LOGO ICON */
+
     .footer-logo-icon {
-        width: 58px;
-        height: 58px;
-        border-radius: 18px;
+        width: 62px;
+        height: 62px;
+        border-radius: 20px;
         background: linear-gradient(135deg,#7c3aed,#d946ef);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 28px;
         color: white;
-        font-weight: bold;
-        box-shadow: 0 10px 30px rgba(168,85,247,.35);
+        font-size: 30px;
+        font-weight: 800;
+        box-shadow: 0 15px 35px rgba(124,58,237,.35);
     }
+
+    /* BRAND TITLE */
 
     .footer-logo h2 {
         margin: 0;
-        color: white;
-        font-size: 28px;
-        font-weight: 800;
+        color: var(--text-color);
+        font-size: 30px;
+        font-weight: 900;
         letter-spacing: 1px;
     }
 
@@ -318,30 +344,50 @@
             color: #d946ef;
         }
 
+    /* BRAND SUBTITLE */
+
     .footer-logo p {
         margin: 0;
-        color: #9ca3af;
+        color: var(--text-muted);
         font-size: 11px;
         letter-spacing: 2px;
     }
 
+    /* DESCRIPTION */
+
     .footer-description {
-        color: #9ca3af;
-        line-height: 1.8;
-        max-width: 320px;
+        color: var(--text-muted);
+        line-height: 1.9;
+        max-width: 340px;
         font-size: 15px;
     }
 
-    /* TITLES */
+    /* =========================================
+       FOOTER TITLES
+    ========================================= */
 
     .footer-title {
-        color: white;
+        color: var(--text-color);
         font-size: 18px;
         font-weight: 700;
-        margin-bottom: 22px;
+        margin-bottom: 24px;
+        position: relative;
     }
 
-    /* LINKS */
+        .footer-title::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 45px;
+            height: 3px;
+            border-radius: 20px;
+            background: linear-gradient(135deg,#7c3aed,#9333ea);
+        }
+
+    /* =========================================
+       LINKS
+    ========================================= */
 
     .footer-links {
         list-style: none;
@@ -350,15 +396,15 @@
     }
 
         .footer-links li {
-            margin-bottom: 14px;
+            margin-bottom: 15px;
         }
 
         .footer-links a {
-            color: #9ca3af;
+            color: var(--text-muted);
             text-decoration: none;
             transition: .3s;
             position: relative;
-            padding-left: 0;
+            font-size: 15px;
         }
 
             .footer-links a:hover {
@@ -366,7 +412,9 @@
                 padding-left: 6px;
             }
 
-    /* CONTACT */
+    /* =========================================
+       CONTACT
+    ========================================= */
 
     .footer-contact {
         display: flex;
@@ -378,94 +426,147 @@
         display: flex;
         align-items: flex-start;
         gap: 12px;
-        color: #9ca3af;
-        line-height: 1.6;
+        color: var(--text-muted);
+        line-height: 1.7;
         font-size: 14px;
     }
 
         .contact-item i {
             color: #a855f7;
             margin-top: 4px;
+            min-width: 18px;
         }
 
-    /* SOCIAL */
+    /* =========================================
+       SOCIAL ICONS
+    ========================================= */
 
     .social-icons {
         display: flex;
-        gap: 12px;
         flex-wrap: wrap;
+        gap: 14px;
     }
 
         .social-icons a {
-            width: 46px;
-            height: 46px;
-            border-radius: 14px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.06);
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            background: rgba(255,255,255,.05);
+            border: 1px solid var(--border-color);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            color: var(--text-color);
             text-decoration: none;
+            font-size: 18px;
             transition: .35s;
-            font-size: 18px;
         }
 
-            .social-icons a:hover {
-                transform: translateY(-5px);
-                background: linear-gradient(135deg,#7c3aed,#9333ea);
-                box-shadow: 0 10px 25px rgba(124,58,237,.35);
-            }
+    /* LIGHT MODE */
 
-    .social-icons {
-        display: flex;
-        gap: 12px;
+    body.light-mode .social-icons a {
+        background: #ffffff;
     }
 
-        .social-icons a {
-            width: 45px;
-            height: 45px;
-            border-radius: 12px;
-            background: rgba(255,255,255,0.06);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            text-decoration: none;
-            transition: 0.3s;
-            font-size: 18px;
-        }
+    .social-icons a:hover {
+        transform: translateY(-6px);
+        background: linear-gradient(135deg,#7c3aed,#9333ea);
+        color: white;
+        box-shadow: 0 12px 25px rgba(124,58,237,.35);
+    }
 
-            .social-icons a:hover {
-                background: linear-gradient(135deg,#7c3aed,#9333ea);
-                transform: translateY(-4px);
-            }
-
-    /* BOTTOM */
+    /* =========================================
+       FOOTER BOTTOM
+    ========================================= */
 
     .footer-bottom {
-        margin-top: 40px;
-        padding-top: 22px;
-        border-top: 1px solid rgba(255,255,255,0.06);
+        margin-top: 45px;
+        padding-top: 24px;
+        border-top: 1px solid var(--border-color);
         display: flex;
         justify-content: space-between;
+        align-items: center;
         flex-wrap: wrap;
-        gap: 15px;
-        color: #9ca3af;
+        gap: 14px;
+        color: var(--text-muted);
         font-size: 14px;
     }
 
-    /* RESPONSIVE */
+    /* =========================================
+       RESPONSIVE
+    ========================================= */
 
-    @@media(max-width:991px) {
+    @@media(max - width:1200px) {
 
         .footer-wrapper {
-            padding: 35px 25px;
+            padding: 40px 32px;
+        }
+    }
+
+    @@media(max - width:992px) {
+
+        .premium-footer {
+            padding: 0 18px 20px;
+        }
+
+        .footer-wrapper {
+            padding: 36px 26px;
         }
 
         .footer-bottom {
             flex-direction: column;
+            align-items: flex-start;
         }
     }
 
+    @@media(max - width:768px) {
+
+        .footer-wrapper {
+            padding: 30px 22px;
+            border-radius: 24px;
+        }
+
+        .footer-logo {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+            .footer-logo h2 {
+                font-size: 24px;
+            }
+
+        .footer-description {
+            max-width: 100%;
+        }
+
+        .social-icons {
+            margin-top: 10px;
+        }
+    }
+
+    @@media(max - width:576px) {
+
+        .premium-footer {
+            padding: 0 12px 18px;
+        }
+
+        .footer-wrapper {
+            padding: 26px 18px;
+        }
+
+        .footer-logo-icon {
+            width: 56px;
+            height: 56px;
+            font-size: 26px;
+        }
+
+        .social-icons a {
+            width: 44px;
+            height: 44px;
+        }
+
+        .footer-bottom {
+            font-size: 13px;
+        }
+    }
 </style>

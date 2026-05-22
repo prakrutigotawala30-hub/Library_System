@@ -51,5 +51,32 @@
        even though it works on Windows. Match disk case for both OSes. *@
     <script src="~/js/Catalog.js"></script>
 
+    <script>
+
+        const themeToggle =
+            document.getElementById("themeToggle");
+
+        themeToggle?.addEventListener("click", function () {
+
+            document.body.classList.toggle("light-theme");
+
+            if (document.body.classList.contains("light-theme")) {
+
+                localStorage.setItem("theme", "light");
+
+            }
+            else {
+
+                localStorage.setItem("theme", "dark");
+            }
+        });
+
+        if (localStorage.getItem("theme") === "light") {
+
+            document.body.classList.add("light-theme");
+        }
+
+    </script>
+
 </body>
 </html>
