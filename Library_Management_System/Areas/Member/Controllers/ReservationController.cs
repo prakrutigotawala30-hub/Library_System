@@ -99,7 +99,13 @@ namespace Library_Management_System.Areas.Member.Controllers
         // CANCEL
         public async Task<IActionResult> Cancel(int id)
         {
-            var reservation = await _context.Reservations.FindAsync(id);
+            // Verify the reservation belongs to the current user — without this
+            // check ANY Member could cancel ANY reservation by guessing the id
+            // (horizontal privilege escalation).
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var reservation = await _context.Reservations
+                .FirstOrDefaultAsync(r => r.Id == id && r.MemberId == userId);
 
             if (reservation == null)
                 return NotFound();

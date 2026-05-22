@@ -7,7 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 namespace Library_Management_System.Areas.Member.Controllers
 {
     [Area("Member")]
-    [Authorize(Roles = "Member,user")]
+    // Seeded role names are PascalCase: "Admin", "Member", "User"
+    // (see admin Program.cs role seeding). Lowercase "user" mismatches the
+    // canonical casing — fragile and makes role audits hard.
+    [Authorize(Roles = "Member,User")]
     public class ProfileController : Controller
     {
         private readonly IWebHostEnvironment _env;
