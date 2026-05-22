@@ -1,4 +1,4 @@
-﻿using LibraryManagementSystem.ViewModels;
+using LibraryManagementSystem.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using LibraryManagementSystem.ClassLibrary.Models;

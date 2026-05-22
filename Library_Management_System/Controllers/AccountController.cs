@@ -1,4 +1,4 @@
-﻿
+
 using LibraryManagementSystem.ClassLibrary.Models;
 using Library_Management_System.ViewModels;
 using Library_Management_System.Services;
@@ -44,12 +44,20 @@ namespace LibraryManagementSystem.Controllers
         {
             if (ModelState.IsValid)
             {
+                // CREATE ROLES
+
                 if (!await _roleManager.RoleExistsAsync("Member"))
                 {
                     await _roleManager.CreateAsync(new IdentityRole("Member"));
                 }
 
-                var existingUser = await _userManager.FindByEmailAsync(model.Email);
+                if (!await _roleManager.RoleExistsAsync("User"))
+                {
+                    await _roleManager.CreateAsync(new IdentityRole("User"));
+                }
+
+                var existingUser =
+                    await _userManager.FindByEmailAsync(model.Email);
 
                 if (existingUser != null)
                 {
@@ -63,35 +71,60 @@ namespace LibraryManagementSystem.Controllers
                     UserName = model.Email,
                     Email = model.Email,
                     PhoneNumber = model.PhoneNumber,
-                    EmailConfirmed = true
+                    EmailConfirmed = false
                 };
 
-                var result = await _userManager.CreateAsync(user, model.Password);
+                var result =
+                    await _userManager.CreateAsync(user, model.Password);
 
                 if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(user, "Member");
+                    // ✅ DEFAULT ROLE = USER
 
-                    // Best-effort welcome email — never block registration if SMTP
-                    // is down or credentials aren't set. The account is already
-                    // created; failing here would leave the user confused.
+                    await _userManager.AddToRoleAsync(user, "User");
+
+                    // EMAIL CONFIRM TOKEN
+
+                    var token =
+                        await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+                    var confirmationLink = Url.Action(
+                        "ConfirmEmail",
+                        "Account",
+                        new
+                        {
+                            userId = user.Id,
+                            token = WebUtility.UrlEncode(token)
+                        },
+                        Request.Scheme);
+
+                    // EMAIL BODY
+
+                    string body = $@"
+                <h2>Welcome to BookVerse</h2>
+
+                <p>Hello {user.FullName},</p>
+
+                <p>Please confirm your email before login.</p>
+
+                <a href='{confirmationLink}'>
+                    Confirm Email
+                </a>";
+
                     try
                     {
-                        string body = $@"
-                            <h2>Library Management System</h2>
-                            <p>Welcome, {user.FullName}! Your account is ready.</p>";
-
                         await _emailService.SendEmailAsync(
                             user.Email,
-                            "Welcome to Library Management System",
+                            "Confirm Your Email",
                             body);
                     }
                     catch
                     {
-                        // SMTP failed — account exists, user can still log in.
                     }
 
-                    TempData["Success"] = "Registration successful. Please log in.";
+                    TempData["Success"] =
+                        "Registration successful. Please confirm your email.";
+
                     return RedirectToAction("Login");
                 }
 
@@ -108,27 +141,36 @@ namespace LibraryManagementSystem.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        public async Task<IActionResult> ConfirmEmail(string userId,string token)
         {
             if (userId == null || token == null)
             {
                 return RedirectToAction("Login");
             }
 
-            var user = await _userManager.FindByIdAsync(userId);
+            var user =
+                await _userManager.FindByIdAsync(userId);
 
             if (user == null)
             {
                 return NotFound();
             }
 
-            var result = await _userManager
-                .ConfirmEmailAsync(user, token);
+            token = WebUtility.UrlDecode(token);
+
+            var result =
+                await _userManager.ConfirmEmailAsync(user, token);
 
             if (result.Succeeded)
             {
-                return View("ConfirmEmail");
+                TempData["Success"] =
+                    "Email confirmed successfully.";
+
+                return RedirectToAction("Login");
             }
+
+            TempData["Error"] =
+                "Email confirmation failed.";
 
             return RedirectToAction("Login");
         }
@@ -149,7 +191,8 @@ namespace LibraryManagementSystem.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByEmailAsync(model.Email);
+                var user =
+                    await _userManager.FindByEmailAsync(model.Email);
 
                 if (user == null)
                 {
@@ -157,19 +200,42 @@ namespace LibraryManagementSystem.Controllers
                     return View(model);
                 }
 
-                var result = await _signInManager.PasswordSignInAsync(
-                    user.UserName,
-                    model.Password,
-                    model.RememberMe,
-                    false);
+                // ✅ EMAIL CONFIRM CHECK
+
+                if (!user.EmailConfirmed)
+                {
+                    ModelState.AddModelError("",
+                        "Please confirm your email first.");
+
+                    return View(model);
+                }
+
+                var result =
+                    await _signInManager.PasswordSignInAsync(
+                        user.UserName,
+                        model.Password,
+                        model.RememberMe,
+                        false);
 
                 if (result.Succeeded)
                 {
-                    TempData["success"] = "Login successful.";
-                    return RedirectToAction("Index", "Home");
+
+                    if (await _userManager.IsInRoleAsync(user, "Member"))
+                    {
+                        return RedirectToAction(
+                            "Index",
+                            "Dashboard",
+                            new { area = "Member" });
+                    }
+
+
+                    return RedirectToAction(
+                        "Index",
+                        "Home");
                 }
 
-                ModelState.AddModelError("", "Invalid login attempt.");
+                ModelState.AddModelError("",
+                    "Invalid login attempt.");
             }
 
             return View(model);

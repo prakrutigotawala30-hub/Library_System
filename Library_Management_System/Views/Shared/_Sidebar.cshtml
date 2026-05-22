@@ -48,26 +48,47 @@
 
     <hr />
 
-    <!-- MEMBER -->
-
+    <!-- MEMBERSHIP -->
     <div class="menu-heading">
-        MEMBER
+        MEMBERSHIP
     </div>
-
 
     <div class="menu-list">
 
-        <a class="menu-item"
-           asp-area="Member"
-           asp-controller="Dashboard"
-           asp-action="Index">
+        @if (User.Identity != null && User.Identity.IsAuthenticated)
+        {
+            @if (User.IsInRole("Member"))
+            {
+                <!-- MEMBER DASHBOARD -->
 
-            <i class="bi bi-graph-up"></i>
+                <a class="menu-item"
+                   asp-area="Member"
+                   asp-controller="Dashboard"
+                   asp-action="Index">
 
-            <span>My Dashboard</span>
+                    <i class="bi bi-speedometer2"></i>
 
-        </a>
-        </div>
+                    <span>My Dashboard</span>
+
+                </a>
+            }
+            else
+            {
+                <!-- BUY MEMBERSHIP -->
+
+                <a class="menu-item"
+                   asp-controller="Membership"
+                   asp-action="Index">
+
+                    <i class="bi bi-gem"></i>
+
+                    <span>Get Membership</span>
+
+                </a>
+            }
+        }
+
+    </div>
 
     <!-- EXPLORE -->
 

@@ -40,6 +40,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // IDENTITY
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
+    options.SignIn.RequireConfirmedEmail = true;
+
     options.Password.RequireDigit = true;
     options.Password.RequiredLength = 6;
     options.Password.RequireUppercase = true;
@@ -124,9 +126,10 @@ using (var scope = app.Services.CreateScope())
         .GetRequiredService<RoleManager<IdentityRole>>();
 
     string[] roles =
-    {
-        "Member"
-    };
+{
+    "User",
+    "Member"
+};
 
     foreach (var role in roles)
     {
