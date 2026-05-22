@@ -1,6 +1,5 @@
 using LibraryManagementSystem.ClassLibrary.Data;
 using LibraryManagementSystem.ClassLibrary.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +7,13 @@ using Microsoft.EntityFrameworkCore;
 namespace Library_Management_System.Areas.Member.Controllers
 {
     [Area("Member")]
-    [Authorize(Roles = "Member")]
+    // Intentionally NO [Authorize] — the heart icon lives on the PUBLIC
+    // catalog so anonymous visitors can click it. Each action checks
+    // `user == null` and returns JSON { success:false, message:"Login required" }
+    // (or RedirectToAction("Login") for non-AJAX actions). The JS then shows
+    // an alert. Adding [Authorize] here makes ASP.NET return a 302/HTML
+    // redirect that JS can't parse → "error" popup on every heart click for
+    // logged-out users.
     public class WishlistController : Controller
     {
         private readonly AppDbContext _context;
