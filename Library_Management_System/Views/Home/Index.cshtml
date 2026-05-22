@@ -96,8 +96,12 @@
             <div class="section-header">
                 <h3>Continue Reading</h3>
 
-                <a asp-controller="Books"
-                   asp-action="ContinueReading">
+                @* Was: asp-controller="Books" asp-action="ContinueReading".
+                   BooksController doesn't exist in user app and there's no
+                   ContinueReading action anywhere — point to the catalog
+                   instead so the View All link doesn't 404. *@
+                <a asp-controller="Catalog"
+                   asp-action="Index">
                     View All
                 </a>
             </div>
@@ -305,7 +309,8 @@
         <div class="section-header">
             <h3>New Arrivals</h3>
 
-            <a asp-controller="Books"
+            @* CatalogController.NewArrivals exists; BooksController in user app does not. *@
+            <a asp-controller="Catalog"
                asp-action="NewArrivals">
                 View All
             </a>
