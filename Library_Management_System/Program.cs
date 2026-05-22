@@ -110,6 +110,11 @@ using (var scope = app.Services.CreateScope())
         // Concurrency fix: see SqlitePragmaInterceptor for details.
         await db.Database.ExecuteSqlRawAsync("PRAGMA journal_mode = WAL;");
         await db.Database.ExecuteSqlRawAsync("PRAGMA busy_timeout = 5000;");
+
+        // Schema patch: EnsureCreated is one-shot — if the .db already had
+        // any tables, EnsureCreated did nothing, so new tables added to the
+        // model later won't appear. Patch fills in missing tables/columns.
+        await SqliteSchemaPatcher.PatchAsync(db);
     }
     else
     {

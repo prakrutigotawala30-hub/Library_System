@@ -150,7 +150,10 @@
 
 <div class="reserve-wrapper">
 
-    <a asp-controller="Books"
+    @* Back link to the book detail page. CatalogController.Details is the
+       right target in the user app — BooksController was deleted. *@
+    <a asp-area=""
+       asp-controller="Catalog"
        asp-action="Details"
        asp-route-id="@Model.Id"
        class="back-btn">
