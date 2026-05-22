@@ -13,7 +13,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const bookId = btn.dataset.bookid;
 
-      fetch('/Wishlist/ToggleWishlist', {
+      // CSRF token — Razor renders a hidden __RequestVerificationToken field
+      // in any view containing a form. Grab it so the POST passes
+      // [ValidateAntiForgeryToken] on the controller.
+      const tokenInput = document.querySelector(
+        'input[name="__RequestVerificationToken"]'
+      );
+      const token = tokenInput ? tokenInput.value : '';
+
+      fetch('/Member/Wishlist/ToggleWishlist', {
 
         method: 'POST',
 
@@ -22,7 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
             'application/x-www-form-urlencoded'
         },
 
-        body: `bookId=${bookId}`
+        body: `bookId=${bookId}&__RequestVerificationToken=${encodeURIComponent(token)}`
 
       })
 
