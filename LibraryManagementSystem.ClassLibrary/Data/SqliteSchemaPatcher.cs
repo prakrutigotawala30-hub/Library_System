@@ -1,23 +1,39 @@
+using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace LibraryManagementSystem.ClassLibrary.Data
 {
     /// <summary>
-    /// Manual schema patches for Sqlite — works around the fact that
-    /// `EnsureCreated` is a one-shot operation: if any tables already exist
-    /// in the .db file, EnsureCreated does NOTHING, even for new tables
-    /// added to the model. That means schema-changing model edits leave
-    /// existing Mac/Linux dev databases in a broken state.
+    /// Generic Sqlite schema reconciler — keeps the on-disk schema in sync
+    /// with the current EF model, no manual updates required when models change.
     ///
-    /// This patcher runs after EnsureCreated and uses `CREATE TABLE IF NOT
-    /// EXISTS` to add any tables the EF model expects but the .db is
-    /// missing. Safe to run on every startup — does nothing when tables
-    /// already exist.
+    /// Why this is needed:
+    ///   EF Core's EnsureCreated is a one-shot operation. The moment any tables
+    ///   exist in the .db file, EnsureCreated does nothing — even for tables
+    ///   or columns added to the model later. Migrations would handle this on
+    ///   SqlServer, but we don't run Sqlite-flavored migrations on Mac/Linux.
+    ///   Result: every model edit broke an existing Mac dev DB until someone
+    ///   manually dropped the table.
     ///
-    /// Caveat: this only handles MISSING tables. If a column was added to
-    /// an existing table, you still need to either drop that table or
-    /// `ALTER TABLE ... ADD COLUMN ...` it. Document any such cases here
-    /// when the model changes.
+    /// What this does, automatically, on every startup:
+    ///   1. Generates the full CREATE script EF would produce for the current
+    ///      model, rewrites it with IF NOT EXISTS, runs it. Any NEW table
+    ///      the model defines gets created; existing tables are left alone.
+    ///   2. Walks every entity in the EF model, queries PRAGMA table_info
+    ///      for the actual columns, ALTER TABLE ADD COLUMN for any new
+    ///      properties the table doesn't have yet.
+    ///
+    /// Limitations (Sqlite ALTER TABLE constraints):
+    ///   - Can only ADD nullable columns (or NOT NULL with a DEFAULT).
+    ///     We skip non-nullable adds — those need a manual migration.
+    ///   - Cannot drop columns. EF dropping a property from a model leaves
+    ///     a stale column in the .db. Harmless.
+    ///   - Cannot retroactively add FK / UNIQUE constraints to existing
+    ///     columns. The CREATE TABLE in step 1 puts them on new tables;
+    ///     existing tables stay as-is.
+    ///
+    /// All operations are idempotent — safe to run on every app start.
     /// </summary>
     public static class SqliteSchemaPatcher
     {
@@ -26,45 +42,152 @@ namespace LibraryManagementSystem.ClassLibrary.Data
             if (!db.Database.IsSqlite())
                 return;
 
-            // Wishlists — gained EventId column in commit c1ec76f / model rewrite.
-            // Older Sqlite DBs created before that migration have the table
-            // without EventId, or someone manually DROP TABLE'd it. Either way,
-            // this CREATE TABLE IF NOT EXISTS makes sure the right shape is
-            // present on every startup.
-            await db.Database.ExecuteSqlRawAsync(@"
-CREATE TABLE IF NOT EXISTS ""Wishlists"" (
-    ""Id""       INTEGER NOT NULL CONSTRAINT ""PK_Wishlists"" PRIMARY KEY AUTOINCREMENT,
-    ""MemberId"" TEXT    NOT NULL,
-    ""BookId""   INTEGER NULL,
-    ""EventId""  INTEGER NULL,
-    ""AddedOn""  TEXT    NOT NULL,
-    CONSTRAINT ""FK_Wishlists_AspNetUsers_MemberId""
-        FOREIGN KEY (""MemberId"") REFERENCES ""AspNetUsers"" (""Id"") ON DELETE CASCADE,
-    CONSTRAINT ""FK_Wishlists_Books_BookId""
-        FOREIGN KEY (""BookId"")   REFERENCES ""Books""       (""Id""),
-    CONSTRAINT ""FK_Wishlists_Events_EventId""
-        FOREIGN KEY (""EventId"")  REFERENCES ""Events""      (""Id"")
-);
-CREATE INDEX IF NOT EXISTS ""IX_Wishlists_MemberId"" ON ""Wishlists"" (""MemberId"");
-CREATE INDEX IF NOT EXISTS ""IX_Wishlists_BookId""   ON ""Wishlists"" (""BookId"");
-CREATE INDEX IF NOT EXISTS ""IX_Wishlists_EventId""  ON ""Wishlists"" (""EventId"");
-");
+            await CreateMissingTablesAsync(db);
+            await AddMissingColumnsAsync(db);
+        }
 
-            // If the existing Wishlists table predates EventId (older schema),
-            // patch it in-place. ALTER TABLE ADD COLUMN is a no-op if the
-            // column already exists in newer Sqlite, but older versions throw
-            // — so wrap in try/catch.
+        // ───── 1. CREATE TABLE / INDEX for anything the model has but the DB doesn't ─────
+
+        private static async Task CreateMissingTablesAsync(AppDbContext db)
+        {
+            // EF generates the full DDL for the CURRENT model. We rewrite
+            // CREATE TABLE / CREATE INDEX to be idempotent so re-running on
+            // an existing DB is safe — only missing objects get created.
+            var script = db.Database.GenerateCreateScript();
+
+            script = Regex.Replace(
+                script,
+                @"\bCREATE TABLE\s+",
+                "CREATE TABLE IF NOT EXISTS ",
+                RegexOptions.IgnoreCase);
+
+            script = Regex.Replace(
+                script,
+                @"\bCREATE (UNIQUE )?INDEX\s+",
+                m => $"CREATE {m.Groups[1].Value}INDEX IF NOT EXISTS ",
+                RegexOptions.IgnoreCase);
+
             try
             {
-                await db.Database.ExecuteSqlRawAsync(
-                    @"ALTER TABLE ""Wishlists"" ADD COLUMN ""EventId"" INTEGER NULL;");
+                await db.Database.ExecuteSqlRawAsync(script);
             }
-            catch
+            catch (Exception ex)
             {
-                // Column already exists, or another harmless schema mismatch.
-                // Ignore — the CREATE TABLE IF NOT EXISTS above already
-                // handles the missing-table case.
+                // The script may contain a handful of statements that aren't
+                // strictly idempotent (e.g., a CHECK constraint that conflicts
+                // with rewritten table). Don't crash the app — log and move on
+                // to the column patcher which handles the common drift case.
+                Console.WriteLine(
+                    $"[SqliteSchemaPatcher] CREATE TABLE/INDEX pass: {ex.Message}");
             }
+        }
+
+        // ───── 2. ALTER TABLE ADD COLUMN for any new properties on existing tables ─────
+
+        private static async Task AddMissingColumnsAsync(AppDbContext db)
+        {
+            foreach (var entityType in db.Model.GetEntityTypes())
+            {
+                var tableName = entityType.GetTableName();
+                if (string.IsNullOrEmpty(tableName))
+                    continue;
+
+                // Skip entities mapped to views / queries / owned types
+                if (entityType.IsOwned())
+                    continue;
+
+                var existingCols = await GetSqliteColumnsAsync(db, tableName);
+                if (existingCols.Count == 0)
+                    continue; // table didn't exist; CREATE TABLE pass above handled it
+
+                foreach (var prop in entityType.GetProperties())
+                {
+                    var colName = prop.GetColumnName();
+                    if (string.IsNullOrEmpty(colName))
+                        continue;
+                    if (existingCols.Contains(colName))
+                        continue; // already there
+
+                    // Sqlite ALTER TABLE ADD COLUMN can't add a NOT NULL column
+                    // without a DEFAULT — skip those. They're rare in this model;
+                    // a real schema break would need a manual migration anyway.
+                    if (!prop.IsNullable)
+                        continue;
+
+                    var colType = ResolveSqliteType(prop);
+
+                    try
+                    {
+                        await db.Database.ExecuteSqlRawAsync(
+                            $"ALTER TABLE \"{tableName}\" ADD COLUMN \"{colName}\" {colType} NULL;");
+
+                        Console.WriteLine(
+                            $"[SqliteSchemaPatcher] Added missing column {tableName}.{colName} ({colType})");
+                    }
+                    catch (Exception ex)
+                    {
+                        // Most common cause: race with a parallel patch run, or
+                        // the column was added between our check and the ALTER.
+                        Console.WriteLine(
+                            $"[SqliteSchemaPatcher] Skipped {tableName}.{colName}: {ex.Message}");
+                    }
+                }
+            }
+        }
+
+        // ───── helpers ─────
+
+        private static async Task<HashSet<string>> GetSqliteColumnsAsync(
+            AppDbContext db, string tableName)
+        {
+            var cols = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            var conn = db.Database.GetDbConnection();
+            var wasOpen = conn.State == System.Data.ConnectionState.Open;
+            if (!wasOpen)
+                await conn.OpenAsync();
+            try
+            {
+                using var cmd = conn.CreateCommand();
+                cmd.CommandText = $"PRAGMA table_info(\"{tableName}\");";
+                using var reader = await cmd.ExecuteReaderAsync();
+                while (await reader.ReadAsync())
+                {
+                    // PRAGMA table_info columns: cid, name, type, notnull, dflt_value, pk
+                    cols.Add(reader.GetString(1));
+                }
+            }
+            finally
+            {
+                if (!wasOpen)
+                    await conn.CloseAsync();
+            }
+
+            return cols;
+        }
+
+        private static string ResolveSqliteType(IProperty prop)
+        {
+            // Prefer the column type EF would emit. Falls back to a CLR-type
+            // mapping for Sqlite's small set of storage classes.
+            var efType = prop.GetColumnType();
+            if (!string.IsNullOrWhiteSpace(efType))
+                return efType;
+
+            var t = Nullable.GetUnderlyingType(prop.ClrType) ?? prop.ClrType;
+
+            if (t == typeof(int) || t == typeof(long) || t == typeof(short) ||
+                t == typeof(byte) || t == typeof(bool))
+                return "INTEGER";
+
+            if (t == typeof(decimal) || t == typeof(double) || t == typeof(float))
+                return "REAL";
+
+            if (t == typeof(byte[]))
+                return "BLOB";
+
+            // DateTime, DateTimeOffset, TimeSpan, Guid, string, enum → TEXT
+            return "TEXT";
         }
     }
 }
