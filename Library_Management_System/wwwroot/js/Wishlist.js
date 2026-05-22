@@ -1,57 +1,59 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-  const wishlistButtons =
-    document.querySelectorAll(".wishlist-btn");
+  document.querySelectorAll(".wishlist-btn").forEach(btn => {
 
-  wishlistButtons.forEach(button => {
+    btn.addEventListener("click", async function () {
 
-    button.addEventListener("click", function (e) {
+      const bookId = this.dataset.bookid ? parseInt(this.dataset.bookid) : null;
+      if (!bookId) return;
 
-      e.preventDefault();
+      const body = new URLSearchParams();
+      body.append("bookId", bookId);
 
-      const btn = this;
+      try {
 
-      const bookId = btn.dataset.bookid;
+        const response = await fetch('/Member/Wishlist/Toggle', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: body
+        });
 
-      fetch('/Wishlist/ToggleWishlist', {
+        const result = await response.json();
 
-        method: 'POST',
+        if (!result.success) {
+          alert(result.message || "Login required");
+          return;
+        }
 
-        headers: {
-          'Content-Type':
-            'application/x-www-form-urlencoded'
-        },
+        // ⭐ UPDATE ALL BUTTON STATES USING RETURNED wishlistIds
+        document.querySelectorAll(".wishlist-btn").forEach(b => {
 
-        body: `bookId=${bookId}`
+          const id = parseInt(b.dataset.bookid);
 
-      })
+          const icon = b.querySelector("i");
 
-        .then(response => response.json())
+          const isActive = result.wishlistIds.includes(id);
 
-        .then(data => {
+          b.classList.toggle("active", isActive);
 
-          if (data.added) {
-
-            btn.classList.add("active");
-
-            btn.innerHTML =
-              '<i class="fa-solid fa-heart"></i>';
-
-          } else {
-
-            btn.classList.remove("active");
-
-            btn.innerHTML =
-              '<i class="fa-regular fa-heart"></i>';
+          if (icon) {
+            if (isActive) {
+              icon.classList.remove("fa-regular");
+              icon.classList.add("fa-solid");
+            } else {
+              icon.classList.add("fa-regular");
+              icon.classList.remove("fa-solid");
+            }
           }
 
-        })
-
-        .catch(error => {
-
-          console.log(error);
-
         });
+
+      } catch (err) {
+        console.log(err);
+        alert("Something went wrong");
+      }
 
     });
 

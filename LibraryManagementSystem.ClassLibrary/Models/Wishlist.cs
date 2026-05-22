@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
- 
+
 namespace LibraryManagementSystem.ClassLibrary.Models
 {
     public class Wishlist
@@ -9,20 +9,21 @@ namespace LibraryManagementSystem.ClassLibrary.Models
 
         [Required]
         [StringLength(450)]
-        public string MemberId { get; set; } = string.Empty;
+        public string MemberId { get; set; }
 
-        [ForeignKey("MemberId")]
+        [ForeignKey(nameof(MemberId))]
         public ApplicationUser Member { get; set; }
 
-        [Required]
-        public int BookId { get; set; }
+        public int? BookId { get; set; }
 
-        public string UserId { get; set; }
-
-        [ForeignKey("BookId")]
+        [ForeignKey(nameof(BookId))]
         public Book Book { get; set; }
+
+        public int? EventId { get; set; }
+
+        [ForeignKey(nameof(EventId))]   
+        public Event Event { get; set; }
 
         public DateTime AddedOn { get; set; } = DateTime.Now;
     }
 }
-

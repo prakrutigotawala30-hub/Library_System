@@ -563,7 +563,7 @@
         }
     }
 </style>
-
+<body>
 <div class="catalog-page">
 
     <!-- HERO -->
@@ -714,16 +714,19 @@
                 <div class="book-card">
                     <!-- WISHLIST BUTTON -->
 
-                    <div class="wishlist-container">
+                        <div class="wishlist-container">
 
-                        <button class="wishlist-btn"
-                                data-bookid="@book.Id">
+                            <button type="button"
+                                    class="wishlist-btn @(ViewBag.WishlistIds.Contains(book.Id) ? "active" : "")"
+                                    data-bookid="@book.Id">
 
-                            <i class="fa-regular fa-heart"></i>
+                                <i class="@(ViewBag.WishlistIds.Contains(book.Id)
+                                                  ? "fa-solid fa-heart"
+                                                  : "fa-regular fa-heart")"></i>
 
-                        </button>
+                            </button>
 
-                    </div>
+                        </div>
 
                     <!-- BOOK IMAGE -->
 
@@ -836,3 +839,8 @@
     </div>
 
 </div>
+    <script src="~/js/wishlist.js"></script>
+
+    
+</body>
+

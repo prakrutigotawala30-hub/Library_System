@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LibraryManagementSystem.ClassLibrary.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260521083323_Wishlist")]
-    partial class Wishlist
+    [Migration("20260521125508_eventidWishlist")]
+    partial class eventidWishlist
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -501,14 +501,13 @@ namespace LibraryManagementSystem.ClassLibrary.Migrations
                     b.Property<int>("BookId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("EventId")
+                        .HasColumnType("int");
+
                     b.Property<string>("MemberId")
                         .IsRequired()
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -756,6 +755,12 @@ namespace LibraryManagementSystem.ClassLibrary.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("LibraryManagementSystem.ClassLibrary.Models.Event", "Event")
+                        .WithMany()
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("LibraryManagementSystem.ClassLibrary.Models.ApplicationUser", "Member")
                         .WithMany()
                         .HasForeignKey("MemberId")
@@ -763,6 +768,8 @@ namespace LibraryManagementSystem.ClassLibrary.Migrations
                         .IsRequired();
 
                     b.Navigation("Book");
+
+                    b.Navigation("Event");
 
                     b.Navigation("Member");
                 });

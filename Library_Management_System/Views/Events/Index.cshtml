@@ -1,9 +1,7 @@
-@{
-    Layout = "~/Views/Shared/_PublicLayout.cshtml";
-}
 @model IEnumerable<LibraryManagementSystem.ClassLibrary.Models.Event>
 
 @{
+    Layout = "~/Views/Shared/_PublicLayout.cshtml";
     ViewData["Title"] = "Events";
 }
 
@@ -18,29 +16,28 @@
     body {
         background: #070b1a;
         font-family: 'Inter', sans-serif;
+        overflow-x: hidden;
     }
 
     .events-page {
         min-height: 100vh;
-        padding: 28px;
-        background: radial-gradient(circle at top right, rgba(168,85,247,.16), transparent 25%), radial-gradient(circle at bottom left, rgba(236,72,153,.12), transparent 28%), linear-gradient(135deg,#070b1a,#0f172a);
+        padding: 30px;
+        background: radial-gradient(circle at top right, rgba(168,85,247,.18), transparent 25%), radial-gradient(circle at bottom left, rgba(236,72,153,.12), transparent 28%), linear-gradient(135deg,#070b1a,#0f172a);
     }
 
-    /* =========================================
-               HERO SECTION
-            ========================================= */
+    /* ================= HERO ================= */
 
     .events-hero {
         position: relative;
         overflow: hidden;
-        border-radius: 36px;
-        padding: 75px 65px;
+        border-radius: 38px;
+        padding: 80px 70px;
         margin-bottom: 55px;
-        background: linear-gradient(rgba(7,11,26,.82), rgba(15,23,42,.90)), url('/images/library-banner.jpg');
+        background: linear-gradient(rgba(7,11,26,.86), rgba(15,23,42,.92)), url('/images/library-banner.jpg');
         background-size: cover;
         background-position: center;
         border: 1px solid rgba(255,255,255,.08);
-        box-shadow: 0 0 40px rgba(139,92,246,.12);
+        box-shadow: 0 25px 60px rgba(0,0,0,.35);
     }
 
         .events-hero::before {
@@ -57,8 +54,8 @@
         .events-hero::after {
             content: "";
             position: absolute;
-            width: 260px;
-            height: 260px;
+            width: 280px;
+            height: 280px;
             border-radius: 50%;
             background: rgba(236,72,153,.08);
             bottom: -100px;
@@ -69,34 +66,33 @@
         position: relative;
         z-index: 2;
         display: grid;
-        grid-template-columns: 1.5fr .8fr;
-        gap: 40px;
+        grid-template-columns: 1.4fr .8fr;
+        gap: 50px;
         align-items: center;
     }
-
-    /* HERO LEFT */
 
     .hero-badge {
         display: inline-flex;
         align-items: center;
         gap: 10px;
-        padding: 11px 22px;
+        padding: 12px 22px;
         border-radius: 50px;
         background: rgba(255,255,255,.05);
         border: 1px solid rgba(255,255,255,.08);
         color: #c4b5fd;
         font-size: 13px;
+        font-weight: 700;
         letter-spacing: 1px;
-        margin-bottom: 26px;
-        backdrop-filter: blur(12px);
+        margin-bottom: 25px;
+        backdrop-filter: blur(14px);
     }
 
     .hero-left h1 {
         color: white;
         font-size: 68px;
-        font-weight: 900;
         line-height: 1.05;
-        margin-bottom: 24px;
+        font-weight: 900;
+        margin-bottom: 20px;
     }
 
         .hero-left h1 span {
@@ -107,45 +103,45 @@
 
     .hero-left p {
         color: #d1d5db;
-        font-size: 17px;
         line-height: 1.9;
-        max-width: 720px;
+        font-size: 17px;
+        max-width: 700px;
     }
 
-    .hero-buttons {
+    .hero-actions {
+        margin-top: 30px;
         display: flex;
-        gap: 18px;
-        margin-top: 34px;
+        gap: 15px;
         flex-wrap: wrap;
     }
 
     .btn-main {
-        padding: 15px 32px;
+        padding: 15px 28px;
         border-radius: 16px;
         background: linear-gradient(90deg,#7c3aed,#9333ea);
         color: white;
-        font-weight: 700;
         text-decoration: none;
+        font-weight: 700;
         transition: .35s;
-        border: none;
         box-shadow: 0 10px 25px rgba(139,92,246,.25);
     }
 
         .btn-main:hover {
-            transform: translateY(-3px);
             color: white;
-            box-shadow: 0 16px 35px rgba(139,92,246,.35);
+            transform: translateY(-3px);
+            box-shadow: 0 18px 35px rgba(139,92,246,.35);
         }
 
     .btn-glass {
-        padding: 15px 32px;
+        padding: 15px 28px;
         border-radius: 16px;
-        border: 1px solid rgba(255,255,255,.08);
-        background: rgba(255,255,255,.04);
-        color: white;
         text-decoration: none;
+        font-weight: 700;
+        color: white;
+        background: rgba(255,255,255,.05);
+        border: 1px solid rgba(255,255,255,.08);
         transition: .35s;
-        backdrop-filter: blur(10px);
+        backdrop-filter: blur(12px);
     }
 
         .btn-glass:hover {
@@ -154,355 +150,37 @@
             transform: translateY(-3px);
         }
 
-    /* HERO CARD */
-
-    .hero-side-card {
-        background: rgba(255,255,255,.04);
-        border: 1px solid rgba(255,255,255,.08);
-        border-radius: 28px;
-        padding: 34px;
-        backdrop-filter: blur(16px);
-        box-shadow: 0 0 25px rgba(139,92,246,.10);
-    }
-
-        .hero-side-card h4 {
-            color: white;
-            font-size: 24px;
-            margin-bottom: 26px;
-            font-weight: 700;
-        }
-
-    .stat-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-        padding-bottom: 16px;
-        border-bottom: 1px solid rgba(255,255,255,.06);
-    }
-
-        .stat-item:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
-
-        .stat-item span {
-            color: #c4b5fd;
-            font-size: 14px;
-        }
-
-        .stat-item strong {
-            color: white;
-            font-size: 20px;
-        }
-
-    /* =========================================
-               SECTION HEADER
-            ========================================= */
-
-    .section-header {
-        margin-bottom: 38px;
-    }
-
-        .section-header h2 {
-            color: white;
-            font-size: 46px;
-            font-weight: 800;
-        }
-
-        .section-header p {
-            margin-top: 10px;
-            color: #9ca3af;
-            font-size: 16px;
-        }
-
-    /* =========================================
-               EVENTS LIST
-            ========================================= */
+    /* ================= EVENTS GRID ================= */
 
     .events-listing {
-        display: flex;
-        flex-direction: column;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px,1fr));
         gap: 30px;
     }
 
-    /* EVENT CARD */
-    @* 
+    /* ================= CARD ================= */
+
     .premium-event-card {
-        position: relative;
-        display: grid;
-        grid-template-columns: 320px 1fr 170px;
-        gap: 30px;
-        padding: 24px;
+        overflow: hidden;
         border-radius: 30px;
         background: rgba(255,255,255,.04);
         border: 1px solid rgba(255,255,255,.08);
-        backdrop-filter: blur(14px);
-        transition: all .4s ease;
-        overflow: hidden;
-    }
-
-        .premium-event-card::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(120deg, transparent, rgba(255,255,255,.03), transparent);
-            opacity: 0;
-            transition: .5s;
-            pointer-events: none;
-        }
-
-        .premium-event-card:hover {
-            transform: translateY(-8px);
-            border-color: rgba(168,85,247,.25);
-            box-shadow: 0 20px 50px rgba(139,92,246,.14), 0 10px 25px rgba(0,0,0,.25);
-        }
-
-            .premium-event-card:hover::before {
-                opacity: 1;
-            }
-
-    .premium-event-card {
-        position: relative;
-        display: grid;
-        grid-template-columns: 320px 1fr 220px;
-        gap: 34px;
-        padding: 28px;
-        border-radius: 34px;
-        background: rgba(255,255,255,.05);
-        border: 1px solid rgba(255,255,255,.08);
-        backdrop-filter: blur(18px);
-        transition: .45s ease;
-        overflow: hidden;
-        box-shadow: 0 10px 30px rgba(0,0,0,.18);
+        transition: .35s;
+        backdrop-filter: blur(16px);
+        box-shadow: 0 10px 35px rgba(0,0,0,.25);
     }
 
         .premium-event-card:hover {
             transform: translateY(-10px);
-            border-color: rgba(168,85,247,.30);
-            box-shadow: 0 25px 60px rgba(139,92,246,.16), 0 12px 30px rgba(0,0,0,.30);
-        }
-
-    .premium-event-image-wrapper {
-        position: relative;
-    }
-
-    .premium-event-image {
-        position: relative;
-        height: 100%;
-        min-height: 320px;
-        overflow: hidden;
-        border-radius: 28px;
-    }
-
-        .premium-event-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: .7s;
-        }
-
-    .premium-event-card:hover img {
-        transform: scale(1.08);
-    }
-
-    .image-overlay {
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(to top, rgba(0,0,0,.65), transparent 45%);
-    }
-
-    .premium-badge {
-        position: absolute;
-        top: 18px;
-        left: 18px;
-        z-index: 3;
-        padding: 10px 18px;
-        border-radius: 50px;
-        background: rgba(15,23,42,.85);
-        color: white;
-        font-size: 13px;
-        font-weight: 700;
-        border: 1px solid rgba(255,255,255,.08);
-        backdrop-filter: blur(12px);
-    }
-
-    .premium-event-content {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
-
-    .event-top-info {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 12px;
-        margin-bottom: 18px;
-        flex-wrap: wrap;
-    }
-
-    .event-category {
-        padding: 9px 16px;
-        border-radius: 50px;
-        background: rgba(139,92,246,.12);
-        color: #d8b4fe;
-        font-size: 13px;
-        font-weight: 700;
-    }
-
-    .event-status {
-        color: #86efac;
-        background: rgba(34,197,94,.10);
-        padding: 8px 14px;
-        border-radius: 50px;
-        font-size: 13px;
-        font-weight: 700;
-    }
-
-    .event-main-title {
-        color: white;
-        font-size: 42px;
-        font-weight: 900;
-        line-height: 1.12;
-        margin-bottom: 18px;
-    }
-
-    .event-description {
-        color: #d1d5db;
-        line-height: 1.9;
-        font-size: 15px;
-        margin-bottom: 28px;
-    }
-
-    .event-meta-grid {
-        display: grid;
-        grid-template-columns: repeat(2,1fr);
-        gap: 16px;
-    }
-
-    .meta-card {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        padding: 16px;
-        border-radius: 18px;
-        background: rgba(255,255,255,.03);
-        border: 1px solid rgba(255,255,255,.05);
-    }
-
-    .meta-icon {
-        width: 48px;
-        height: 48px;
-        border-radius: 14px;
-        background: rgba(139,92,246,.14);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 20px;
-    }
-
-    .meta-card small {
-        display: block;
-        color: #a78bfa;
-        margin-bottom: 4px;
-        font-size: 12px;
-    }
-
-    .meta-card strong {
-        color: white;
-        font-size: 14px;
-    }
-
-    .premium-event-side {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        gap: 24px;
-    }
-
-    .side-date-box {
-        width: 130px;
-        height: 130px;
-        border-radius: 34px;
-        background: linear-gradient(135deg,#7c3aed,#9333ea);
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        color: white;
-        box-shadow: 0 15px 35px rgba(139,92,246,.35);
-    }
-
-        .side-date-box strong {
-            font-size: 50px;
-            line-height: 1;
-            font-weight: 900;
-        }
-
-        .side-date-box span {
-            margin-top: 6px;
-            font-size: 14px;
-            letter-spacing: 2px;
-            font-weight: 700;
-        }
-
-    .event-year {
-        color: #c4b5fd;
-        font-size: 18px;
-        font-weight: 700;
-    }
-
-    .premium-btn {
-        width: 100%;
-        padding: 16px 20px;
-        border-radius: 18px;
-        text-align: center;
-        text-decoration: none;
-        font-weight: 700;
-        background: linear-gradient(90deg,#7c3aed,#9333ea);
-        color: white;
-        transition: .35s;
-        box-shadow: 0 10px 25px rgba(139,92,246,.25);
-    }
-
-        .premium-btn:hover {
-            transform: translateY(-4px);
-            color: white;
-            box-shadow: 0 16px 35px rgba(139,92,246,.35);
-        } *@
-    /* EVENTS GRID */
-    .events-listing {
-        display: grid;
-        grid-template-columns: repeat(auto-fill,minmax(340px,1fr));
-        gap: 32px;
-    }
-
-    /* CARD */
-
-    .premium-event-card {
-        background: rgba(255,255,255,.05);
-        border: 1px solid rgba(255,255,255,.08);
-        border-radius: 32px;
-        overflow: hidden;
-        transition: .45s ease;
-        backdrop-filter: blur(18px);
-        box-shadow: 0 15px 40px rgba(0,0,0,.22);
-    }
-
-        .premium-event-card:hover {
-            transform: translateY(-12px);
             border-color: rgba(139,92,246,.35);
-            box-shadow: 0 30px 60px rgba(139,92,246,.18);
+            box-shadow: 0 25px 55px rgba(139,92,246,.18);
         }
 
-    /* IMAGE */
+    /* ================= IMAGE ================= */
 
     .premium-event-image {
-        width: 100%;
-        height: 280px;
+        position: relative;
+        height: 240px;
         overflow: hidden;
         background: #111827;
     }
@@ -511,104 +189,84 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: .7s;
+            transition: .45s;
         }
 
-    .premium-event-card:hover img {
-        transform: scale(1.06);
+    .premium-event-card:hover .premium-event-image img {
+        transform: scale(1.05);
     }
 
-    /* CONTENT */
+    .premium-event-image::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0,0,0,.55), transparent);
+    }
+
+    /* ================= CONTENT ================= */
 
     .premium-event-content {
         padding: 24px;
     }
 
-    /* TOP */
-
-    .event-top-row {
-        display: flex;
-        justify-content: space-between;
+    .event-date {
+        display: inline-flex;
         align-items: center;
-        margin-bottom: 20px;
-        gap: 12px;
-    }
-
-    .event-badge {
-        padding: 10px 16px;
+        gap: 8px;
+        padding: 8px 14px;
         border-radius: 50px;
         background: rgba(139,92,246,.12);
         color: #d8b4fe;
         font-size: 12px;
         font-weight: 700;
+        margin-bottom: 18px;
     }
-
-    .event-status {
-        padding: 10px 16px;
-        border-radius: 50px;
-        background: rgba(34,197,94,.12);
-        color: #86efac;
-        font-size: 12px;
-        font-weight: 700;
-    }
-
-    /* TITLE */
 
     .event-title {
         color: white;
-        font-size: 28px;
-        font-weight: 800;
+        font-size: 26px;
         line-height: 1.3;
-        margin-bottom: 22px;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        min-height: 74px;
+        font-weight: 800;
+        margin-bottom: 18px;
+        min-height: 68px;
     }
 
-    /* INFO BOX */
-
-    .event-info-grid {
+    .event-details {
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 14px;
+        gap: 12px;
         margin-bottom: 24px;
     }
 
-    .event-info-box {
+    .detail-box {
         padding: 16px;
-        border-radius: 20px;
+        border-radius: 18px;
         background: rgba(255,255,255,.03);
         border: 1px solid rgba(255,255,255,.05);
     }
 
-        .event-info-box small {
+        .detail-box small {
             display: block;
             margin-bottom: 8px;
-            color: #a78bfa;
+            color: #c4b5fd;
             font-size: 11px;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
-            font-weight: 700;
         }
 
-        .event-info-box span {
+        .detail-box span {
             color: white;
             font-size: 14px;
             font-weight: 600;
-            line-height: 1.6;
         }
-
-    /* BUTTON */
 
     .premium-event-btn {
         width: 100%;
-        height: 56px;
-        border-radius: 18px;
-        display: flex;
+        display: inline-flex;
         justify-content: center;
         align-items: center;
+        padding: 15px;
+        border-radius: 18px;
         background: linear-gradient(90deg,#7c3aed,#9333ea);
         color: white;
         text-decoration: none;
@@ -623,265 +281,41 @@
             box-shadow: 0 18px 35px rgba(139,92,246,.35);
         }
 
-    /* MOBILE */
+    /* ================= EMPTY ================= */
 
-    @@media(max-width:768px) {
-
-        .events-listing {
-            grid-template-columns: 1fr;
-        }
-
-        .premium-event-image {
-            height: 240px;
-        }
-
-        .event-title {
-            font-size: 24px;
-        }
-
-        .event-info-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-
-    @@media(max-width:1200px) {
-
-        .premium-event-card {
-            grid-template-columns: 1fr;
-        }
-
-        .premium-event-side {
-            flex-direction: row;
-            justify-content: space-between;
-        }
-
-        .premium-event-image {
-            min-height: 280px;
-        }
-    }
-
-    @@media(max-width:768px) {
-
-        .premium-event-card {
-            padding: 20px;
-        }
-
-        .event-main-title {
-            font-size: 30px;
-        }
-
-        .event-meta-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .premium-event-side {
-            flex-direction: column;
-        }
-
-        .side-date-box {
-            width: 110px;
-            height: 110px;
-        }
-
-            .side-date-box strong {
-                font-size: 42px;
-            }
-    }
-    /* IMAGE */
-
-    .premium-event-image {
-        position: relative;
-        height: 260px;
-        overflow: hidden;
-        border-radius: 24px;
-    }
-
-        .premium-event-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: .7s;
-        }
-
-    .premium-event-card:hover img {
-        transform: scale(1.08);
-    }
-
-    .premium-event-image::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(to top, rgba(0,0,0,.55), transparent 55%);
-    }
-
-    .premium-badge {
-        position: absolute;
-        top: 16px;
-        left: 16px;
-        z-index: 2;
-        padding: 9px 16px;
-        border-radius: 50px;
-        background: rgba(15,23,42,.85);
-        border: 1px solid rgba(255,255,255,.08);
-        color: white;
-        font-size: 12px;
-        font-weight: 600;
-        backdrop-filter: blur(10px);
-    }
-
-    /* CONTENT */
-
-    .premium-event-content {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
-
-    .event-top-info {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 12px;
-        flex-wrap: wrap;
-        margin-bottom: 18px;
-    }
-
-    .event-category {
-        padding: 8px 15px;
-        border-radius: 50px;
-        background: rgba(139,92,246,.12);
-        color: #d8b4fe;
-        font-size: 13px;
-        font-weight: 600;
-    }
-
-    .event-date {
-        color: #c4b5fd;
-        font-size: 14px;
-    }
-
-    .premium-event-content h2 {
-        color: white;
-        font-size: 38px;
-        font-weight: 800;
-        line-height: 1.12;
-        margin-bottom: 18px;
-    }
-
-    .premium-event-content p {
-        color: #d1d5db;
-        line-height: 1.9;
-        font-size: 15px;
-        margin-bottom: 24px;
-        max-width: 92%;
-    }
-
-    /* META */
-
-    .event-meta-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 14px;
-    }
-
-        .event-meta-list div {
-            padding: 11px 16px;
-            border-radius: 14px;
-            background: rgba(255,255,255,.03);
-            border: 1px solid rgba(255,255,255,.05);
-            color: #ddd6fe;
-            font-size: 14px;
-        }
-
-    /* SIDE */
-
-    .premium-event-side {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        gap: 24px;
-        position: relative;
-        z-index: 5;
-    }
-
-    .side-date-box {
-        width: 118px;
-        height: 118px;
-        border-radius: 30px;
-        background: linear-gradient(135deg,#7c3aed,#9333ea);
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        color: white;
-        box-shadow: 0 12px 30px rgba(139,92,246,.35);
-    }
-
-        .side-date-box strong {
-            font-size: 44px;
-            line-height: 1;
-            font-weight: 900;
-        }
-
-        .side-date-box span {
-            margin-top: 5px;
-            font-size: 13px;
-            letter-spacing: 1px;
-        }
-
-    .premium-btn {
-        width: 100%;
-        padding: 15px 20px;
-        border-radius: 16px;
+    .empty-box {
+        padding: 90px 30px;
         text-align: center;
-        text-decoration: none;
-        font-weight: 700;
-        background: rgba(255,255,255,.05);
+        border-radius: 30px;
+        background: rgba(255,255,255,.04);
         border: 1px solid rgba(255,255,255,.08);
-        color: white;
-        transition: .35s;
-        position: relative;
-        z-index: 10;
-        cursor: pointer;
     }
 
-        .premium-btn:hover {
-            background: linear-gradient(90deg,#7c3aed,#9333ea);
-            border-color: transparent;
+        .empty-box img {
+            width: 120px;
+            margin-bottom: 20px;
+        }
+
+        .empty-box h3 {
             color: white;
-            transform: translateY(-3px);
-            box-shadow: 0 12px 25px rgba(139,92,246,.30);
+            font-size: 32px;
+            margin-bottom: 10px;
         }
 
-    /* =========================================
-               RESPONSIVE
-            ========================================= */
-
-    @@media(max-width:1200px) {
-
-        .premium-event-card {
-            grid-template-columns: 1fr;
+        .empty-box p {
+            color: #9ca3af;
         }
 
-        .premium-event-side {
-            flex-direction: row;
-            justify-content: space-between;
-        }
+    /* ================= RESPONSIVE ================= */
 
-        .premium-event-content p {
-            max-width: 100%;
-        }
-    }
-
-    @@media(max-width:991px) {
+    @@media(max-width:992px) {
 
         .hero-grid {
             grid-template-columns: 1fr;
         }
 
         .hero-left h1 {
-            font-size: 54px;
+            font-size: 50px;
         }
     }
 
@@ -892,42 +326,20 @@
         }
 
         .events-hero {
-            padding: 50px 26px;
-            border-radius: 28px;
+            padding: 50px 30px;
+            border-radius: 30px;
         }
 
         .hero-left h1 {
             font-size: 40px;
         }
 
-        .hero-left p {
-            font-size: 15px;
-        }
-
-        .section-header h2 {
-            font-size: 34px;
+        .events-listing {
+            grid-template-columns: 1fr;
         }
 
         .premium-event-image {
             height: 220px;
-        }
-
-        .premium-event-content h2 {
-            font-size: 28px;
-        }
-
-        .premium-event-side {
-            flex-direction: column;
-        }
-
-        .hero-buttons {
-            flex-direction: column;
-        }
-
-        .btn-main,
-        .btn-glass {
-            width: 100%;
-            text-align: center;
         }
     }
 
@@ -941,63 +353,33 @@
 
         <div class="hero-grid">
 
-            <!-- LEFT -->
-
             <div class="hero-left">
 
                 <div class="hero-badge">
-                    ✨ PREMIUM BOOKVERSE EVENTS
+                    ✨ PREMIUM LIBRARY EVENTS
                 </div>
 
                 <h1>
-                    Explore Inspiring
-                    <span>Library Experiences</span>
+                    Discover Amazing
+                    <span>Library Events</span>
                 </h1>
 
                 <p>
-                    Discover premium workshops, author meetups,
-                    book discussions, seminars and exclusive
-                    community experiences crafted for readers.
+                    Join workshops, reading sessions, author meetups,
+                    educational programs and premium community events
+                    designed for passionate readers and learners.
                 </p>
 
-                <div class="hero-buttons">
+                <div class="hero-actions">
 
                     <a href="#eventsList" class="btn-main">
                         Browse Events
                     </a>
 
                     <a asp-action="Past" class="btn-glass">
-                        Past Events
+                        View Past Events
                     </a>
 
-                </div>
-
-            </div>
-
-            <!-- RIGHT -->
-
-            <div class="hero-side-card">
-
-                <h4>Quick Summary</h4>
-
-                <div class="stat-item">
-                    <span>Total Events</span>
-                    <strong>@Model.Count()</strong>
-                </div>
-
-                <div class="stat-item">
-                    <span>Current Month</span>
-                    <strong>@DateTime.Now.ToString("MMM")</strong>
-                </div>
-
-                <div class="stat-item">
-                    <span>Year</span>
-                    <strong>@DateTime.Now.Year</strong>
-                </div>
-
-                <div class="stat-item">
-                    <span>Active Sessions</span>
-                    <strong>12</strong>
                 </div>
 
             </div>
@@ -1008,189 +390,21 @@
 
     <!-- EVENTS -->
 
-    <div class="container-fluid">
+    <div class="events-listing" id="eventsList">
 
-        <div class="section-header">
-
-            <h2>Upcoming Events</h2>
-
-            <p>
-                Discover and reserve your seat for upcoming sessions
-            </p>
-
-        </div>
-
-        <div class="events-listing" id="eventsList">
-
-            @foreach (var item in Model)
+        @if (Model != null && Model.Any())
+        {
+            foreach (var item in Model)
             {
-                @* <div class="premium-event-card">
-
-                    <!-- IMAGE SECTION -->
-                    <div class="premium-event-image-wrapper">
-
-                        <div class="premium-event-image">
-
-                            @if (!string.IsNullOrEmpty(item.ImagePath))
-                            {
-                                <img src="@item.ImagePath" />
-                            }
-                            else
-                            {
-                                <img src="/images/default-book.jpg" />
-                            }
-
-                            <div class="image-overlay"></div>
-
-                            <div class="premium-badge">
-                                ⭐ Featured Event
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <!-- CONTENT -->
-                    <div class="premium-event-content">
-
-                        <div class="event-top-info">
-
-                            <div class="event-category">
-                                📚 Library Experience
-                            </div>
-
-                            <div class="event-status">
-                                Upcoming
-                            </div>
-
-                        </div>
-
-                        <h2 class="event-main-title">
-                            @item.Title
-                        </h2>
-
-                        <p class="event-description">
-
-                            @(item.Description.Length > 220
-                                                    ? item.Description.Substring(0, 220) + "..."
-                                                    : item.Description)
-
-                        </p>
-
-                        <!-- META -->
-                        <div class="event-meta-grid">
-
-                            <div class="meta-card">
-
-                                <div class="meta-icon">
-                                    📅
-                                </div>
-
-                                <div>
-                                    <small>Date</small>
-                                    <strong>
-                                        @item.Date.ToString("dddd, dd MMM yyyy")
-                                    </strong>
-                                </div>
-
-                            </div>
-
-                            <div class="meta-card">
-
-                                <div class="meta-icon">
-                                    📍
-                                </div>
-
-                                <div>
-                                    <small>Location</small>
-                                    <strong>
-                                        @item.Location
-                                    </strong>
-                                </div>
-
-                            </div>
-
-                            <div class="meta-card">
-
-                                <div class="meta-icon">
-                                    ⏰
-                                </div>
-
-                                <div>
-                                    <small>Time</small>
-                                    <strong>
-                                        4:00 PM - 6:00 PM
-                                    </strong>
-                                </div>
-
-                            </div>
-
-                            <div class="meta-card">
-
-                                <div class="meta-icon">
-                                    👥
-                                </div>
-
-                                <div>
-                                    <small>Seats</small>
-                                    <strong>
-                                        120 Available
-                                    </strong>
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <!-- RIGHT SIDE -->
-                    <div class="premium-event-side">
-
-                        <div class="side-date-box">
-
-                            <strong>
-                                @item.Date.Day
-                            </strong>
-
-                            <span>
-                                @item.Date.ToString("MMM").ToUpper()
-                            </span>
-
-                        </div>
-
-                        <div class="event-year">
-                            @item.Date.Year
-                        </div>
-
-                        <a asp-controller="Events"
-                           asp-action="Details"
-                           asp-route-id="@item.Id"
-                           class="premium-btn">
-
-                            <i class="bi bi-arrow-right-circle-fill"></i>
-                            View Details
-
-                        </a>
-
-                    </div>
-
-                </div> *@
-
                 <div class="premium-event-card">
 
                     <!-- IMAGE -->
 
                     <div class="premium-event-image">
 
-                        @if (!string.IsNullOrEmpty(item.ImagePath))
-                        {
-                            <img src="@item.ImagePath" />
-                        }
-                        else
-                        {
-                            <img src="/images/default-book.jpg" />
-                        }
+                        <img src="@(string.IsNullOrEmpty(item.ImagePath)
+                                                                 ? "/images/default-book.jpg"
+                                                                 : item.ImagePath)" />
 
                     </div>
 
@@ -1198,41 +412,17 @@
 
                     <div class="premium-event-content">
 
-                        <!-- TOP -->
-
-                        <div class="event-top-row">
-
-                            <div class="event-badge">
-                                ✨ Featured Event
-                            </div>
-
-                            <div class="event-status">
-                                Upcoming
-                            </div>
-
+                        <div class="event-date">
+                            📅 @item.Date.ToString("dd MMM yyyy")
                         </div>
 
-                        <!-- TITLE -->
-
-                        <h2 class="event-title">
+                        <div class="event-title">
                             @item.Title
-                        </h2>
+                        </div>
 
-                        <!-- INFO -->
+                        <div class="event-details">
 
-                        <div class="event-info-grid">
-
-                            <div class="event-info-box">
-
-                                <small>Date</small>
-
-                                <span>
-                                    📅 @item.Date.ToString("dd MMM yyyy")
-                                </span>
-
-                            </div>
-
-                            <div class="event-info-box">
+                            <div class="detail-box">
 
                                 <small>Location</small>
 
@@ -1242,9 +432,17 @@
 
                             </div>
 
-                        </div>
+                            <div class="detail-box">
 
-                        <!-- BUTTON -->
+                                <small>Event Time</small>
+
+                                <span>
+                                    ⏰ @item.Date.ToString("hh:mm tt")
+                                </span>
+
+                            </div>
+
+                        </div>
 
                         <a asp-controller="Events"
                            asp-action="Details"
@@ -1259,8 +457,21 @@
 
                 </div>
             }
+        }
+        else
+        {
+            <div class="empty-box">
 
-        </div>
+                <img src="https://cdn-icons-png.flaticon.com/512/7486/7486740.png" />
+
+                <h3>No Events Found</h3>
+
+                <p>
+                    There are currently no upcoming events available.
+                </p>
+
+            </div>
+        }
 
     </div>
 

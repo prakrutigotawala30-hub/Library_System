@@ -82,9 +82,9 @@ namespace Library_Management_System.Controllers
             if (userId != null)
             {
                 wishlistIds = await _context.Wishlists
-                    .Where(w => w.MemberId == userId)
-                    .Select(w => w.BookId)
-                    .ToListAsync();
+                 .Where(w => w.MemberId == userId && w.BookId != null)
+                 .Select(w => w.BookId.Value)
+                 .ToListAsync();
             }
 
             var vm = new CatalogViewModel
@@ -138,7 +138,7 @@ namespace Library_Management_System.Controllers
                 AuthorName = book.Author?.Name,
                 CategoryName = book.Category?.Name,
                 IsAvailable = book.AvailableCopies > 0,
-                //IsWishlisted = isWishlisted
+                IsWishlisted = isWishlisted
             };
 
             return View(vm);
@@ -207,6 +207,9 @@ namespace Library_Management_System.Controllers
         // 🔍 SEARCH PAGE (OPTIONAL)
         public async Task<IActionResult> Search(string q)
         {
+            if (string.IsNullOrWhiteSpace(q))
+                return RedirectToAction("Index");
+
             var books = await _context.Books
                 .Include(b => b.Category)
                 .Include(b => b.Author)
@@ -225,30 +228,23 @@ namespace Library_Management_System.Controllers
         public async Task<IActionResult> MostPopularBooks()
         {
             var books = await _context.BorrowRecords
-
+                .Include(x => x.Book)
+                    .ThenInclude(b => b.Author)
+                .Include(x => x.Book)
+                    .ThenInclude(b => b.Category)
                 .GroupBy(x => x.BookId)
-
                 .Select(g => new MostPopularBookViewModel
                 {
                     BookId = g.Key,
-
-                    Title = g.FirstOrDefault().Book.Title,
-
-                    ISBN = g.FirstOrDefault().Book.ISBN,
-
-                    AuthorName = g.FirstOrDefault().Book.Author.Name,
-
-                    CategoryName = g.FirstOrDefault().Book.Category.Name,
-
-                    CoverImageUrl = g.FirstOrDefault().Book.CoverImageUrl,
-
+                    Title = g.First().Book.Title,
+                    ISBN = g.First().Book.ISBN,
+                    AuthorName = g.First().Book.Author.Name,
+                    CategoryName = g.First().Book.Category.Name,
+                    CoverImageUrl = g.First().Book.CoverImageUrl,
                     TotalBorrows = g.Count()
                 })
-
                 .OrderByDescending(x => x.TotalBorrows)
-
                 .Take(10)
-
                 .ToListAsync();
 
             return View(books);

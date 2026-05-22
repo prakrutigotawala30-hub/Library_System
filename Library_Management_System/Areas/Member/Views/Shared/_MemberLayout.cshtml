@@ -62,15 +62,15 @@
 
     <style>
 
-        * {
+       /*  * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-        }
+        } */
 
-        html {
+       /*  html {
             scroll-behavior: smooth;
-        }
+        } */
 
         body {
             background: #050816;
@@ -239,54 +239,44 @@
             transition: .35s ease;
         }
 
-        /* =========================================
-                   PERFECT NAVBAR
-                ========================================= */
+        /* =========================
+                   NAVBAR
+                ==========================*/
 
         .modern-navbar {
             position: sticky;
             top: 0;
-            z-index: 999;
-            margin-bottom: 28px;
-            padding: 16px 22px;
-            border-radius: 28px;
-            background: rgba(15,23,42,.82);
+            z-index: 99999;
+            background: rgba(5,8,22,.96);
             backdrop-filter: blur(18px);
-            border: 1px solid rgba(255,255,255,.06);
-            box-shadow: 0 10px 40px rgba(0,0,0,.25);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 20px;
+            border-bottom: 1px solid rgba(255,255,255,.08);
+            padding: 16px 0;
         }
-
-        /* =========================================
-                   SEARCH BAR
-                ========================================= */
+        /* =========================
+                   SEARCH
+                ==========================*/
 
         .search-box {
             position: relative;
-            width: 450px;
-            max-width: 100%;
+            width: 430px;
         }
 
         .search-input {
             width: 100%;
-            height: 60px;
+            height: 58px;
+            border-radius: 18px;
             border: 1px solid rgba(255,255,255,.08);
             background: rgba(255,255,255,.05);
-            border-radius: 20px;
-            outline: none;
-            padding: 0 58px 0 22px;
             color: white;
-            font-size: 15px;
+            padding: 0 55px 0 22px;
+            outline: none;
             transition: .3s;
+            font-size: 15px;
         }
 
             .search-input:focus {
                 border-color: #9333ea;
                 background: rgba(255,255,255,.08);
-                box-shadow: 0 0 0 4px rgba(147,51,234,.15);
             }
 
             .search-input::placeholder {
@@ -295,98 +285,81 @@
 
         .search-icon {
             position: absolute;
-            right: 20px;
             top: 50%;
+            right: 18px;
             transform: translateY(-50%);
             color: #9ca3af;
             font-size: 18px;
+            pointer-events: none;
         }
 
-        /* =========================================
+        /* =========================
                    PROFILE
-                ========================================= */
+                ==========================*/
 
-        .profile-dropdown .dropdown-toggle::after {
-            display: none;
+        .dropdown {
+            position: relative;
         }
 
         .profile-trigger {
             display: flex;
             align-items: center;
-            gap: 14px;
-            padding: 8px 12px;
-            border-radius: 60px;
+            gap: 12px;
+            padding: 8px 16px;
+            border-radius: 50px;
             background: rgba(255,255,255,.05);
-            border: 1px solid rgba(255,255,255,.07);
+            border: 1px solid rgba(255,255,255,.08);
             transition: .3s;
-            min-width: 240px;
+            color: white;
         }
 
             .profile-trigger:hover {
                 background: rgba(255,255,255,.08);
+                color: white;
             }
 
         .profile-avatar {
-            width: 52px;
-            height: 52px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid rgba(255,255,255,.12);
+            border: 2px solid rgba(255,255,255,.15);
         }
 
-        .default-avatar {
-            background: linear-gradient(135deg,#7c3aed,#d946ef);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .profile-user {
             color: white;
-            font-weight: 800;
-            font-size: 20px;
-        }
-
-        .profile-info {
-            display: flex;
-            flex-direction: column;
-            line-height: 1.2;
-        }
-
-        .profile-name {
-            color: white;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 700;
         }
 
-        .profile-role {
-            color: #9ca3af;
-            font-size: 12px;
-            margin-top: 2px;
+        .default-avatar {
+            background: white;
+            color: black;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
         }
 
-        .profile-arrow {
-            margin-left: auto;
-            color: #9ca3af;
-            font-size: 14px;
-        }
-
-        /* =========================================
+        /* =========================
                    DROPDOWN
-                ========================================= */
+                ==========================*/
 
         .dropdown-menu {
             background: rgba(10,14,28,.98);
             border: 1px solid rgba(255,255,255,.08);
-            border-radius: 22px;
+            border-radius: 20px;
             padding: 12px;
-            min-width: 250px;
-            margin-top: 16px;
+            min-width: 240px;
+            margin-top: 18px;
         }
 
         .dropdown-item {
             color: white;
-            padding: 14px 16px;
+            padding: 13px 16px;
             border-radius: 14px;
-            transition: .3s;
             font-weight: 600;
+            transition: .3s;
         }
 
             .dropdown-item:hover {
@@ -398,27 +371,19 @@
             border-color: rgba(255,255,255,.08);
         }
 
-        /* =========================================
-                   MOBILE BUTTON
-                ========================================= */
+        /* =========================
+                   TOGGLER
+                ==========================*/
 
-        .mobile-toggle {
-            position: fixed;
-            top: 16px;
-            left: 16px;
-            width: 48px;
-            height: 48px;
-            border: none;
+        .navbar-toggler {
+            border: 1px solid rgba(255,255,255,.12);
             border-radius: 14px;
-            background: linear-gradient(135deg,#7c3aed,#9333ea);
-            color: white;
-            font-size: 18px;
-            z-index: 3000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 10px 25px rgba(124,58,237,.35);
+            padding: 10px 14px;
         }
+
+            .navbar-toggler:focus {
+                box-shadow: none;
+            }
 
         /* =========================================
                    OVERLAY
@@ -442,11 +407,28 @@
         /* =========================================
                    TABLET
                 ========================================= */
-
         @@media(max-width:991px) {
 
-            .mobile-toggle {
-                display: flex;
+            .navbar-collapse {
+                margin-top: 20px;
+                padding: 20px;
+                border-radius: 24px;
+                background: rgba(10,14,28,.98);
+                border: 1px solid rgba(255,255,255,.08);
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .profile-trigger {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .navbar-right {
+                flex-direction: column;
+                width: 100%;
             }
 
             .sidebar {
@@ -462,21 +444,8 @@
                 width: 100%;
                 padding: 85px 18px 25px;
             }
+               }
 
-            .modern-navbar {
-                flex-direction: column;
-                align-items: stretch;
-                padding: 18px;
-            }
-
-            .search-box {
-                width: 100%;
-            }
-
-            .profile-trigger {
-                width: 100%;
-            }
-        }
 
         /* =========================================
                    MOBILE
@@ -490,18 +459,6 @@
 
             .main-content {
                 padding: 82px 12px 20px;
-            }
-
-            .modern-navbar {
-                border-radius: 22px;
-            }
-
-            .profile-name {
-                font-size: 14px;
-            }
-
-            .profile-role {
-                font-size: 11px;
             }
         }
     </style>
@@ -664,136 +621,119 @@
 
             <!-- NAVBAR -->
 
-            <nav class="modern-navbar">
+            <nav class="navbar navbar-expand-lg navbar-dark modern-navbar">
 
-                <!-- SEARCH -->
+                <div class="container-fluid px-4">
 
-                <div class="search-box">
 
-                    <input type="text"
-                           class="search-input"
-                           placeholder="Search books, authors, categories..." />
 
-                    <span class="search-icon">
+                    <!-- NAVBAR -->
 
-                        <i class="bi bi-search"></i>
+                    <div class="collapse navbar-collapse"
+                         id="mainNavbar">
 
-                    </span>
+                        <!-- SEARCH LEFT -->
 
-                </div>
+                        <div class="search-box">
 
-                <!-- PROFILE -->
-                @if (User.Identity != null &&
-                                User.Identity.IsAuthenticated)
-                {
-                    <div class="dropdown profile-dropdown">
+                            <input type="text"
+                                   class="search-input"
+                                   placeholder="Search books, authors..." />
 
-                        <a href="javascript:void(0)"
-                           class="profile-trigger dropdown-toggle"
-                           data-bs-toggle="dropdown">
+                            <span class="search-icon">
+                                🔍
+                            </span>
 
-                            @if (!string.IsNullOrEmpty(currentUser?.ProfileImagePath))
+                        </div>
+
+                        <!-- RIGHT SIDE -->
+
+                        <div class="ms-auto d-flex align-items-center gap-4 navbar-right">
+
+                            <!-- USER -->
+                            @if (User.Identity != null &&
+                                                        User.Identity.IsAuthenticated)
                             {
-                                <img src="@profileImage"
-                                     class="profile-avatar" />
-                            }
-                            else
-                            {
-                                <div class="profile-avatar default-avatar">
+                                <div class="dropdown">
 
-                                    @userName.Substring(0, 1).ToUpper()
+                                    <a href="javascript:void(0)"
+                                       class="profile-trigger dropdown-toggle"
+                                       data-bs-toggle="dropdown">
+
+                                        @if (!string.IsNullOrEmpty(currentUser?.ProfileImagePath))
+                                        {
+                                            <img src="@currentUser.ProfileImagePath"
+                                                 class="profile-avatar" />
+                                        }
+                                        else
+                                        {
+                                            <div class="profile-avatar default-avatar">
+
+                                                @(string.IsNullOrEmpty(currentUser?.FullName)
+                                                                                        ? "U"
+                                                                                        : currentUser.FullName.Substring(0, 1).ToUpper())
+
+                                            </div>
+                                        }
+
+                                        <span class="profile-user">
+
+                                            @currentUser?.FullName
+
+                                        </span>
+
+                                    </a>
+
+                                    <ul class="dropdown-menu dropdown-menu-end">
+
+                                        <li>
+
+                                            <a class="dropdown-item"
+                                               asp-area="Member"
+                                               asp-controller="Dashboard"
+                                               asp-action="Index">
+
+                                                📊 Dashboard
+
+                                            </a>
+
+                                        </li>
+
+                                        <li>
+
+                                            <a class="dropdown-item"
+                                               asp-area="Member"
+                                               asp-controller="Profile"
+                                               asp-action="Index">
+
+                                                👤 My Profile
+
+                                            </a>
+
+                                        </li>
+
+                                        <li>
+
+                                            <a class="dropdown-item"
+                                               asp-controller="Account"
+                                               asp-action="Logout">
+
+                                                🚪 Logout
+
+                                            </a>
+
+                                        </li>
+
+                                    </ul>
 
                                 </div>
                             }
 
-                            <div class="profile-info">
-
-                                <span class="profile-name">
-
-                                    @userName
-
-                                </span>
-
-                                <span class="profile-role">
-
-                                    Library Member
-
-                                </span>
-
-                            </div>
-
-                            <i class="bi bi-chevron-down profile-arrow"></i>
-
-                        </a>
-
-                        <!-- DROPDOWN -->
-
-                        <ul class="dropdown-menu dropdown-menu-end">
-
-                            <li>
-
-                                <a class="dropdown-item"
-                                   asp-area="Member"
-                                   asp-controller="Dashboard"
-                                   asp-action="Index">
-
-                                    <i class="bi bi-grid-fill me-2"></i>
-                                    Dashboard
-
-                                </a>
-
-                            </li>
-
-                            <li>
-
-                                <a class="dropdown-item"
-                                   asp-area="Member"
-                                   asp-controller="Profile"
-                                   asp-action="Index">
-
-                                    <i class="bi bi-person-circle me-2"></i>
-                                    My Profile
-
-                                </a>
-
-                            </li>
-
-                            <li>
-
-                                <a class="dropdown-item"
-                                   asp-area="Member"
-                                   asp-controller="Profile"
-                                   asp-action="ChangePassword">
-
-                                    <i class="bi bi-shield-lock me-2"></i>
-                                    Change Password
-
-                                </a>
-
-                            </li>
-
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-
-                            <li>
-
-                                <a class="dropdown-item"
-                                   asp-area=""
-                                   asp-controller="Account"
-                                   asp-action="Logout">
-
-                                    <i class="bi bi-box-arrow-right me-2"></i>
-                                    Logout
-
-                                </a>
-
-                            </li>
-
-                        </ul>
+                        </div>
 
                     </div>
-                }
+
+                </div>
 
             </nav>
 

@@ -8,10 +8,6 @@ using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// DATABASE
-// Provider order: appsettings override -> SqlServer on Windows -> Sqlite elsewhere
-// (Mac/Linux). LocalDB doesn't exist outside Windows, so falling through to
-// Sqlite keeps the app runnable on macOS/Linux dev boxes.
 var configuredProvider = builder.Configuration.GetValue<string>("Database:Provider");
 var dbProvider = !string.IsNullOrWhiteSpace(configuredProvider)
     ? configuredProvider
@@ -21,37 +17,16 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     if (string.Equals(dbProvider, "Sqlite", StringComparison.OrdinalIgnoreCase))
     {
-        // Absolute path to the SHARED Sqlite file at the solution root.
-        // ContentRootPath is the project directory at runtime; ".." goes up
-        // one level into the solution root where both apps can find the same
-        // file. Computing this absolutely (instead of using a relative
-        // "../LibraryManagementDB.db") removes every working-directory
-        // ambiguity — `dotnet run`, F5 from VS Code, IIS Express all resolve
-        // to the same physical file.
-        //
-        // Pooling=False is critical for the dev cross-app scenario: with
-        // pooling on, EF holds connections that may hold an old WAL snapshot
-        // — so the user app's read can miss the admin's recent write until
-        // the connection is recycled. With pooling off, every query opens a
-        // fresh connection and sees the latest committed state immediately.
-        //
-        // Cache=Shared lets multiple connections in the same process share
-        // the page cache, reducing disk reads.
         var sqliteFile = Path.GetFullPath(
             Path.Combine(builder.Environment.ContentRootPath, "..", "LibraryManagementDB.db"));
 
         var sqliteConn = $"Data Source={sqliteFile};Cache=Shared;Pooling=False";
 
-        // Diagnostic: log the resolved Sqlite path so it's visible in the
-        // dotnet run terminal. Both admin and user apps should print the
-        // SAME absolute path. If they don't, the DB is being split.
         Console.WriteLine($"[User App]  Sqlite database file: {sqliteFile}");
         Console.WriteLine($"[User App]  Connection string:    {sqliteConn}");
 
         options.UseSqlite(sqliteConn);
 
-        // Runs PRAGMA journal_mode=WAL + busy_timeout=5000 on every Sqlite
-        // connection EF opens.
         options.AddInterceptors(new SqlitePragmaInterceptor());
     }
     else
@@ -76,12 +51,6 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 .AddEntityFrameworkStores<AppDbContext>()
 .AddDefaultTokenProviders();
 
-// COOKIE SETTINGS
-// Distinct cookie name so this user app's session never collides with the
-// sibling admin app (LibraryManagementSystem) if both are ever hosted on the
-// same domain. Default Identity name is `.AspNetCore.Identity.Application`
-// — that would cause the two apps to fight over the same cookie.
-
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.Cookie.Name = ".LibraryUser.Auth";
@@ -104,11 +73,6 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
 
     app.UseHsts();
-    // HTTPS redirect only in non-dev. In Development a fresh Mac/Linux clone
-    // typically has no trusted dev cert (`dotnet dev-certs https --trust`),
-    // and unconditionally redirecting to https would either prompt cert
-    // warnings or break the request entirely. Production should always have
-    // a real cert, so redirect is correct there.
     app.UseHttpsRedirection();
 }
 

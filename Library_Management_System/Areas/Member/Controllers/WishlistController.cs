@@ -1,63 +1,124 @@
+using LibraryManagementSystem.ClassLibrary.Data;
+using LibraryManagementSystem.ClassLibrary.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
-using LibraryManagementSystem.ClassLibrary.Models;
-using LibraryManagementSystem.ClassLibrary.Data;
 
-public class WishlistController : Controller
+namespace Library_Management_System.Areas.Member.Controllers
 {
-    private readonly AppDbContext _context;
-
-    public WishlistController(AppDbContext context)
+    [Area("Member")]
+    public class WishlistController : Controller
     {
-        _context = context;
-    }
+        private readonly AppDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-    [HttpPost]
-    public async Task<IActionResult> ToggleWishlist(int bookId)
-    {
-        var userId =
-            User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        if (string.IsNullOrEmpty(userId))
+        public WishlistController(AppDbContext context,
+                                  UserManager<ApplicationUser> userManager)
         {
-            return Json(new
-            {
-                added = false
-            });
+            _context = context;
+            _userManager = userManager;
         }
 
-        var existing =
-            await _context.Wishlists
-            .FirstOrDefaultAsync(x =>
-                x.BookId == bookId &&
-                x.MemberId == userId);
-
-        if (existing != null)
+        // =========================
+        // VIEW WISHLIST (BOOK ONLY)
+        // =========================
+        public async Task<IActionResult> Index()
         {
-            _context.Wishlists.Remove(existing);
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+                return RedirectToAction("Login", "Account");
+
+            var wishlistItems = await _context.Wishlists
+                .Include(w => w.Book)
+                .Where(w => w.MemberId == user.Id && w.BookId != null)
+                .OrderByDescending(w => w.AddedOn)
+                .ToListAsync();
+
+            return View(wishlistItems);
+        }
+
+        // =========================
+        // TOGGLE WISHLIST (BOOK ONLY)
+        // =========================
+        [HttpPost]
+        public async Task<IActionResult> Toggle(int bookId)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Login required"
+                });
+            }
+
+            var existing = await _context.Wishlists
+                .FirstOrDefaultAsync(x =>
+                    x.MemberId == user.Id &&
+                    x.BookId == bookId);
+
+            bool added;
+
+            if (existing == null)
+            {
+                _context.Wishlists.Add(new Wishlist
+                {
+                    MemberId = user.Id,
+                    BookId = bookId,
+                    AddedOn = DateTime.Now
+                });
+
+                added = true;
+            }
+            else
+            {
+                _context.Wishlists.Remove(existing);
+                added = false;
+            }
 
             await _context.SaveChangesAsync();
 
+            var wishlistIds = await _context.Wishlists
+                .Where(x => x.MemberId == user.Id && x.BookId != null)
+                .Select(x => x.BookId.Value)
+                .ToListAsync();
+
             return Json(new
             {
-                added = false
+                success = true,
+                added,
+                wishlistIds
             });
         }
 
-        Wishlist wishlist = new Wishlist
+        // =========================
+        // REMOVE BOOK
+        // =========================
+        [HttpPost]
+        public async Task<IActionResult> Remove(int bookId)
         {
-            BookId = bookId,
-            MemberId = userId
-        };
+            var user = await _userManager.GetUserAsync(User);
 
-        _context.Wishlists.Add(wishlist);
+            if (user == null)
+                return RedirectToAction("Login", "Account");
 
-        await _context.SaveChangesAsync();
+            var item = await _context.Wishlists
+                .FirstOrDefaultAsync(w =>
+                    w.MemberId == user.Id &&
+                    w.BookId == bookId);
 
-        return Json(new
-        {
-            added = true
-        });
+            if (item != null)
+            {
+                _context.Wishlists.Remove(item);
+                await _context.SaveChangesAsync();
+            }
+
+            TempData["Success"] = "Book removed from wishlist.";
+
+            return RedirectToAction("Index");
+        }
     }
 }
