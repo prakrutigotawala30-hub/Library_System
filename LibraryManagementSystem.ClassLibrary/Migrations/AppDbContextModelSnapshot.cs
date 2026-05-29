@@ -198,6 +198,9 @@ namespace LibraryManagementSystem.ClassLibrary.Migrations
                     b.Property<bool>("IsFeatured")
                         .HasColumnType("bit");
 
+                    b.Property<string>("PdfUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -218,6 +221,40 @@ namespace LibraryManagementSystem.ClassLibrary.Migrations
                     b.HasIndex("DepartmentId");
 
                     b.ToTable("Books");
+                });
+
+            modelBuilder.Entity("LibraryManagementSystem.ClassLibrary.Models.BookReview", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BookId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Comment")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("MemberId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookId");
+
+                    b.HasIndex("MemberId");
+
+                    b.ToTable("BookReviews");
                 });
 
             modelBuilder.Entity("LibraryManagementSystem.ClassLibrary.Models.BorrowRecord", b =>
@@ -798,6 +835,25 @@ namespace LibraryManagementSystem.ClassLibrary.Migrations
                     b.Navigation("Category");
 
                     b.Navigation("Department");
+                });
+
+            modelBuilder.Entity("LibraryManagementSystem.ClassLibrary.Models.BookReview", b =>
+                {
+                    b.HasOne("LibraryManagementSystem.ClassLibrary.Models.Book", "Book")
+                        .WithMany()
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LibraryManagementSystem.ClassLibrary.Models.ApplicationUser", "Member")
+                        .WithMany()
+                        .HasForeignKey("MemberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("Member");
                 });
 
             modelBuilder.Entity("LibraryManagementSystem.ClassLibrary.Models.BorrowRecord", b =>
