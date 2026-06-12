@@ -50,6 +50,14 @@ namespace Library_Management_System.Areas.Member.Controllers
                 .OrderByDescending(x => x.IssuedOn)
                 .ToListAsync();
 
+            // CURRENT fine rate from admin Settings page — overrides any
+            // stale per-record value so the page always reflects what the
+            // admin configured today. Falls back to 10 if no settings row.
+            var settings = await _context.LibrarySettings.FirstOrDefaultAsync();
+            var currentFinePerDay = settings != null && settings.FinePerDay > 0
+                ? settings.FinePerDay
+                : 10m;
+
             var query = borrowRecords
                 .GroupBy(x => x.BookId)
                 .Select(g => new
@@ -111,8 +119,9 @@ namespace Library_Management_System.Areas.Member.Controllers
                     DaysLate =
                         x.Borrow.DaysLate,
 
-                    FinePerDay =
-                        x.Borrow.FinePerDay,
+                    // Show the CURRENT admin-configured fine rate (not the
+                    // stale value frozen on the borrow row at issue time).
+                    FinePerDay = currentFinePerDay,
 
                     FineAmount =
                         x.Borrow.FineAmount,

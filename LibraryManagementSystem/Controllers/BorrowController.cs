@@ -27,15 +27,24 @@ namespace LibraryManagementSystem.Controllers
         public async Task<IActionResult> Index()
         {
             var records = await _context.BorrowRecords
+                .AsNoTracking()
                 .Include(b => b.Book)
                 .Include(b => b.Member)
                 .OrderByDescending(b => b.IssuedOn)
                 .Take(50)
                 .ToListAsync();
 
+            // Pull current admin-configured rate. CalculateFine uses it as
+            // the override so display always shows what admin set, never a
+            // stale value frozen at issue time.
+            var settings = await _context.LibrarySettings.FirstOrDefaultAsync();
+            var currentFinePerDay = settings != null && settings.FinePerDay > 0
+                ? settings.FinePerDay
+                : 10m;
+
             foreach (var r in records)
             {
-                CalculateFine(r); 
+                CalculateFine(r, currentFinePerDay);
             }
 
             return View(records);
@@ -167,6 +176,7 @@ public async Task<IActionResult> Issue(BorrowRecord Record, int borrowDays)
         public async Task<IActionResult> Return(int id)
         {
             var record = await _context.BorrowRecords
+                .AsNoTracking()
                 .Include(b => b.Book)
                 .Include(b => b.Member)
                 .FirstOrDefaultAsync(b => b.Id == id);
@@ -174,10 +184,18 @@ public async Task<IActionResult> Issue(BorrowRecord Record, int borrowDays)
             if (record == null)
                 return NotFound();
 
-            // FINE CALCULATION
+            var settings = await _context.LibrarySettings.FirstOrDefaultAsync();
+            var rate = settings != null && settings.FinePerDay > 0
+                ? settings.FinePerDay : 10m;
+
+            // FINE CALCULATION (display only — AsNoTracking so it's not persisted)
             if (record.ReturnedOn == null && DateTime.Now > record.DueDate)
             {
-                CalculateFine(record);
+                CalculateFine(record, rate);
+            }
+            else
+            {
+                record.FinePerDay = rate;
             }
 
             return View(record);
@@ -271,9 +289,13 @@ public async Task<IActionResult> Issue(BorrowRecord Record, int borrowDays)
                 .OrderByDescending(b => b.IssuedOn)
                 .ToListAsync();
 
+            var settings = await _context.LibrarySettings.FirstOrDefaultAsync();
+            var rate = settings != null && settings.FinePerDay > 0
+                ? settings.FinePerDay : 10m;
+
             foreach (var r in records)
             {
-                CalculateFine(r);
+                CalculateFine(r, rate);
             }
 
             ViewBag.MemberName = records.FirstOrDefault()?.Member?.Name;
@@ -281,12 +303,13 @@ public async Task<IActionResult> Issue(BorrowRecord Record, int borrowDays)
             return View(records);
         }
 
-        private void CalculateFine(BorrowRecord record)
+        private static void CalculateFine(BorrowRecord record, decimal currentRate)
         {
-            if (record.FinePerDay == 0)
-            {
-                record.FinePerDay = 10;
-            }
+            // Always use the CURRENT admin-configured rate for display.
+            // Records are loaded with AsNoTracking so this in-memory update
+            // never gets persisted to the DB; the user just sees the right
+            // number on the page.
+            record.FinePerDay = currentRate;
 
             DateTime endDate = record.ReturnedOn ?? DateTime.Now;
 

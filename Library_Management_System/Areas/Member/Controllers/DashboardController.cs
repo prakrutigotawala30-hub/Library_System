@@ -48,6 +48,14 @@ namespace Library_Management_System.Areas.Member.Controllers
                 .OrderByDescending(x => x.IssuedOn)
                 .ToListAsync();
 
+            // CURRENT fine rate from admin Settings — use this for ALL
+            // overdue calculations so the dashboard reflects whatever the
+            // admin configured today.
+            var librarySettings = await _context.LibrarySettings.FirstOrDefaultAsync();
+            var currentFineRate = librarySettings != null && librarySettings.FinePerDay > 0
+                ? librarySettings.FinePerDay
+                : 10m;
+
             // ACTIVE BOOKS
 
             var activeBooks = borrowRecords
@@ -71,8 +79,7 @@ namespace Library_Management_System.Areas.Member.Controllers
                 IsReturned = x.ReturnedOn != null,
 
                 FineAmount = x.DueDate < DateTime.Now
-                    ? (DateTime.Now - x.DueDate).Days *
-                      (x.FinePerDay > 0 ? x.FinePerDay : 10)
+                    ? (DateTime.Now - x.DueDate).Days * currentFineRate
                     : 0
             }).ToList();
 

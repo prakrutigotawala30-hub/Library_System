@@ -38,6 +38,10 @@ namespace Library_Management_System.Areas.Member.Controllers
                 .Where(x => x.MemberId == member.Id)
                 .ToListAsync();
 
+            var librarySettings = await _context.LibrarySettings.FirstOrDefaultAsync();
+            var currentFineRate = librarySettings != null && librarySettings.FinePerDay > 0
+                ? librarySettings.FinePerDay : 10m;
+
             var totalBorrowed = borrows.Count;
 
             var currentBorrowed = borrows
@@ -53,8 +57,7 @@ namespace Library_Management_System.Areas.Member.Controllers
 
             var totalFine = borrows.Sum(x =>
                 x.DueDate < DateTime.Now
-                ? (decimal)((DateTime.Now - x.DueDate).Days *
-                  (x.FinePerDay > 0 ? x.FinePerDay : 10))
+                ? (decimal)((DateTime.Now - x.DueDate).Days) * currentFineRate
                 : 0);
 
             var booksThisMonth = borrows.Count(x =>
@@ -105,8 +108,7 @@ namespace Library_Management_System.Areas.Member.Controllers
 
                         Fine = monthRecords.Sum(x =>
                             x.DueDate < DateTime.Now
-                            ? (decimal)((DateTime.Now - x.DueDate).Days *
-                                (x.FinePerDay > 0 ? x.FinePerDay : 10))
+                            ? (decimal)((DateTime.Now - x.DueDate).Days) * currentFineRate
                             : 0)
                     };
                 })
