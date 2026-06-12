@@ -1,10 +1,11 @@
+using System.IO;
+using Library_Management_System.ViewModels;
 using LibraryManagementSystem.ClassLibrary.Data;
 using LibraryManagementSystem.ClassLibrary.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.IO;
 
 namespace Library_Management_System.Controllers
 {
@@ -14,19 +15,25 @@ namespace Library_Management_System.Controllers
         private readonly AppDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IConfiguration _configuration;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
         public MembershipController(
-            AppDbContext context,
-            UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager)
+    AppDbContext context,
+    UserManager<ApplicationUser> userManager,
+    SignInManager<ApplicationUser> signInManager,
+    IConfiguration configuration,
+    RoleManager<IdentityRole> roleManager)
         {
             _context = context;
             _userManager = userManager;
             _signInManager = signInManager;
+            _configuration = configuration;
+            _roleManager = roleManager;
         }
 
 
-[HttpGet]
+        [HttpGet]
 public async Task<IActionResult> Index()
 {
     var user =
@@ -93,36 +100,86 @@ public async Task<IActionResult> Index()
         [HttpGet]
         public IActionResult Checkout()
         {
-            ViewBag.MembershipType = TempData["MembershipType"];
-            ViewBag.DurationMonths = TempData["DurationMonths"];
-            ViewBag.Fee = TempData["Fee"];
+            string membershipType =
+                TempData["MembershipType"]?.ToString();
+
+            int durationMonths =
+                Convert.ToInt32(
+                    TempData["DurationMonths"]);
+
+            decimal fee =
+                Convert.ToDecimal(
+                    TempData["Fee"]);
 
             TempData.Keep();
-            return View();
+
+            var razorpayKey =
+                _configuration["Razorpay:Key"];
+
+            var razorpaySecret =
+                _configuration["Razorpay:Secret"];
+
+            Razorpay.Api.RazorpayClient client =
+                new Razorpay.Api.RazorpayClient(
+                    razorpayKey,
+                    razorpaySecret);
+
+            Dictionary<string, object> options =
+                new Dictionary<string, object>();
+
+            options.Add(
+                "amount",
+                Convert.ToInt32(fee * 100));
+
+            options.Add(
+                "currency",
+                "INR");
+
+            options.Add(
+                "receipt",
+                Guid.NewGuid().ToString());
+
+            Razorpay.Api.Order order =
+                client.Order.Create(options);
+
+            var model =
+                new MembershipRazorPayViewModel
+                {
+                    MembershipType = membershipType,
+                    DurationMonths = durationMonths,
+                    Amount = fee,
+
+                    RazorpayKey = razorpayKey,
+
+                    RazorpayOrderId =
+                        order["id"].ToString()
+                };
+
+            return View(model);
         }
 
         // PAYMENT SUCCESS (USER SUBMISSION)
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> PaymentSuccess(
-            IFormFile screenshot,
-            string paymentMethod,
-            string transactionId)
+      string razorpayPaymentId,
+      string razorpayOrderId,
+      string razorpaySignature)
         {
             var user = await _userManager.GetUserAsync(User);
 
             if (user == null)
                 return RedirectToAction("Login", "Account");
 
-            // ================= SAFE TEMP DATA =================
-            string membershipType = TempData["MembershipType"]?.ToString() ?? "";
-            int durationMonths = TempData["DurationMonths"] != null
-                ? Convert.ToInt32(TempData["DurationMonths"])
-                : 0;
+            // ================= TEMP DATA =================
+            string membershipType =
+                TempData["MembershipType"]?.ToString();
 
-            decimal fee = TempData["Fee"] != null
-                ? Convert.ToDecimal(TempData["Fee"])
-                : 0;
+            int durationMonths =
+                Convert.ToInt32(TempData["DurationMonths"]);
+
+            decimal fee =
+                Convert.ToDecimal(TempData["Fee"]);
 
             TempData.Keep();
 
@@ -144,19 +201,7 @@ public async Task<IActionResult> Index()
                 await _context.SaveChangesAsync();
             }
 
-            // ================= BLOCK ACTIVE MEMBERSHIP =================
-            var alreadyActive = await _context.Memberships.AnyAsync(m =>
-                m.MemberId == member.Id &&
-                m.IsActive &&
-                m.EndDate >= DateTime.Now);
-
-            if (alreadyActive)
-            {
-                TempData["Error"] = "Active membership already exists.";
-                return RedirectToAction("Index", "Dashboard", new { area = "Member" });
-            }
-
-            // ================= CREATE MEMBERSHIP (WAIT FOR ADMIN) =================
+            // ================= MEMBERSHIP =================
             var membership = new Membership
             {
                 MemberId = member.Id,
@@ -164,46 +209,21 @@ public async Task<IActionResult> Index()
                 DurationMonths = durationMonths,
                 StartDate = DateTime.Now,
                 EndDate = DateTime.Now.AddMonths(durationMonths),
-
                 Fee = fee,
-
-                // 🔴 IMPORTANT: WAIT FOR ADMIN APPROVAL
                 IsActive = false
             };
 
             _context.Memberships.Add(membership);
             await _context.SaveChangesAsync();
 
-            // ================= SAVE SCREENSHOT =================
-            string screenshotPath = null;
-
-            if (screenshot != null)
-            {
-                string folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/paymentproof");
-
-                if (!Directory.Exists(folder))
-                    Directory.CreateDirectory(folder);
-
-                string fileName = Guid.NewGuid() + Path.GetExtension(screenshot.FileName);
-                string filePath = Path.Combine(folder, fileName);
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await screenshot.CopyToAsync(stream);
-                }
-
-                screenshotPath = "/paymentproof/" + fileName;
-            }
-
-            // ================= PAYMENT (PENDING) =================
+            // ================= PAYMENT =================
             var payment = new MembershipPayment
             {
                 MembershipId = membership.Id,
                 Amount = fee,
-                PaymentMethod = paymentMethod,
-                PaymentStatus = "Pending", // 🔴 ADMIN WILL APPROVE
-                TransactionId = transactionId ?? Guid.NewGuid().ToString(),
-                ScreenshotPath = screenshotPath,
+                PaymentMethod = "Razorpay",
+                PaymentStatus = "Pending",
+                TransactionId = razorpayPaymentId,
                 PaymentDate = DateTime.Now
             };
 
@@ -211,34 +231,25 @@ public async Task<IActionResult> Index()
             await _context.SaveChangesAsync();
 
             // ================= ROLE UPDATE =================
+            var roles = await _userManager.GetRolesAsync(user);
 
+            if (!roles.Contains("Member"))
+            {
+                await _userManager.AddToRoleAsync(user, "Member");
+            }
 
-            TempData["Success"] = "Payment submitted. Awaiting admin approval.";
-            return RedirectToAction("Success");
+            // refresh login (IMPORTANT)
+            await _signInManager.RefreshSignInAsync(user);
+
+            // ================= SUCCESS MESSAGE =================
+            TempData["Success"] = "Payment successful. Membership activated successfully.";
+
+            // ================= REDIRECT =================
+            return RedirectToAction(
+                "Index",
+                "Dashboard",
+                new { area = "Member" });
         }
-
-        // RENEW MEMBERSHIP (NEW FEATURE)
-       public async Task<IActionResult> Renew(int membershipId)
-{
-    var membership = await _context.Memberships
-        .FirstOrDefaultAsync(x => x.Id == membershipId);
-
-    if (membership == null)
-        return NotFound();
-
-    // only expired memberships can renew
-    if (membership.EndDate > DateTime.Now)
-    {
-        TempData["Error"] = "Membership is still active.";
-        return RedirectToAction("Index");
-    }
-
-    TempData["MembershipType"] = membership.MembershipType;
-    TempData["DurationMonths"] = membership.DurationMonths.ToString();
-    TempData["Fee"] = membership.Fee.ToString();
-
-    return RedirectToAction("Checkout");
-}
 
         // SUCCESS PAGE
         [HttpGet]

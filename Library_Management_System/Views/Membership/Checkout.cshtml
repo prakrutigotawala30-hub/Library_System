@@ -1,3 +1,4 @@
+@model Library_Management_System.ViewModels.MembershipRazorPayViewModel
 @{
     ViewData["Title"] = "UPI Payment";
     Layout = "~/Views/Shared/_PublicLayout.cshtml";
@@ -227,6 +228,7 @@
     }
 </style>
 
+
 <div class="payment-page">
 
     <div class="payment-card">
@@ -236,90 +238,29 @@
         </div>
 
         <div class="price">
-            ₹@ViewBag.Fee
+            ₹@Model.Amount
         </div>
 
-        <!-- PAYMENT METHODS -->
-
-        <div class="payment-methods">
-
-            <!-- PHONEPE -->
-
-            <div class="method-card active" data-method="phonepe">
-                <div class="method-icon phonepe-icon">
-                    <img src="~/images/payment/phonepe.png" alt="PhonePe">
-                </div>
-                <span>PhonePe</span>
-            </div>
-
-            <div class="method-card" data-method="gpay">
-                <div class="method-icon gpay-icon">
-                    <img src="~/images/payment/gpay.png" alt="Google Pay">
-                </div>
-                <span>Google Pay</span>
-            </div>
-
-            <div class="method-card" data-method="paytm">
-                <div class="method-icon paytm-icon">
-                    <img src="~/images/payment/paytm.png" alt="Paytm">
-                </div>
-                <span>Paytm</span>
-            </div>
-
-            <div class="method-card" data-method="bhim">
-                <div class="method-icon bhim-icon">
-                    <img src="~/images/payment/bhim.png" alt="BHIM">
-                </div>
-                <span>BHIM UPI</span>
-            </div>
-
+        <div class="info" style="margin-bottom:20px;">
+            You will be redirected to Razorpay secure payment gateway
         </div>
 
-        <!-- DYNAMIC PAYMENT FORM -->
+        <!-- RAZORPAY PAYMENT FORM -->
+        <form id="payment-form"
+              asp-action="PaymentSuccess"
+              method="post">
 
-        <div id="dynamicPaymentForm"></div>
+            @Html.AntiForgeryToken()
 
-        <!-- UPI BOX -->
+            <input type="hidden" name="razorpayPaymentId" id="razorpayPaymentId" />
+            <input type="hidden" name="razorpayOrderId" id="razorpayOrderId" />
+            <input type="hidden" name="razorpaySignature" id="razorpaySignature" />
 
-        <div class="upi-box">
+            <button type="button"
+                    id="rzp-button"
+                    class="pay-btn">
 
-            <div>
-                Pay To UPI ID
-            </div>
-
-            <div class="upi-id">
-                harshilinvest@okhdfcbank
-            </div>
-
-        </div>
-
-        <div class="info">
-
-            Scan QR using PhonePe, Google Pay,
-            Paytm or BHIM and complete payment.
-
-        </div>
-
-        <!-- FORM -->
-
-        <form asp-action="PaymentSuccess" method="post" enctype="multipart/form-data">
-
-            <!-- PAYMENT METHOD -->
-
-            <input type="hidden" id="paymentMethod" name="paymentMethod" />
-
-            <!-- TRANSACTION ID -->
-
-            <input type="text" name="transactionId" class="dynamic-input" placeholder="Enter Transaction ID" required
-                   style="margin-bottom:20px;" />
-
-            <!-- SCREENSHOT -->
-
-            <input type="file" name="screenshot" class="upload-input" required />
-
-            <button type="submit" class="pay-btn">
-
-                I Have Paid
+                Pay Now ₹@Model.Amount
 
             </button>
 
@@ -329,162 +270,43 @@
 
 </div>
 
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
 <script>
 
-    const cards =
-        document.querySelectorAll(".method-card");
+    var options = {
+        "key": "@Model.RazorpayKey",
+        "amount": "@((int)(Model.Amount * 100))",
+        "currency": "INR",
+        "name": "Library Management System",
+        "description": "@Model.MembershipType Membership",
+        "order_id": "@Model.RazorpayOrderId",
 
-    const dynamicForm =
-        document.getElementById("dynamicPaymentForm");
+        "handler": function (response) {
 
-    const paymentMethodInput =
-        document.getElementById("paymentMethod");
+            document.getElementById("razorpayPaymentId").value =
+                response.razorpay_payment_id;
 
-    // DEFAULT
+            document.getElementById("razorpayOrderId").value =
+                response.razorpay_order_id;
 
-    renderPayment("phonepe");
+            document.getElementById("razorpaySignature").value =
+                response.razorpay_signature;
 
-    // CLICK EVENT
+            document.getElementById("payment-form").submit();
+        },
 
-    cards.forEach(card => {
-
-        card.addEventListener("click", () => {
-
-            cards.forEach(x =>
-                x.classList.remove("active"));
-
-            card.classList.add("active");
-
-            const method =
-                card.dataset.method;
-
-            renderPayment(method);
-        });
-    });
-
-    // RENDER PAYMENT
-
-    function renderPayment(method) {
-
-        // ================= PHONEPE =================
-
-        if (method === "phonepe") {
-
-            paymentMethodInput.value =
-                "PhonePe";
-
-            dynamicForm.innerHTML = `
-
-                <div class="dynamic-box">
-
-                    <div class="dynamic-title">
-                        Pay with PhonePe
-                    </div>
-
-                    <input type="text"
-                           class="dynamic-input"
-                           placeholder="Enter PhonePe Number">
-
-                </div>
-
-                <div class="qr-box">
-
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=upi://pay?pa=harshilinvest@okhdfcbank&pn=LibraryMembership&am=@ViewBag.Fee&cu=INR"
-                         width="220">
-
-                </div>
-            `;
+        "theme": {
+            "color": "#7c3aed"
         }
+    };
 
-        // ================= GPAY =================
+    var rzp = new Razorpay(options);
 
-        else if (method === "gpay") {
-
-            paymentMethodInput.value =
-                "Google Pay";
-
-            dynamicForm.innerHTML = `
-
-                <div class="dynamic-box">
-
-                    <div class="dynamic-title">
-                        Pay with Google Pay
-                    </div>
-
-                    <input type="text"
-                           class="dynamic-input"
-                           placeholder="Enter Google Pay Number">
-
-                </div>
-
-                <div class="qr-box">
-
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=upi://pay?pa=harshilinvest@okhdfcbank&pn=LibraryMembership&am=@ViewBag.Fee&cu=INR"
-                         width="220">
-
-                </div>
-            `;
-        }
-
-        // ================= PAYTM =================
-
-        else if (method === "paytm") {
-
-            paymentMethodInput.value =
-                "Paytm";
-
-            dynamicForm.innerHTML = `
-
-                <div class="dynamic-box">
-
-                    <div class="dynamic-title">
-                        Pay with Paytm
-                    </div>
-
-                    <input type="text"
-                           class="dynamic-input"
-                           placeholder="Enter Paytm Number">
-
-                </div>
-
-                <div class="qr-box">
-
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=upi://pay?pa=harshilinvest@okhdfcbank&pn=LibraryMembership&am=@ViewBag.Fee&cu=INR"
-                         width="220">
-
-                </div>
-            `;
-        }
-
-        // ================= BHIM =================
-
-        else if (method === "bhim") {
-
-            paymentMethodInput.value =
-                "BHIM UPI";
-
-            dynamicForm.innerHTML = `
-
-                <div class="dynamic-box">
-
-                    <div class="dynamic-title">
-                        Pay with BHIM UPI
-                    </div>
-
-                    <input type="text"
-                           class="dynamic-input"
-                           placeholder="Enter UPI ID">
-
-                </div>
-
-                <div class="qr-box">
-
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=upi://pay?pa=harshilinvest@okhdfcbank&pn=LibraryMembership&am=@ViewBag.Fee&cu=INR"
-                         width="220">
-
-                </div>
-            `;
-        }
-    }
+    document.getElementById("rzp-button").onclick = function (e) {
+        rzp.open();
+        e.preventDefault();
+    };
 
 </script>
