@@ -19,6 +19,11 @@ namespace LibraryManagementSystem.ClassLibrary.Models
         [ForeignKey("MemberId")]
         public Member? Member { get; set; }
 
+        public string? ApplicationUserId { get; set; }
+
+        [ForeignKey("ApplicationUserId")]
+        public ApplicationUser? ApplicationUser { get; set; }
+
         [Required]
         public DateTime IssuedOn { get; set; } = DateTime.Now;
 
@@ -69,5 +74,11 @@ namespace LibraryManagementSystem.ClassLibrary.Models
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal LostBookCharge { get; set; } = 0;
+
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal ExtraCharge { get; set; } = 0;
+
+        [StringLength(20)]
+        public string? ReturnCondition { get; set; }
     }
 }

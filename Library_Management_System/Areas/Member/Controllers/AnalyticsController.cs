@@ -54,7 +54,7 @@ namespace Library_Management_System.Areas.Member.Controllers
             var totalFine = borrows.Sum(x =>
                 x.DueDate < DateTime.Now
                 ? (decimal)((DateTime.Now - x.DueDate).Days *
-                  (x.FinePerDay > 0 ? x.FinePerDay : 5))
+                  (x.FinePerDay > 0 ? x.FinePerDay : 10))
                 : 0);
 
             var booksThisMonth = borrows.Count(x =>
@@ -106,7 +106,7 @@ namespace Library_Management_System.Areas.Member.Controllers
                         Fine = monthRecords.Sum(x =>
                             x.DueDate < DateTime.Now
                             ? (decimal)((DateTime.Now - x.DueDate).Days *
-                                (x.FinePerDay > 0 ? x.FinePerDay : 5))
+                                (x.FinePerDay > 0 ? x.FinePerDay : 10))
                             : 0)
                     };
                 })

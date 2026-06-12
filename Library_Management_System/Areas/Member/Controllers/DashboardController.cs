@@ -72,7 +72,7 @@ namespace Library_Management_System.Areas.Member.Controllers
 
                 FineAmount = x.DueDate < DateTime.Now
                     ? (DateTime.Now - x.DueDate).Days *
-                      (x.FinePerDay > 0 ? x.FinePerDay : 5)
+                      (x.FinePerDay > 0 ? x.FinePerDay : 10)
                     : 0
             }).ToList();
 

@@ -27,5 +27,21 @@ namespace Library_Management_System.ViewModels
         public bool FinePaid { get; set; }
 
         public int BorrowCount { get; set; }
+
+        public bool IsNonMemberBorrow { get; set; }
+
+        public decimal BorrowFee { get; set; }
+
+        public decimal SecurityDeposit { get; set; }
+
+        public decimal RefundAmount { get; set; }
+
+        public bool RefundProcessed { get; set; }
+
+        public decimal DamageCharge { get; set; }
+
+        public decimal LostBookCharge { get; set; }
+
+        public string ReturnStatus { get; set; }
     }
 }

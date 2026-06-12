@@ -25,25 +25,38 @@ namespace LibraryManagementSystem.Controllers
                 .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(status) &&
-                Enum.TryParse<ReservationStatus>(status, true, out var reservationStatus))
+                Enum.TryParse<ReservationStatus>(
+                    status,
+                    true,
+                    out var reservationStatus))
             {
-                reservations = reservations.Where(r => r.Status == reservationStatus);
+                reservations =
+                    reservations.Where(r =>
+                        r.Status == reservationStatus);
             }
 
             ViewBag.CurrentStatus = status;
 
-            ViewBag.WaitingCount = await _context.Reservations
-                .CountAsync(r => r.Status == ReservationStatus.Waiting);
+            ViewBag.WaitingCount =
+                await _context.Reservations
+                .CountAsync(r =>
+                    r.Status == ReservationStatus.Waiting);
 
-            ViewBag.CompletedCount = await _context.Reservations
-                .CountAsync(r => r.Status == ReservationStatus.Completed);
+            ViewBag.CompletedCount =
+                await _context.Reservations
+                .CountAsync(r =>
+                    r.Status == ReservationStatus.Completed);
 
-            ViewBag.CancelledCount = await _context.Reservations
-                .CountAsync(r => r.Status == ReservationStatus.Cancelled);
+            ViewBag.CancelledCount =
+                await _context.Reservations
+                .CountAsync(r =>
+                    r.Status == ReservationStatus.Cancelled);
 
-            return View(await reservations
+            var result = await reservations
                 .OrderByDescending(r => r.ReservedOn)
-                .ToListAsync());
+                .ToListAsync();
+
+            return View(result);
         }
 
         [HttpPost]
@@ -73,19 +86,6 @@ namespace LibraryManagementSystem.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            var memberId = await _context.Members
-                .Where(m => m.ApplicationUserId == reservation.MemberId)
-                .Select(m => (int?)m.Id)
-                .FirstOrDefaultAsync();
-
-            if (memberId == null)
-            {
-                TempData["Error"] =
-                    "Member record not found.";
-
-                return RedirectToAction(nameof(Index));
-            }
-
             int quantity = reservation.Quantity > 0
                 ? reservation.Quantity
                 : 1;
@@ -98,6 +98,42 @@ namespace LibraryManagementSystem.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            // ==========================
+            // FIND MEMBER
+            // ==========================
+
+            var member = await _context.Members
+                .FirstOrDefaultAsync(m =>
+                    m.ApplicationUserId == reservation.MemberId);
+
+            // NON-MEMBER -> CREATE MEMBER RECORD
+            if (member == null)
+            {
+                var user = await _context.Users
+                    .FirstOrDefaultAsync(u =>
+                        u.Id == reservation.MemberId);
+
+                if (user == null)
+                {
+                    TempData["Error"] =
+                        "User account not found.";
+
+                    return RedirectToAction(nameof(Index));
+                }
+
+                member = new Member
+                {
+                    ApplicationUserId = user.Id,
+                    Name = user.FullName,
+                    Email = user.Email,
+                    Phone = user.PhoneNumber
+                };
+
+                _context.Members.Add(member);
+
+                await _context.SaveChangesAsync();
+            }
+
             var settings = await _context.LibrarySettings
                 .FirstOrDefaultAsync();
 
@@ -106,7 +142,7 @@ namespace LibraryManagementSystem.Controllers
                 settings = new LibrarySettings
                 {
                     DefaultLoanDays = 14,
-                    FinePerDay = 5
+                    FinePerDay = 10
                 };
             }
 
@@ -126,7 +162,7 @@ namespace LibraryManagementSystem.Controllers
                 _context.BorrowRecords.Add(new BorrowRecord
                 {
                     BookId = reservation.BookId,
-                    MemberId = memberId.Value,
+                    MemberId = member.Id,
 
                     IssuedOn = DateTime.Now,
                     DueDate = DateTime.Now.AddDays(settings.DefaultLoanDays),
@@ -198,7 +234,7 @@ namespace LibraryManagementSystem.Controllers
             if (!string.IsNullOrEmpty(reservation.MemberId))
             {
                 string message = reservation.PaymentRequired
-                    ? $"Your non-member reservation for '{reservation.Book?.Title}' has been cancelled. Contact librarian regarding payment/deposit refund."
+                    ? $"Your paid reservation for '{reservation.Book?.Title}' has been cancelled. Please contact librarian for refund details."
                     : $"Your reservation for '{reservation.Book?.Title}' has been cancelled.";
 
                 _context.Notifications.Add(new Notification

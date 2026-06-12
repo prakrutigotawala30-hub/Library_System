@@ -1,13 +1,8 @@
+@model List<Library_Management_System.ViewModels.BorrowHistoryViewModel>
 @{
     Layout = "~/Areas/Member/Views/Shared/_MemberLayout.cshtml";
-}
-
-@model List<Library_Management_System.ViewModels.BorrowHistoryViewModel>
-
-@{
     ViewData["Title"] = "Borrow History";
 }
-
 
 <style>
     body {
@@ -303,105 +298,91 @@
                         </div>
 
                         <!-- INFO GRID -->
-
                         <div class="info-grid">
 
                             <div class="info-box">
-
                                 <div class="info-title">
                                     Borrow Date
                                 </div>
-
                                 <div class="info-value">
                                     @item.BorrowDate.ToShortDateString()
                                 </div>
-
                             </div>
 
                             <div class="info-box">
-
                                 <div class="info-title">
                                     Due Date
                                 </div>
-
                                 <div class="info-value">
                                     @item.DueDate.ToShortDateString()
                                 </div>
-
                             </div>
 
                             <div class="info-box">
-
                                 <div class="info-title">
                                     Return Date
                                 </div>
-
                                 <div class="info-value">
-
                                     @(item.ReturnDate.HasValue
                                                                 ? item.ReturnDate.Value.ToShortDateString()
                                                                 : "Not Returned")
-
                                 </div>
-
                             </div>
+
                             @if (item.BorrowCount > 1)
                             {
                                 <div class="info-box">
-
                                     <div class="info-title">
                                         Borrow Count
                                     </div>
-
                                     <div class="info-value">
                                         @item.BorrowCount Times
                                     </div>
-
                                 </div>
                             }
 
                             <div class="info-box">
+                                <div class="info-title">
+                                    Borrow Type
+                                </div>
+                                <div class="info-value">
+                                    @(item.IsNonMemberBorrow
+                                                                ? "Non-Member"
+                                                                : "Member")
+                                </div>
+                            </div>
 
+                            <div class="info-box">
                                 <div class="info-title">
                                     Fine Amount
                                 </div>
-
                                 <div class="info-value">
                                     ₹@item.FineAmount
                                 </div>
-
                             </div>
 
                             <div class="info-box">
-
                                 <div class="info-title">
                                     Fine Per Day
                                 </div>
-
                                 <div class="info-value">
                                     ₹@item.FinePerDay
                                 </div>
-
                             </div>
 
                             <div class="info-box">
-
                                 <div class="info-title">
                                     Days Late
                                 </div>
-
                                 <div class="info-value">
-                                    @item.DaysLate Days
+                                    @item.DaysLate Day(s)
                                 </div>
-
                             </div>
 
                             <div class="info-box">
-
                                 <div class="info-title">
                                     Fine Payment
                                 </div>
-
                                 <div class="info-value">
 
                                     @if (item.FinePaid)
@@ -418,18 +399,105 @@
                                     }
 
                                 </div>
-
                             </div>
+
+                            @if (item.IsNonMemberBorrow)
+                            {
+                                <div class="info-box">
+                                    <div class="info-title">
+                                        Borrow Fee
+                                    </div>
+                                    <div class="info-value">
+                                        ₹@item.BorrowFee
+                                    </div>
+                                </div>
+
+                                <div class="info-box">
+                                    <div class="info-title">
+                                        Security Deposit
+                                    </div>
+                                    <div class="info-value">
+                                        ₹@item.SecurityDeposit
+                                    </div>
+                                </div>
+
+                                <div class="info-box">
+                                    <div class="info-title">
+                                        Refund Amount
+                                    </div>
+                                    <div class="info-value">
+                                        ₹@item.RefundAmount
+                                    </div>
+                                </div>
+
+                                <div class="info-box">
+                                    <div class="info-title">
+                                        Refund Status
+                                    </div>
+                                    <div class="info-value">
+
+                                        @if (item.RefundProcessed)
+                                        {
+                                            <span class="fine-paid">
+                                                Refunded
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="fine-unpaid">
+                                                Pending
+                                            </span>
+                                        }
+
+                                    </div>
+                                </div>
+
+                                <div class="info-box">
+                                    <div class="info-title">
+                                        Return Status
+                                    </div>
+                                    <div class="info-value">
+                                        @item.ReturnStatus
+                                    </div>
+                                </div>
+                            }
+
+                            @if (item.DamageCharge > 0)
+                            {
+                                <div class="info-box">
+                                    <div class="info-title">
+                                        Damage Charge
+                                    </div>
+                                    <div class="info-value">
+                                        ₹@item.DamageCharge
+                                    </div>
+                                </div>
+                            }
+
+                            @if (item.LostBookCharge > 0)
+                            {
+                                <div class="info-box">
+                                    <div class="info-title">
+                                        Lost Book Charge
+                                    </div>
+                                    <div class="info-value">
+                                        ₹@item.LostBookCharge
+                                    </div>
+                                </div>
+                            }
 
                         </div>
 
                         <!-- RETURN BUTTON -->
-                        @if (item.Status != "Returned")
+                        @if (item.Status == "Active" ||
+                                        item.Status == "Overdue")
                         {
                             <div class="mt-4 d-flex justify-content-end">
 
-                                <a asp-action="ReturnBook" asp-controller="BorrowHistory" asp-route-id="@item.Id"
-                                   class="return-btn">
+                                <a href="@Url.Action("ReturnBook",
+                                                        "BorrowHistory",
+                                                        new { area = "Member", id = item.Id })"
+                                 class="return-btn">
 
                                     Return Book
 
@@ -437,6 +505,7 @@
 
                             </div>
                         }
+
 
                     </div>
 
