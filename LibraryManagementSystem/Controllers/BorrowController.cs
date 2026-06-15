@@ -151,7 +151,7 @@ public async Task<IActionResult> Issue(BorrowRecord Record, int borrowDays)
         borrowDays = settings.DefaultLoanDays;
 
     Record.IssuedOn = DateTime.Now;
-    Record.DueDate = DateTime.Now.AddDays(borrowDays);
+    Record.DueDate = DateTime.Now.AddDays(5);
     Record.Status = "Issued";
 
     Record.FinePerDay = settings.FinePerDay;
@@ -406,7 +406,7 @@ public async Task<IActionResult> Issue(BorrowRecord Record, int borrowDays)
                 return RedirectToAction(nameof(Index));
             }
 
-            record.DueDate = record.DueDate.AddDays(7);
+            record.DueDate = record.DueDate.AddDays(5);
 
             record.RenewCount++;
 

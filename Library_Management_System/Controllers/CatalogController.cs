@@ -372,7 +372,7 @@ namespace Library_Management_System.Controllers
                 borrow.BorrowFee = 20;
                 borrow.SecurityDeposit = 300;
 
-                borrow.DueDate = DateTime.Now.AddDays(7);
+                borrow.DueDate = DateTime.Now.AddDays(5);
             }
             else
             {

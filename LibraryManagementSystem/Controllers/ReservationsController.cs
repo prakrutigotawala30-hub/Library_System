@@ -165,7 +165,7 @@ namespace LibraryManagementSystem.Controllers
                     MemberId = member.Id,
 
                     IssuedOn = DateTime.Now,
-                    DueDate = DateTime.Now.AddDays(settings.DefaultLoanDays),
+                    DueDate = DateTime.Now.AddDays(5),
 
                     FinePerDay = settings.FinePerDay,
                     FineAmount = 0,
