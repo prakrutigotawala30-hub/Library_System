@@ -839,11 +839,21 @@
                      && x.BookId != null);
     }
 }
+@{
+    int bellUnread = 0;
+
+    if (currentUser != null)
+    {
+        bellUnread = DbContext.Notifications
+            .Count(x => x.MemberId == currentUser.Id &&
+                        !x.IsRead);
+    }
+}
 
 <head>
     <link rel="stylesheet" href="~/css/theme.css" />
 
-    <script src="~/js/theme.js"></script>
+    @* <script src="~/js/theme.js"></script> *@
 </head>
 
 <style>
@@ -1499,6 +1509,24 @@
                         @wishlistCount
 
                     </span>
+
+                </a>
+
+                <!-- NOTIFICATION -->
+
+                <a asp-area="Member"
+                   asp-controller="Notifications"
+                   asp-action="Index"
+                   class="nav-icon-btn position-relative">
+
+                    <i class="bi bi-bell-fill"></i>
+
+                    @if (bellUnread > 0)
+                    {
+                        <span class="notification-count">
+                            @bellUnread
+                        </span>
+                    }
 
                 </a>
 
