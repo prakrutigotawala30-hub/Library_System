@@ -45,109 +45,139 @@ namespace LibraryManagementSystem.Controllers
         // APPROVE MEMBERSHIP
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Approve(int id)
         {
-            var payment =
-                await _context.MembershipPayments
-
+            var payment = await _context.MembershipPayments
                 .Include(x => x.Membership)
-
                 .ThenInclude(x => x.Member)
-
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             if (payment == null)
             {
-                return NotFound();
+                TempData["Error"] = "Membership payment not found.";
+                return RedirectToAction(nameof(Index));
             }
 
-            // UPDATE PAYMENT STATUS
+            if (payment.PaymentStatus == "Approved")
+            {
+                TempData["Error"] = "Membership is already approved.";
+                return RedirectToAction(nameof(Index));
+            }
 
-            payment.PaymentStatus =
-                "Approved";
+            // Update status
+            payment.PaymentStatus = "Approved";
+            payment.Membership.IsActive = true;
 
-            // ACTIVATE MEMBERSHIP
+            var member = payment.Membership.Member;
 
-            payment.Membership.IsActive =
-                true;
-
-            // GET USER
-
-            var member =
-                payment.Membership.Member;
-
-            var user =
-                await _userManager.FindByIdAsync(
-                    member.ApplicationUserId);
+            var user = await _userManager.FindByIdAsync(
+                member.ApplicationUserId);
 
             if (user != null)
             {
-                // REMOVE USER ROLE
-
-                if (await _userManager.IsInRoleAsync(
-                    user,
-                    "User"))
+                // Remove User role
+                if (await _userManager.IsInRoleAsync(user, "User"))
                 {
-                    await _userManager
-                        .RemoveFromRoleAsync(
-                            user,
-                            "User");
+                    await _userManager.RemoveFromRoleAsync(
+                        user,
+                        "User");
                 }
 
-                // ADD MEMBER ROLE
-
-                if (!await _userManager.IsInRoleAsync(
-                    user,
-                    "Member"))
+                // Add Member role
+                if (!await _userManager.IsInRoleAsync(user, "Member"))
                 {
-                    await _userManager
-                        .AddToRoleAsync(
-                            user,
-                            "Member");
+                    await _userManager.AddToRoleAsync(
+                        user,
+                        "Member");
                 }
+
+                // Create Notification
+                _context.Notifications.Add(new Notification
+                {
+                    MemberId = user.Id,
+                    Message = $"Congratulations! Your {payment.Membership.MembershipType} membership has been approved. You can now access all member features.",
+                    Link = "/Area/Member/Dashboard/Index",
+                    IsRead = false,
+                    CreatedOn = DateTime.Now
+                });
             }
 
             await _context.SaveChangesAsync();
 
             TempData["Success"] =
-                "Membership approved successfully.";
+                $"Membership approved for {member.Name}.";
 
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
 
         // REJECT MEMBERSHIP
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Reject(int id)
         {
-            var payment =
-                await _context.MembershipPayments
-
+            var payment = await _context.MembershipPayments
                 .Include(x => x.Membership)
-
                 .ThenInclude(x => x.Member)
-
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             if (payment == null)
             {
-                return NotFound();
+                TempData["Error"] = "Membership payment not found.";
+                return RedirectToAction(nameof(Index));
             }
 
-            // UPDATE STATUS
+            if (payment.PaymentStatus == "Rejected")
+            {
+                TempData["Error"] = "Membership is already rejected.";
+                return RedirectToAction(nameof(Index));
+            }
 
-            payment.PaymentStatus =
-                "Rejected";
+            // Update status
+            payment.PaymentStatus = "Rejected";
+            payment.Membership.IsActive = false;
 
-            payment.Membership.IsActive =
-                false;
+            var member = payment.Membership.Member;
+
+            var user = await _userManager.FindByIdAsync(
+                member.ApplicationUserId);
+
+            if (user != null)
+            {
+                // Remove Member role if exists
+                if (await _userManager.IsInRoleAsync(user, "Member"))
+                {
+                    await _userManager.RemoveFromRoleAsync(
+                        user,
+                        "Member");
+                }
+
+                // Ensure User role
+                if (!await _userManager.IsInRoleAsync(user, "User"))
+                {
+                    await _userManager.AddToRoleAsync(
+                        user,
+                        "User");
+                }
+
+                // Create Notification
+                _context.Notifications.Add(new Notification
+                {
+                    MemberId = user.Id,
+                    Message = "Your membership request has been rejected by the administrator. Please contact the library for more information.",
+                    Link = "/Membership",
+                    IsRead = false,
+                    CreatedOn = DateTime.Now
+                });
+            }
 
             await _context.SaveChangesAsync();
 
             TempData["Error"] =
-                "Membership rejected.";
+                $"Membership rejected for {member.Name}.";
 
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
     }
 }

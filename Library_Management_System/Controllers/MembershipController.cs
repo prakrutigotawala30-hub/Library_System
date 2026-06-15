@@ -32,52 +32,108 @@ namespace Library_Management_System.Controllers
             _roleManager = roleManager;
         }
 
-
         [HttpGet]
-public async Task<IActionResult> Index()
-{
-    var user =
-        await _userManager.GetUserAsync(User);
-
-    if (user == null)
-    {
-        return RedirectToAction(
-            "Login",
-            "Account");
-    }
-
-    // CHECK ACTIVE MEMBERSHIP FROM DATABASE
-    var member =
-        await _context.Members
-        .FirstOrDefaultAsync(x =>
-            x.ApplicationUserId == user.Id);
-
-    if (member != null)
-    {
-        var activeMembership =
-            await _context.Memberships
-            .AnyAsync(x =>
-                x.MemberId == member.Id &&
-                x.IsActive &&
-                x.EndDate >= DateTime.Now);
-
-        // ONLY REDIRECT IF MEMBERSHIP APPROVED + ACTIVE
-        if (activeMembership)
+        public async Task<IActionResult> Index()
         {
-            return RedirectToAction(
-                "Index",
-                "Dashboard",
-                new { area = "Member" });
-        }
-    }
+            var user = await _userManager.GetUserAsync(User);
 
-    return View();
-}
+            if (user == null)
+            {
+                return RedirectToAction(
+                    "Login",
+                    "Account");
+            }
+
+            var member = await _context.Members
+                .FirstOrDefaultAsync(x =>
+                    x.ApplicationUserId == user.Id);
+
+            if (member != null)
+            {
+                // APPROVED MEMBERSHIP
+                var activeMembership = await _context.Memberships
+                    .AnyAsync(x =>
+                        x.MemberId == member.Id &&
+                        x.IsActive &&
+                        x.EndDate >= DateTime.Now);
+
+                if (activeMembership)
+                {
+                    return RedirectToAction(
+                        "Index",
+                        "Dashboard",
+                        new { area = "Member" });
+                }
+
+                // PENDING APPROVAL
+                var pendingMembership = await _context.Memberships
+                    .AnyAsync(x =>
+                        x.MemberId == member.Id &&
+                        !x.IsActive);
+
+                if (pendingMembership)
+                {
+                    return RedirectToAction(
+                        nameof(PendingApproval));
+                }
+            }
+
+            // SHOW MEMBERSHIP PLANS
+            return View();
+        }
         // BUY MEMBERSHIP
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Buy(string membershipType, int durationMonths)
+        public async Task<IActionResult> Buy(
+    string membershipType,
+    int durationMonths)
         {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return RedirectToAction(
+                    "Login",
+                    "Account");
+            }
+
+            var member = await _context.Members
+                .FirstOrDefaultAsync(x =>
+                    x.ApplicationUserId == user.Id);
+
+            if (member != null)
+            {
+                // Active Membership
+                var activeMembership = await _context.Memberships
+                    .AnyAsync(x =>
+                        x.MemberId == member.Id &&
+                        x.IsActive &&
+                        x.EndDate >= DateTime.Now);
+
+                if (activeMembership)
+                {
+                    TempData["Error"] =
+                        "You already have an active membership.";
+
+                    return RedirectToAction(nameof(Index));
+                }
+
+                // Pending Membership
+                var pendingMembership = await _context.Memberships
+                    .AnyAsync(x =>
+                        x.MemberId == member.Id &&
+                        !x.IsActive);
+
+                if (pendingMembership)
+                {
+                    TempData["Error"] =
+                        "Your membership request is already awaiting admin approval.";
+
+                    return RedirectToAction(
+                        nameof(PendingApproval));
+                }
+            }
+
             decimal fee = 0;
 
             if (membershipType == "Student")
@@ -90,16 +146,23 @@ public async Task<IActionResult> Index()
                 fee = durationMonths == 1 ? 299 : 3000;
 
             TempData["MembershipType"] = membershipType;
-            TempData["DurationMonths"] = durationMonths.ToString();
+            TempData["DurationMonths"] = durationMonths;
             TempData["Fee"] = fee.ToString();
 
-            return RedirectToAction("Checkout");
+            return RedirectToAction(nameof(Checkout));
         }
 
         // CHECKOUT
         [HttpGet]
         public IActionResult Checkout()
         {
+            if (TempData["MembershipType"] == null ||
+                TempData["DurationMonths"] == null ||
+                TempData["Fee"] == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
             string membershipType =
                 TempData["MembershipType"]?.ToString();
 
@@ -109,7 +172,7 @@ public async Task<IActionResult> Index()
 
             decimal fee =
                 Convert.ToDecimal(
-                    TempData["Fee"]);
+                    TempData["Fee"]?.ToString());
 
             TempData.Keep();
 
@@ -119,13 +182,13 @@ public async Task<IActionResult> Index()
             var razorpaySecret =
                 _configuration["Razorpay:Secret"];
 
-            Razorpay.Api.RazorpayClient client =
+            var client =
                 new Razorpay.Api.RazorpayClient(
                     razorpayKey,
                     razorpaySecret);
 
             Dictionary<string, object> options =
-                new Dictionary<string, object>();
+                new();
 
             options.Add(
                 "amount",
@@ -139,7 +202,7 @@ public async Task<IActionResult> Index()
                 "receipt",
                 Guid.NewGuid().ToString());
 
-            Razorpay.Api.Order order =
+            var order =
                 client.Order.Create(options);
 
             var model =
@@ -148,11 +211,8 @@ public async Task<IActionResult> Index()
                     MembershipType = membershipType,
                     DurationMonths = durationMonths,
                     Amount = fee,
-
                     RazorpayKey = razorpayKey,
-
-                    RazorpayOrderId =
-                        order["id"].ToString()
+                    RazorpayOrderId = order["id"].ToString()
                 };
 
             return View(model);
@@ -162,30 +222,35 @@ public async Task<IActionResult> Index()
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> PaymentSuccess(
-      string razorpayPaymentId,
-      string razorpayOrderId,
-      string razorpaySignature)
+    string razorpayPaymentId,
+    string razorpayOrderId,
+    string razorpaySignature)
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user =
+                await _userManager.GetUserAsync(User);
 
             if (user == null)
-                return RedirectToAction("Login", "Account");
+            {
+                return RedirectToAction(
+                    "Login",
+                    "Account");
+            }
 
-            // ================= TEMP DATA =================
             string membershipType =
                 TempData["MembershipType"]?.ToString();
 
             int durationMonths =
-                Convert.ToInt32(TempData["DurationMonths"]);
+                Convert.ToInt32(
+                    TempData["DurationMonths"]);
 
             decimal fee =
-                Convert.ToDecimal(TempData["Fee"]);
+                Convert.ToDecimal(
+                    TempData["Fee"].ToString());
 
-            TempData.Keep();
-
-            // ================= MEMBER =================
-            var member = await _context.Members
-                .FirstOrDefaultAsync(x => x.ApplicationUserId == user.Id);
+            var member =
+                await _context.Members
+                .FirstOrDefaultAsync(x =>
+                    x.ApplicationUserId == user.Id);
 
             if (member == null)
             {
@@ -198,57 +263,51 @@ public async Task<IActionResult> Index()
                 };
 
                 _context.Members.Add(member);
+
                 await _context.SaveChangesAsync();
             }
 
-            // ================= MEMBERSHIP =================
-            var membership = new Membership
-            {
-                MemberId = member.Id,
-                MembershipType = membershipType,
-                DurationMonths = durationMonths,
-                StartDate = DateTime.Now,
-                EndDate = DateTime.Now.AddMonths(durationMonths),
-                Fee = fee,
-                IsActive = false
-            };
+            var membership =
+                new Membership
+                {
+                    MemberId = member.Id,
+                    MembershipType = membershipType,
+                    DurationMonths = durationMonths,
+                    StartDate = DateTime.Now,
+                    EndDate = DateTime.Now.AddMonths(durationMonths),
+                    Fee = fee,
+
+                    // WAITING FOR ADMIN
+                    IsActive = false
+                };
 
             _context.Memberships.Add(membership);
+
             await _context.SaveChangesAsync();
 
-            // ================= PAYMENT =================
-            var payment = new MembershipPayment
-            {
-                MembershipId = membership.Id,
-                Amount = fee,
-                PaymentMethod = "Razorpay",
-                PaymentStatus = "Pending",
-                TransactionId = razorpayPaymentId,
-                PaymentDate = DateTime.Now
-            };
+            var payment =
+                new MembershipPayment
+                {
+                    MembershipId = membership.Id,
+                    Amount = fee,
+                    PaymentMethod = "Razorpay",
+
+                    // WAITING FOR APPROVAL
+                    PaymentStatus = "Pending",
+
+                    TransactionId = razorpayPaymentId,
+                    PaymentDate = DateTime.Now
+                };
 
             _context.MembershipPayments.Add(payment);
+
             await _context.SaveChangesAsync();
 
-            // ================= ROLE UPDATE =================
-            var roles = await _userManager.GetRolesAsync(user);
+            TempData["Success"] =
+                "Payment successful. Your membership request has been submitted and is awaiting admin approval.";
 
-            if (!roles.Contains("Member"))
-            {
-                await _userManager.AddToRoleAsync(user, "Member");
-            }
-
-            // refresh login (IMPORTANT)
-            await _signInManager.RefreshSignInAsync(user);
-
-            // ================= SUCCESS MESSAGE =================
-            TempData["Success"] = "Payment successful. Membership activated successfully.";
-
-            // ================= REDIRECT =================
             return RedirectToAction(
-                "Index",
-                "Dashboard",
-                new { area = "Member" });
+                nameof(PendingApproval));
         }
 
         // SUCCESS PAGE
@@ -258,6 +317,11 @@ public async Task<IActionResult> Index()
             return View();
         }
 
-        
+        [HttpGet]
+        public IActionResult PendingApproval()
+        {
+            return View();
+        }
+
     }
 }
