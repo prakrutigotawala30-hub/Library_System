@@ -238,28 +238,28 @@
         }
 
     /* RESPONSIVE */
-    .form-label{
-    display:block;
-    color:var(--text);
-    margin-bottom:10px;
-    font-weight:600;
-}
+    .form-label {
+        display: block;
+        color: var(--text);
+        margin-bottom: 10px;
+        font-weight: 600;
+    }
 
-.form-control{
-    width:100%;
-    padding:14px 18px;
-    border-radius:16px;
-    border:1px solid var(--soft-border);
-    background:var(--card);
-    color:var(--text);
-    font-size:15px;
-}
+    .form-control {
+        width: 100%;
+        padding: 14px 18px;
+        border-radius: 16px;
+        border: 1px solid var(--soft-border);
+        background: var(--card);
+        color: var(--text);
+        font-size: 15px;
+    }
 
-.form-control:focus{
-    outline:none;
-    border-color:#7c3aed;
-    box-shadow:0 0 0 4px rgba(124,58,237,.15);
-}
+        .form-control:focus {
+            outline: none;
+            border-color: #7c3aed;
+            box-shadow: 0 0 0 4px rgba(124,58,237,.15);
+        }
 
     @@media(max-width:768px) {
 
@@ -404,7 +404,7 @@
                     </div>
                 }
 
-                <form asp-action="ReturnBookConfirmed"
+                <form asp-action="Confirm"
                       method="post">
 
                     @Html.AntiForgeryToken()
@@ -514,7 +514,7 @@
 
         let lateDays =
             @(Math.Max(0,
-                        (DateTime.Now.Date - Model.DueDate.Date).Days));
+                                                (DateTime.Now.Date - Model.DueDate.Date).Days));
 
         let finePerDay = 10;
 
@@ -522,7 +522,7 @@
             @(Model.SecurityDeposit);
 
         let bookPrice =
-            @(Model.Book.DepositAmount);
+    @(Model.Book?.DepositAmount ?? 0);
 
         let lateFine =
             lateDays * finePerDay;

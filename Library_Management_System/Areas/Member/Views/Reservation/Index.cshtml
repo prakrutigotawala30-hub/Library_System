@@ -1,12 +1,9 @@
 @{
     Layout = "~/Areas/Member/Views/Shared/_MemberLayout.cshtml";
-}
-@using LibraryManagementSystem.ClassLibrary.Models
-@model IEnumerable<LibraryManagementSystem.ClassLibrary.Models.Reservation>
-
-@{
     ViewData["Title"] = "My Reservations";
 }
+@using LibraryManagementSystem.ClassLibrary.Models
+@model IEnumerable<Reservation>
 
 
 <style>
@@ -402,8 +399,8 @@
                     </div>
 
                     <div class="info-value">
-                        💰 Borrow Fee: ₹20 <br />
-                        🔒 Security Deposit: ₹300
+                        💰 Borrow Fee: ₹50 <br />
+                        🔒 Security Deposit: ₹@item.Book.DepositAmount
                     </div>
 
                 </div>

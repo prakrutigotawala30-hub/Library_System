@@ -430,6 +430,21 @@
                                     </div>
                                 </div>
 
+                                @if (item.ExtraCharge > 0)
+                                {
+                                    <div class="info-box">
+
+                                        <div class="info-title">
+                                            Extra Charge
+                                        </div>
+
+                                        <div class="info-value">
+                                            ₹@item.ExtraCharge
+                                        </div>
+
+                                    </div>
+                                }
+
                                 <div class="info-box">
                                     <div class="info-title">
                                         Refund Status
@@ -460,6 +475,38 @@
                                         @item.ReturnStatus
                                     </div>
                                 </div>
+
+                                @if (!string.IsNullOrEmpty(item.ReturnCondition))
+                                {
+                                    <div class="info-box">
+
+                                        <div class="info-title">
+                                            Return Condition
+                                        </div>
+
+                                        <div class="info-value">
+                                            @item.ReturnCondition
+                                        </div>
+
+                                    </div>
+                                }
+
+                                @if (item.RefundAmount > 0 &&
+                                                    !item.RefundProcessed)
+                                {
+                                    <div class="info-box">
+
+                                        <div class="info-title">
+                                            Refund Information
+                                        </div>
+
+                                        <div class="info-value">
+                                            Refund will be credited within
+                                            3-4 working days.
+                                        </div>
+
+                                    </div>
+                                }
                             }
 
                             @if (item.DamageCharge > 0)
@@ -494,10 +541,11 @@
                         {
                             <div class="mt-4 d-flex justify-content-end">
 
-                                <a href="@Url.Action("ReturnBook",
-                                                        "BorrowHistory",
-                                                        new { area = "Member", id = item.Id })"
-                                 class="return-btn">
+                                <a asp-area="Member"
+                                   asp-controller="Return"
+                                   asp-action="Index"
+                                   asp-route-id="@item.Id"
+                                   class="return-btn">
 
                                     Return Book
 

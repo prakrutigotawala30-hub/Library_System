@@ -3,6 +3,11 @@
 @{
     ViewData["Title"] = "Fine Payment";
     Layout = "~/Areas/Member/Views/Shared/_MemberLayout.cshtml";
+
+decimal payableAmount = Model.IsNonMemberBorrow
+    ? Model.ExtraCharge
+    : Model.FineAmount;
+
 }
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
@@ -25,7 +30,7 @@
 
     .payment-card {
         width: 100%;
-        max-width: 850px;
+        max-width: 900px;
         background: var(--card-gradient);
         border: 1px solid var(--soft-border);
         border-radius: 32px;
@@ -96,7 +101,7 @@
     }
 
     .info-value {
-        font-size: 24px;
+        font-size: 22px;
         font-weight: 800;
     }
 
@@ -185,7 +190,6 @@
             <div class="info-grid">
 
                 <div class="info-box">
-
                     <div class="info-label">
                         Return Condition
                     </div>
@@ -193,11 +197,9 @@
                     <div class="info-value">
                         @Model.ReturnCondition
                     </div>
-
                 </div>
 
                 <div class="info-box">
-
                     <div class="info-label">
                         Late Days
                     </div>
@@ -205,32 +207,82 @@
                     <div class="info-value">
                         @Model.DaysLate
                     </div>
-
                 </div>
 
             </div>
 
+            @if (Model.IsNonMemberBorrow)
+            {
+                <div class="info-grid">
+
+                    <div class="info-box">
+                        <div class="info-label">
+                            Security Deposit
+                        </div>
+
+                        <div class="info-value">
+                            ₹@Model.SecurityDeposit
+                        </div>
+                    </div>
+
+                    <div class="info-box">
+                        <div class="info-label">
+                            Total Charges
+                        </div>
+
+                        <div class="info-value">
+                            ₹@Model.FineAmount
+                        </div>
+                    </div>
+
+                    <div class="info-box">
+                        <div class="info-label">
+                            Remaining Payable
+                        </div>
+
+                        <div class="info-value">
+                            ₹@Model.ExtraCharge
+                        </div>
+                    </div>
+
+                </div>
+            }
+
             <div class="amount-box">
 
                 <div class="amount-label">
-                    Total Fine Amount
+                    Amount To Pay
                 </div>
 
                 <div class="amount-value">
-                    ₹@Model.FineAmount
+                    ₹@payableAmount
                 </div>
 
             </div>
 
             <div class="warning-box">
-                ⚠ Payment is required before your book return can be completed.
+
+                @if (Model.IsNonMemberBorrow)
+                {
+                    <text>
+                        ⚠ Your security deposit has already been adjusted.
+                        Please pay only the remaining balance.
+                    </text>
+                }
+                else
+                {
+                    <text>
+                        ⚠ Payment is required before your return can be completed.
+                    </text>
+                }
+
             </div>
 
             <button id="rzp-button"
                     type="button"
                     class="pay-btn">
 
-                Pay ₹@Model.FineAmount
+                Pay ₹@payableAmount
 
             </button>
 
@@ -239,6 +291,7 @@
             </div>
 
             <form id="payment-form"
+                  asp-controller="Payment"
                   asp-action="FinePaymentSuccess"
                   method="post">
 
@@ -265,7 +318,6 @@
         </div>
 
     </div>
-
 </div>
 
 <script>
@@ -274,7 +326,7 @@
 
         key: "@ViewBag.RazorpayKey",
 
-        amount: "@((int)(Model.FineAmount * 100))",
+        amount: "@((int)(payableAmount * 100))",
 
         currency: "INR",
 

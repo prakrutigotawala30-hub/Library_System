@@ -121,12 +121,12 @@ public async Task<IActionResult> Issue(BorrowRecord Record, int borrowDays)
             {
                 Record.IsNonMemberBorrow = true;
 
-                Record.BorrowFee = 20;
+                Record.BorrowFee = 50;
 
-                Record.SecurityDeposit = 300;
+                Record.SecurityDeposit = book.DepositAmount;
 
                 if (borrowDays <= 0)
-                    borrowDays = 7;
+                    borrowDays = 5;
             }
             else
             {
@@ -137,7 +137,7 @@ public async Task<IActionResult> Issue(BorrowRecord Record, int borrowDays)
                 Record.SecurityDeposit = 0;
 
                 if (borrowDays <= 0)
-                    borrowDays = 15;
+                    borrowDays = 5;
             }
 
             // =========================================

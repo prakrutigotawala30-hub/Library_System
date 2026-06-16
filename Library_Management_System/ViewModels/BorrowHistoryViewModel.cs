@@ -43,5 +43,8 @@ namespace Library_Management_System.ViewModels
         public decimal LostBookCharge { get; set; }
 
         public string ReturnStatus { get; set; }
+        public decimal ExtraCharge { get; set; }
+
+        public string? ReturnCondition { get; set; }
     }
 }

@@ -369,8 +369,8 @@ namespace Library_Management_System.Controllers
             {
                 borrow.IsNonMemberBorrow = true;
 
-                borrow.BorrowFee = 20;
-                borrow.SecurityDeposit = 300;
+                borrow.BorrowFee = 50;
+                borrow.SecurityDeposit = book.DepositAmount;
 
                 borrow.DueDate = DateTime.Now.AddDays(5);
             }
@@ -381,7 +381,7 @@ namespace Library_Management_System.Controllers
                 borrow.BorrowFee = 0;
                 borrow.SecurityDeposit = 0;
 
-                borrow.DueDate = DateTime.Now.AddDays(15);
+                borrow.DueDate = DateTime.Now.AddDays(5);
             }
 
             _context.BorrowRecords.Add(borrow);
