@@ -1,0 +1,64 @@
+@model List<LibraryManagementSystem.ClassLibrary.Models.BorrowRecord>
+
+<h2 class="mb-4">Refund Requests</h2>
+
+<table class="table table-bordered table-striped">
+
+    <thead>
+        <tr>
+            <th>Member</th>
+            <th>Book</th>
+            <th>Deposit</th>
+            <th>Refund</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+
+                <td>@item.Member?.Name</td>
+
+                <td>@item.Book?.Title</td>
+
+                <td>₹@item.SecurityDeposit</td>
+
+                <td>₹@item.RefundAmount</td>
+
+                <td>
+                    @if (item.RefundProcessed)
+                    {
+                        <span class="badge bg-success">
+                            Refunded
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-warning">
+                            Pending
+                        </span>
+                    }
+                </td>
+
+                <td>
+
+                    <a asp-action="Details"
+                       asp-route-id="@item.Id"
+                       class="btn btn-primary">
+
+                        Review
+
+                    </a>
+
+                </td>
+
+            </tr>
+        }
+
+    </tbody>
+
+</table>

@@ -111,15 +111,27 @@
         <span>Users</span>
     </a>
 
-<a asp-controller="MembershipApproval"
-   asp-action="Index"
+    <a asp-controller="MembershipApproval"
+       asp-action="Index"
        data-bs-toggle="tooltip"
        title="Approvals">
 
-    <i class="bi bi-gem"></i>
+        <i class="bi bi-gem"></i>
         <span>Membership Approvals</span>
 
-</a>
+    </a>
+
+        <a asp-controller="Refund"
+           asp-action="Index"
+           data-bs-toggle="tooltip"
+           class="nav-link">
+
+            <i class="bi bi-cash-coin"></i>
+
+            <span> Refund Requests</span>
+
+        </a>
+    
 
     @* <a asp-controller="TokenManagement"
        asp-action="Index"
@@ -192,17 +204,17 @@
 
     <!-- REPORTS -->
 
-<div class="menu-title">REPORTS</div>
+    <div class="menu-title">REPORTS</div>
 
-<a asp-controller="Reports"
-   asp-action="Index"
-   data-bs-toggle="tooltip"
-   title="Reports & Analytics">
+    <a asp-controller="Reports"
+       asp-action="Index"
+       data-bs-toggle="tooltip"
+       title="Reports & Analytics">
 
-    <i class="bi bi-bar-chart-line-fill"></i>
-    <span>Reports & Analytics</span>
+        <i class="bi bi-bar-chart-line-fill"></i>
+        <span>Reports & Analytics</span>
 
-</a>
+    </a>
 
 
     <a asp-controller="Reports"

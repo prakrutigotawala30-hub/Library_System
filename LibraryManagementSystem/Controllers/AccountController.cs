@@ -74,7 +74,7 @@ namespace LibraryManagementSystem.Controllers
                 return RedirectToAction("Index", "Home");
 
             if (result.IsLockedOut)
-                ModelState.AddModelError("", "Account locked due to too many failed logins. Try again later.");
+                ModelState.AddModelError("", "");
             else if (result.IsNotAllowed)
                 ModelState.AddModelError("", "Login not allowed.");
             else

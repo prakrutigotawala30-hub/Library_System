@@ -58,15 +58,21 @@ namespace Library_Management_System.Areas.Member.Controllers
                 ? settings.FinePerDay
                 : 10m;
 
+            // var query = borrowRecords
+            //     .GroupBy(x => x.BookId)
+            //     .Select(g => new
+            //     {
+            //         Borrow = g.First(),
+            //         BorrowCount = g.Count()
+            //     })
+            //     .AsQueryable();
             var query = borrowRecords
-                .GroupBy(x => x.BookId)
-                .Select(g => new
+                .Select(x => new
                 {
-                    Borrow = g.First(),
-                    BorrowCount = g.Count()
+                    Borrow = x,
+                    BorrowCount = 1
                 })
                 .AsQueryable();
-
             // =========================
             // FILTERS
             // =========================
@@ -98,11 +104,11 @@ namespace Library_Management_System.Areas.Member.Controllers
                 {
                     Id = x.Borrow.Id,
 
-                    BookTitle =x.Borrow.Book != null
+                    BookTitle = x.Borrow.Book != null
                             ? x.Borrow.Book.Title
                             : "",
 
-                    Author =x.Borrow.Book != null &&
+                    Author = x.Borrow.Book != null &&
                             x.Borrow.Book.Author != null
                                 ? x.Borrow.Book.Author.Name
                                 : "",

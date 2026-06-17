@@ -6,7 +6,6 @@
 
 
 <style>
-
     body {
         background: var(--page-bg);
         color: var(--text);
@@ -29,14 +28,14 @@
         border: 1px solid var(--soft-border);
         border-radius: 35px;
         overflow: hidden;
-        box-shadow: 0 25px 60px rgba(124,58,237,0.18);
+        box-shadow: 0 25px 60px rgba(124, 58, 237, 0.18);
         position: relative;
     }
 
     /* TOP AREA */
 
     .top-section {
-        background: linear-gradient(135deg,#7c3aed,#9333ea);
+        background: linear-gradient(135deg, #7c3aed, #9333ea);
         padding: 50px;
         position: relative;
         overflow: hidden;
@@ -48,7 +47,7 @@
             width: 300px;
             height: 300px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.08);
+            background: rgba(255, 255, 255, 0.08);
             top: -120px;
             right: -120px;
         }
@@ -59,7 +58,7 @@
             width: 220px;
             height: 220px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.05);
+            background: rgba(255, 255, 255, 0.05);
             bottom: -100px;
             left: -100px;
         }
@@ -73,7 +72,7 @@
         width: 90px;
         height: 90px;
         border-radius: 24px;
-        background: rgba(255,255,255,0.15);
+        background: rgba(255, 255, 255, 0.15);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -89,7 +88,7 @@
     }
 
     .page-subtitle {
-        color: rgba(255,255,255,0.85);
+        color: rgba(255, 255, 255, 0.85);
         max-width: 550px;
         line-height: 1.7;
         font-size: 15px;
@@ -124,7 +123,7 @@
 
     .info-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit,minmax(200px,1fr));
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         gap: 20px;
     }
 
@@ -138,8 +137,8 @@
 
         .info-card:hover {
             transform: translateY(-5px);
-            border-color: rgba(124,58,237,0.45);
-            box-shadow: 0 10px 30px rgba(124,58,237,0.15);
+            border-color: rgba(124, 58, 237, 0.45);
+            box-shadow: 0 10px 30px rgba(124, 58, 237, 0.15);
         }
 
     .info-label {
@@ -157,8 +156,8 @@
 
     .alert-box {
         margin-top: 30px;
-        background: rgba(220,38,38,0.12);
-        border: 1px solid rgba(220,38,38,0.25);
+        background: rgba(220, 38, 38, 0.12);
+        border: 1px solid rgba(220, 38, 38, 0.25);
         color: #fca5a5;
         padding: 20px;
         border-radius: 18px;
@@ -191,13 +190,14 @@
 
         .condition-select:focus {
             border-color: #7c3aed;
-            box-shadow: 0 0 0 4px rgba(124,58,237,.2);
+            box-shadow: 0 0 0 4px rgba(124, 58, 237, .2);
         }
 
         .condition-select option {
             background: #111827;
             color: white;
         }
+
     /* BUTTONS */
 
     .button-group {
@@ -222,19 +222,19 @@
 
     .confirm-btn {
         border: none;
-        background: linear-gradient(90deg,#7c3aed,#9333ea);
+        background: linear-gradient(90deg, #7c3aed, #9333ea);
         color: white;
         padding: 15px 34px;
         border-radius: 18px;
         font-weight: 700;
         font-size: 15px;
         transition: 0.3s;
-        box-shadow: 0 15px 30px rgba(124,58,237,0.30);
+        box-shadow: 0 15px 30px rgba(124, 58, 237, 0.30);
     }
 
         .confirm-btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 20px 35px rgba(124,58,237,0.40);
+            box-shadow: 0 20px 35px rgba(124, 58, 237, 0.40);
         }
 
     /* RESPONSIVE */
@@ -258,7 +258,7 @@
         .form-control:focus {
             outline: none;
             border-color: #7c3aed;
-            box-shadow: 0 0 0 4px rgba(124,58,237,.15);
+            box-shadow: 0 0 0 4px rgba(124, 58, 237, .15);
         }
 
     @@media(max-width:768px) {
@@ -288,6 +288,7 @@
             width: 100%;
         }
     }
+
     /* LIGHT THEME FIXES */
 
     body.light-mode .back-btn {
@@ -307,7 +308,6 @@
     body.light-mode .return-section {
         background: var(--page-bg);
     }
-
 </style>
 
 <div class="return-section">
@@ -404,14 +404,11 @@
                     </div>
                 }
 
-                <form asp-action="Confirm"
-                      method="post">
+                <form asp-action="Confirm" method="post">
 
                     @Html.AntiForgeryToken()
 
-                    <input type="hidden"
-                           name="id"
-                           value="@Model.Id" />
+                    <input type="hidden" name="id" value="@Model.Id" />
 
                     <!-- BOOK CONDITION -->
 
@@ -421,10 +418,7 @@
                             Book Condition
                         </label>
 
-                        <select id="conditionSelect"
-                                name="returnCondition"
-                                class="form-control"
-                                required>
+                        <select id="conditionSelect" name="returnCondition" class="form-control" required>
 
                             <option value="">
                                 Select Book Condition
@@ -448,9 +442,7 @@
 
                     <!-- CHARGE PREVIEW -->
 
-                    <div id="chargePreview"
-                         class="alert-box"
-                         style="display:block;margin-top:20px;">
+                    <div id="chargePreview" class="alert-box" style="display:block;margin-top:20px;">
 
                         Select a book condition to see charges.
 
@@ -478,15 +470,13 @@
 
                     <div class="button-group">
 
-                        <a asp-action="Index"
-                           class="back-btn">
+                        <a asp-action="Index" class="back-btn">
 
                             ← Back to Borrow History
 
                         </a>
 
-                        <button type="submit"
-                                class="confirm-btn">
+                        <button type="submit" class="confirm-btn">
 
                             Confirm Return
 
@@ -502,10 +492,10 @@
 
     </div>
 
-</div>
+@* </div>
 <script>
 
-        let isNonMember =
+    let isNonMember =
         @(Model.IsNonMemberBorrow.ToString().ToLower());
 
     conditionSelect.addEventListener("change", function () {
@@ -514,10 +504,11 @@
 
         let lateDays =
             @(Math.Max(0,
-                                                (DateTime.Now.Date - Model.DueDate.Date).Days));
+                                                                                                                                                            (DateTime.Now.Date - Model.DueDate.Date).Days));
 
         let finePerDay = 10;
-
+        let borrowFee =
+    @(Model.BorrowFee);
         let deposit =
             @(Model.SecurityDeposit);
 
@@ -533,10 +524,8 @@
         // MEMBER
         // =========================
 
-        if (!isNonMember)
-        {
-            if (condition === "Good")
-            {
+        if (!isNonMember) {
+            if (condition === "Good") {
                 html =
                     "<strong>Member Return</strong><br>" +
                     "Late Fine: ₹" + lateFine +
@@ -544,8 +533,7 @@
                     lateFine + "</strong>";
             }
 
-            else if (condition === "Damaged")
-            {
+            else if (condition === "Damaged") {
                 let damageCharge = 100;
 
                 let total =
@@ -559,8 +547,7 @@
                     total + "</strong>";
             }
 
-            else if (condition === "Lost")
-            {
+            else if (condition === "Lost") {
                 let total =
                     lateFine + bookPrice;
 
@@ -577,71 +564,225 @@
         // NON MEMBER
         // =========================
 
-        else
-        {
-            if (condition === "Good")
-            {
+        else {
+            if (condition === "Good") {
                 let refund =
                     deposit - lateFine;
 
-                if(refund < 0)
+                if (refund < 0)
                     refund = 0;
 
                 html =
                     "<table style='width:100%'>" +
-                    "<tr><td>Deposit</td><td>₹" + deposit + "</td></tr>" +
+                    "<tr><td>Security Deposit</td><td>₹" + deposit + "</td></tr>" +
+                    "<tr><td>Borrow Fee</td><td>₹" + borrowFee + " (Non Refundable)</td></tr>" +
                     "<tr><td>Late Fine</td><td>₹" + lateFine + "</td></tr>" +
                     "<tr><td><strong>Refund Given</strong></td><td><strong>₹" +
                     refund + "</strong></td></tr>" +
                     "</table>";
             }
 
-            else if (condition === "Damaged")
-            {
-                let damageCharge = 100;
+            else if (condition === "Damaged") {
 
-                let refund =
-                    deposit -
-                    lateFine -
-                    damageCharge;
+    let damageCharge = 100;
 
-                if(refund < 0)
-                    refund = 0;
+    let refund =
+        deposit -
+        lateFine -
+        damageCharge;
 
-                html =
-                    "<table style='width:100%'>" +
-                    "<tr><td>Deposit</td><td>₹" + deposit + "</td></tr>" +
-                    "<tr><td>Late Fine</td><td>₹" + lateFine + "</td></tr>" +
-                    "<tr><td>Damage Charge</td><td>₹100</td></tr>" +
-                    "<tr><td><strong>Refund Given</strong></td><td><strong>₹" +
-                    refund + "</strong></td></tr>" +
-                    "</table>";
-            }
+    if (refund < 0)
+        refund = 0;
 
-            else if (condition === "Lost")
-            {
-                let remaining =
-                    deposit - lateFine;
+    html =
+        "<table style='width:100%'>" +
+        "<tr><td>Security Deposit</td><td>₹" + deposit + "</td></tr>" +
+        "<tr><td>Borrow Fee</td><td>₹" + borrowFee + " (Non Refundable)</td></tr>" +
+        "<tr><td>Late Fine</td><td>₹" + lateFine + "</td></tr>" +
+        "<tr><td>Damage Charge</td><td>₹100</td></tr>" +
+        "<tr><td><strong>Refund Amount</strong></td><td><strong>₹" +
+        refund + "</strong></td></tr>" +
+        "</table>";
+}
+            else if (condition === "Lost") {
 
-                let additionalCharge = 0;
+    let totalCharge =
+        lateFine + bookPrice;
 
-                if (bookPrice > remaining)
-                {
-                    additionalCharge =
-                        bookPrice - remaining;
-                }
+    let additionalCharge = 0;
 
-                html =
-                    "<table style='width:100%'>" +
-                    "<tr><td>Deposit</td><td>₹" + deposit + "</td></tr>" +
-                    "<tr><td>Late Fine</td><td>₹" + lateFine + "</td></tr>" +
-                    "<tr><td>Book Price</td><td>₹" + bookPrice + "</td></tr>" +
-                    "<tr><td><strong>Additional Charge</strong></td><td><strong>₹" +
-                    additionalCharge + "</strong></td></tr>" +
-                    "</table>";
-            }
-        }
+    if (totalCharge > deposit) {
+        additionalCharge =
+            totalCharge - deposit;
+    }
 
+    html =
+        "<table style='width:100%'>" +
+        "<tr><td>Security Deposit</td><td>₹" + deposit + "</td></tr>" +
+        "<tr><td>Borrow Fee</td><td>₹" + borrowFee + " (Non Refundable)</td></tr>" +
+        "<tr><td>Late Fine</td><td>₹" + lateFine + "</td></tr>" +
+        "<tr><td>Lost Book Charge</td><td>₹" + bookPrice + "</td></tr>" +
+        "<tr><td><strong>Additional Payment</strong></td><td><strong>₹" +
+        additionalCharge + "</strong></td></tr>" +
+        "</table>";
+}
         chargePreview.innerHTML = html;
     });
-</script>
+</script> *@
+    <script>
+
+        const conditionSelect =
+            document.getElementById("conditionSelect");
+
+        const chargePreview =
+            document.getElementById("chargePreview");
+
+        let isNonMember =
+            @(Model.IsNonMemberBorrow.ToString().ToLower());
+
+        conditionSelect.addEventListener("change", function () {
+
+            let condition = this.value;
+
+            if (!condition) {
+                chargePreview.innerHTML =
+                    "Select a book condition to see charges.";
+                return;
+            }
+
+            let lateDays =
+                @(Math.Max(0,
+                                (DateTime.Now.Date - Model.DueDate.Date).Days));
+
+            let finePerDay = 10;
+
+            let borrowFee =
+                @(Model.BorrowFee);
+
+            let deposit =
+                @(Model.SecurityDeposit);
+
+            let bookPrice =
+                @(Model.Book?.DepositAmount ?? 0);
+
+            let lateFine =
+                lateDays * finePerDay;
+
+            let html = "";
+
+            // MEMBER
+
+            if (!isNonMember) {
+
+                if (condition === "Good") {
+
+                    html =
+                        "<strong>Member Return</strong><br>" +
+                        "Late Fine : ₹" + lateFine +
+                        "<br><strong>Total Payable : ₹" +
+                        lateFine + "</strong>";
+                }
+
+                else if (condition === "Damaged") {
+
+                    let damageCharge = 100;
+
+                    let total =
+                        lateFine + damageCharge;
+
+                    html =
+                        "<strong>Damaged Book</strong><br>" +
+                        "Damage Charge : ₹100<br>" +
+                        "Late Fine : ₹" + lateFine +
+                        "<br><strong>Total Payable : ₹" +
+                        total + "</strong>";
+                }
+
+                else if (condition === "Lost") {
+
+                    let total =
+                        lateFine + bookPrice;
+
+                    html =
+                        "<strong>Lost Book</strong><br>" +
+                        "Lost Book Charge : ₹" + bookPrice +
+                        "<br>Late Fine : ₹" + lateFine +
+                        "<br><strong>Total Payable : ₹" +
+                        total + "</strong>";
+                }
+            }
+
+            // NON MEMBER
+
+            else {
+
+                if (condition === "Good") {
+
+                    let refund =
+                        deposit - lateFine;
+
+                    if (refund < 0)
+                        refund = 0;
+
+                    html =
+                        "<table style='width:100%'>" +
+                        "<tr><td>Security Deposit</td><td>₹" + deposit + "</td></tr>" +
+                        "<tr><td>Borrow Fee</td><td>₹" + borrowFee + " (Non Refundable)</td></tr>" +
+                        "<tr><td>Late Fine</td><td>₹" + lateFine + "</td></tr>" +
+                        "<tr><td><strong>Refund Amount</strong></td><td><strong>₹" +
+                        refund + "</strong></td></tr>" +
+                        "</table>";
+                }
+
+                else if (condition === "Damaged") {
+
+                    let damageCharge = 100;
+
+                    let refund =
+                        deposit -
+                        lateFine -
+                        damageCharge;
+
+                    if (refund < 0)
+                        refund = 0;
+
+                    html =
+                        "<table style='width:100%'>" +
+                        "<tr><td>Security Deposit</td><td>₹" + deposit + "</td></tr>" +
+                        "<tr><td>Borrow Fee</td><td>₹" + borrowFee + " (Non Refundable)</td></tr>" +
+                        "<tr><td>Late Fine</td><td>₹" + lateFine + "</td></tr>" +
+                        "<tr><td>Damage Charge</td><td>₹100</td></tr>" +
+                        "<tr><td><strong>Refund Amount</strong></td><td><strong>₹" +
+                        refund + "</strong></td></tr>" +
+                        "</table>";
+                }
+
+                else if (condition === "Lost") {
+
+                    let totalCharge =
+                        lateFine + bookPrice;
+
+                    let additionalCharge = 0;
+
+                    if (totalCharge > deposit) {
+
+                        additionalCharge =
+                            totalCharge - deposit;
+                    }
+
+                    html =
+                        "<table style='width:100%'>" +
+                        "<tr><td>Security Deposit</td><td>₹" + deposit + "</td></tr>" +
+                        "<tr><td>Borrow Fee</td><td>₹" + borrowFee + " (Non Refundable)</td></tr>" +
+                        "<tr><td>Late Fine</td><td>₹" + lateFine + "</td></tr>" +
+                        "<tr><td>Lost Book Charge</td><td>₹" + bookPrice + "</td></tr>" +
+                        "<tr><td><strong>Additional Payment</strong></td><td><strong>₹" +
+                        additionalCharge + "</strong></td></tr>" +
+                        "</table>";
+                }
+            }
+
+            chargePreview.innerHTML = html;
+        });
+
+    </script>

@@ -30,7 +30,7 @@ namespace LibraryManagementSystem.ClassLibrary.Models
         [Required]
         public DateTime DueDate { get; set; }
 
-        public int RenewCount { get; set; } = 0;
+        public int RenewCount { get; set; } 
 
         public DateTime? ReturnedOn { get; set; }
 
@@ -48,37 +48,45 @@ namespace LibraryManagementSystem.ClassLibrary.Models
 
         [Required]
         [StringLength(20)]
-        public string Status { get; set; } = "Issued";
+        public string Status { get; set; } 
 
         public string? BookCondition { get; set; }
 
+
+
+
+
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal BorrowFee { get; set; } = 50;
+
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal SecurityDeposit { get; set; } 
+
+        public bool IsNonMemberBorrow { get; set; } = false;
+
+        [StringLength(20)]
+        public string ReturnStatus { get; set; }
+
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal DamageCharge { get; set; }
+
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal LostBookCharge { get; set; }
+
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal ExtraCharge { get; set; }
+
+        [StringLength(20)]
+        public string? ReturnCondition { get; set; }
         [Column(TypeName = "decimal(18,2)")]
         public decimal RefundAmount { get; set; }
 
         public bool RefundProcessed { get; set; } = false;
 
+        public DateTime? RefundDate { get; set; }
 
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal BorrowFee { get; set; } = 0;
+        public string? RazorpayPaymentId { get; set; }
 
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal SecurityDeposit { get; set; } = 0;
-
-        public bool IsNonMemberBorrow { get; set; } = false;
-
-        [StringLength(20)]
-        public string ReturnStatus { get; set; } = "Pending";
-
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal DamageCharge { get; set; } = 0;
-
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal LostBookCharge { get; set; } = 0;
-
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal ExtraCharge { get; set; } = 0;
-
-        [StringLength(20)]
-        public string? ReturnCondition { get; set; }
+        public string? RazorpayRefundId { get; set; }
     }
 }

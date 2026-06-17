@@ -213,13 +213,27 @@
         background: var(--card);
         color: var(--text-muted);
     }
+
+    .refund-message {
+        margin-top: 20px;
+        padding: 16px 20px;
+        border-radius: 16px;
+        background: rgba(34, 197, 94, 0.12);
+        border: 1px solid rgba(34, 197, 94, 0.25);
+        color: #86efac;
+        font-size: 15px;
+        line-height: 1.6;
+        font-weight: 500;
+    }
 </style>
+
 
 <div class="history-wrapper">
 
     <div class="page-title">
         📚 Borrow History Timeline
     </div>
+
 
     <!-- FILTERS -->
 
@@ -535,16 +549,37 @@
 
                         </div>
 
+                        <!-- info-grid end -->
+                        @if (item.Status == "Returned" &&
+                                        item.IsNonMemberBorrow)
+                        {
+                            <div class="refund-message">
+
+                                @if (item.RefundAmount > 0)
+                                {
+                                    <span>
+                                        💰 Refund amount <strong>₹@item.RefundAmount</strong>
+                                        will be credited to your account within
+                                        <strong>2-3 working days</strong>.
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span>
+                                        ℹ️ No refund is available for this return.
+                                    </span>
+                                }
+
+                            </div>
+                        }
+
                         <!-- RETURN BUTTON -->
                         @if (item.Status == "Active" ||
                                         item.Status == "Overdue")
                         {
                             <div class="mt-4 d-flex justify-content-end">
 
-                                <a asp-area="Member"
-                                   asp-controller="Return"
-                                   asp-action="Index"
-                                   asp-route-id="@item.Id"
+                                <a asp-area="Member" asp-controller="Return" asp-action="Index" asp-route-id="@item.Id"
                                    class="return-btn">
 
                                     Return Book

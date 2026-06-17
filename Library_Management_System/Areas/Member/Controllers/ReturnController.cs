@@ -12,14 +12,14 @@ namespace Library_Management_System.Areas.Member.Controllers
     {
         private readonly AppDbContext _context;
 
-    public ReturnController(
-        AppDbContext context)
+        public ReturnController(AppDbContext context)
         {
             _context = context;
         }
 
+        // =========================
         // RETURN PAGE
-
+        // =========================
         [HttpGet]
         public async Task<IActionResult> Index(int id)
         {
@@ -37,10 +37,7 @@ namespace Library_Management_System.Areas.Member.Controllers
                 return RedirectToAction("Index", "BorrowHistory");
             }
 
-            // Preview Fine
-
-            int lateDays = Math.Max(
-                0,
+            int lateDays = Math.Max(0,
                 (DateTime.Now.Date - borrow.DueDate.Date).Days);
 
             borrow.DaysLate = lateDays;
@@ -51,13 +48,12 @@ namespace Library_Management_System.Areas.Member.Controllers
             return View(borrow);
         }
 
+        // =========================
         // RETURN CONFIRM
-
+        // =========================
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Confirm(
-    int id,
-    string returnCondition)
+        public async Task<IActionResult> Confirm(int id, string returnCondition)
         {
             var borrow = await _context.BorrowRecords
                 .Include(x => x.Book)
@@ -72,172 +68,101 @@ namespace Library_Management_System.Areas.Member.Controllers
                 return RedirectToAction("Index", "BorrowHistory");
             }
 
-            //----------------------------------
-            // RETURN DETAILS
-            //----------------------------------
-
             borrow.ReturnedOn = DateTime.Now;
             borrow.ReturnCondition = returnCondition;
 
-            int lateDays = Math.Max(
-                0,
-                (borrow.ReturnedOn.Value.Date -
-                 borrow.DueDate.Date).Days);
+            int lateDays = Math.Max(0,
+                (borrow.ReturnedOn.Value.Date - borrow.DueDate.Date).Days);
+
+            decimal lateFine = lateDays * borrow.FinePerDay;
 
             borrow.DaysLate = lateDays;
 
-            decimal finePerDay = borrow.FinePerDay;
-
-            decimal lateFine =
-                lateDays * finePerDay;
-
-            //----------------------------------
-            // RESET OLD VALUES
-            //----------------------------------
-
+            // reset
             borrow.FineAmount = 0;
             borrow.DamageCharge = 0;
             borrow.LostBookCharge = 0;
             borrow.ExtraCharge = 0;
             borrow.RefundAmount = 0;
 
-            //----------------------------------
-            // MEMBER
-            //----------------------------------
+            decimal totalCharge = lateFine;
 
-            if (!borrow.IsNonMemberBorrow)
-            {
-                decimal totalCharge = lateFine;
-
-                if (returnCondition == "Damaged")
-                {
-                    borrow.DamageCharge = 100;
-                    totalCharge += 100;
-                }
-                else if (returnCondition == "Lost")
-                {
-                    decimal bookPrice =
-                        borrow.Book?.DepositAmount ?? 0;
-
-                    borrow.LostBookCharge = bookPrice;
-                    totalCharge += bookPrice;
-                }
-
-                borrow.FineAmount = totalCharge;
-
-                if (totalCharge > 0)
-                {
-                    borrow.FinePaid = false;
-
-                    await _context.SaveChangesAsync();
-
-                    return RedirectToAction(
-                        "FinePayment",
-                        "Payment",
-                        new { id = borrow.Id });
-                }
-
-                borrow.FinePaid = true;
-                borrow.Status = "Returned";
-
-                if (returnCondition != "Lost")
-                {
-                    borrow.Book.AvailableCopies++;
-                }
-
-                await _context.SaveChangesAsync();
-
-                TempData["Success"] =
-                    "Book returned successfully.";
-
-                return RedirectToAction(
-                    "Index",
-                    "BorrowHistory");
-            }
-
-            //----------------------------------
-            // NON MEMBER
-            //----------------------------------
-
-            decimal totalCharges = lateFine;
-
+            // =========================
+            // Charges
+            // =========================
             if (returnCondition == "Damaged")
             {
                 borrow.DamageCharge = 100;
-                totalCharges += 100;
+                totalCharge += 100;
             }
-
-            if (returnCondition == "Lost")
+            else if (returnCondition == "Lost")
             {
-                decimal bookPrice =
-                    borrow.Book?.DepositAmount ?? 0;
-
-                borrow.LostBookCharge = bookPrice;
-                totalCharges += bookPrice;
+                borrow.LostBookCharge = borrow.Book?.DepositAmount ?? 0;
+                totalCharge += borrow.LostBookCharge;
             }
 
-            borrow.FineAmount = totalCharges;
+            borrow.FineAmount = lateFine;
 
-            decimal deposit =
-                borrow.SecurityDeposit;
-
-            //----------------------------------
-            // REFUND CALCULATION
-            //----------------------------------
-
-            if (totalCharges > deposit)
+            // =========================
+            // NON MEMBER LOGIC
+            // =========================
+            if (borrow.IsNonMemberBorrow)
             {
-                borrow.ExtraCharge =
-                    totalCharges - deposit;
+                decimal deposit = borrow.SecurityDeposit;
 
-                borrow.RefundAmount = 0;
-            }
-            else
-            {
-                borrow.RefundAmount =
-                    deposit - totalCharges;
-            }
+                if (totalCharge > deposit)
+                {
+                    borrow.ExtraCharge = totalCharge - deposit;
+                    borrow.RefundAmount = 0;
+                }
+                else
+                {
+                    borrow.ExtraCharge = 0;
+                    borrow.RefundAmount = deposit - totalCharge;
+                }
 
-            borrow.RefundProcessed = false;
+                borrow.RefundProcessed = false;
 
-            //----------------------------------
-            // EXTRA PAYMENT REQUIRED
-            //----------------------------------
+                if (borrow.ExtraCharge > 0)
+                {
+                    borrow.FinePaid = false;
+                    await _context.SaveChangesAsync();
 
-            if (borrow.ExtraCharge > 0)
-            {
-                borrow.FinePaid = false;
+                    TempData["Info"] =
+                        $"Additional payment required: ₹{borrow.ExtraCharge}";
 
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction(
-                    "FinePayment",
-                    "Payment",
-                    new { id = borrow.Id });
+                    return RedirectToAction("FinePayment", "Payment", new { id = borrow.Id });
+                }
             }
 
-            //----------------------------------
-            // SUCCESS RETURN
-            //----------------------------------
-
+            // =========================
+            // FINAL RETURN (COMMON)
+            // =========================
             borrow.FinePaid = true;
             borrow.Status = "Returned";
 
             if (returnCondition != "Lost")
             {
-                borrow.Book.AvailableCopies++;
+                borrow.Book!.AvailableCopies++;
             }
 
             await _context.SaveChangesAsync();
 
-            TempData["Success"] =
-                $"Book returned successfully. Refund Amount ₹{borrow.RefundAmount}. Refund will be credited within 3-4 working days.";
+            // =========================
+            // SUCCESS MESSAGE (SAFE)
+            // =========================
+            TempData["SuccessTitle"] = "Book Returned Successfully";
 
-            return RedirectToAction(
-                "Index",
-                "BorrowHistory");
+            TempData["SuccessDetails"] =
+$@"Security Deposit : ₹{borrow.SecurityDeposit}
+Borrow Fee : ₹{borrow.BorrowFee}
+Late Fine : ₹{lateFine}
+Damage Charge : ₹{borrow.DamageCharge}
+Lost Book Charge : ₹{borrow.LostBookCharge}
+Refund Amount : ₹{borrow.RefundAmount}
+Status : Returned";
+
+            return RedirectToAction("Index", "BorrowHistory");
         }
-
     }
-
 }
