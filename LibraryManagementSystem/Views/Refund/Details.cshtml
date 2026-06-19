@@ -2,133 +2,262 @@
 
 @{
     ViewData["Title"] = "Refund Details";
+
+decimal depositAmount =
+    Model.SecurityDeposit > 0
+        ? Model.SecurityDeposit
+        : (Model.Book?.DepositAmount ?? 0);
+
+    decimal totalCharges =
+        Model.FineAmount +
+        Model.DamageCharge +
+        Model.LostBookCharge;
 }
 
-<div class="card shadow border-0">
+<div class="container mt-4">
 
-    <div class="card-header bg-primary text-white">
-        <h4 class="mb-0">
-            Refund Review
-        </h4>
-    </div>
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success shadow-sm">
+            @TempData["Success"]
+        </div>
+    }
 
-    <div class="card-body">
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger shadow-sm">
+            @TempData["Error"]
+        </div>
+    }
 
-        <h4>
-            @Model.Book?.Title
-        </h4>
+    <div class="card shadow-lg border-0">
 
-        <hr />
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">
+                Refund Review
+            </h4>
+        </div>
 
-        <div class="row">
+        <div class="card-body">
 
-            <div class="col-md-6">
+            <h3 class="fw-bold">
+                @Model.Book?.Title
+            </h3>
 
-                <p>
-                    <strong>Member:</strong>
-                    @Model.Member?.Name
-                </p>
+            <hr />
 
-                <p>
-                    <strong>Borrow Type:</strong>
+            <div class="row">
 
-                    @if (Model.IsNonMemberBorrow)
-                    {
-                        <span class="badge bg-warning text-dark">
-                            Non Member
-                        </span>
-                    }
-                    else
-                    {
-                        <span class="badge bg-success">
-                            Member
-                        </span>
-                    }
-                </p>
+                <div class="col-md-6">
 
-                <p>
-                    <strong>Borrow Date:</strong>
-                    @Model.IssuedOn.ToString("dd MMM yyyy")
-                </p>
+                    <h5 class="mb-3">
+                        Borrow Information
+                    </h5>
 
-                <p>
-                    <strong>Return Date:</strong>
-                    @Model.ReturnedOn?.ToString("dd MMM yyyy")
-                </p>
+                    <p>
+                        <strong>Member Name:</strong>
+                        @Model.Member?.Name
+                    </p>
 
-                <p>
-                    <strong>Return Condition:</strong>
-                    @Model.ReturnCondition
-                </p>
+                    <p>
+                        <strong>Borrow Type:</strong>
 
-                <p>
-                    <strong>Late Days:</strong>
-                    @Model.DaysLate
-                </p>
+                        @if (Model.IsNonMemberBorrow)
+                        {
+                            <span class="badge bg-warning text-dark">
+                                Non Member
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success">
+                                Member
+                            </span>
+                        }
+                    </p>
+
+                    <p>
+                        <strong>Issued On:</strong>
+                        @Model.IssuedOn.ToString("dd MMM yyyy")
+                    </p>
+
+                    <p>
+                        <strong>Returned On:</strong>
+                        @Model.ReturnedOn?.ToString("dd MMM yyyy")
+                    </p>
+
+                    <p>
+                        <strong>Return Condition:</strong>
+                        @Model.ReturnCondition
+                    </p>
+
+                    <p>
+                        <strong>Late Days:</strong>
+                        @Model.DaysLate
+                    </p>
+
+                    <p>
+                        <strong>Status:</strong>
+                        @Model.Status
+                    </p>
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <div class="card border">
+
+                        <div class="card-header bg-light">
+                            Financial Summary
+                        </div>
+
+                        <div class="card-body">
+
+                            @if (Model.IsNonMemberBorrow)
+                            {
+                                <p>
+                                    Security Deposit:
+                                    <strong>
+                                        ₹@depositAmount
+                                    </strong>
+                                </p>
+
+                                <p>
+                                    Borrow Fee:
+                                    <strong>
+                                        ₹@Model.BorrowFee
+                                    </strong>
+                                </p>
+
+                                <hr />
+
+                                <p>
+                                    Razorpay Payment Id:
+                                    <strong>
+                                        @(Model.RazorpayPaymentId ?? "N/A")
+                                    </strong>
+                                </p>
+
+                                <p>
+                                    Razorpay Order Id:
+                                    <strong>
+                                        @(Model.RazorpayOrderId ?? "N/A")
+                                    </strong>
+                                </p>
+                            }
+
+                            <p>
+                                Late Fine:
+                                <strong>
+                                    ₹@Model.FineAmount
+                                </strong>
+                            </p>
+
+                            <p>
+                                Damage Charge:
+                                <strong>
+                                    ₹@Model.DamageCharge
+                                </strong>
+                            </p>
+
+                            <p>
+                                Lost Book Charge:
+                                <strong>
+                                    ₹@Model.LostBookCharge
+                                </strong>
+                            </p>
+
+                            <p>
+                                Extra Charge:
+                                <strong class="text-danger">
+                                    ₹@Model.ExtraCharge
+                                </strong>
+                            </p>
+
+                            <hr />
+
+                            <p>
+                                Total Charges:
+                                <strong class="text-danger">
+                                    ₹@totalCharges
+                                </strong>
+                            </p>
+
+                            <p>
+                                Refund Amount:
+                                <strong class="text-success">
+                                    ₹@Model.RefundAmount
+                                </strong>
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
 
             </div>
 
-            <div class="col-md-6">
+            <hr />
 
-                <div class="card border">
+            @if (Model.ReturnCondition == "Good")
+            {
+                <div class="alert alert-success">
 
-                    <div class="card-header">
-                        Financial Summary
+                    <h5>Good Condition</h5>
+
+                    Book returned in good condition.
+
+                    <br />
+
+                    Only applicable fines were deducted.
+
+                </div>
+            }
+
+            @if (Model.ReturnCondition == "Damaged")
+            {
+                <div class="alert alert-warning">
+
+                    <h5>Damaged Book</h5>
+
+                    Damage charge applied.
+
+                </div>
+            }
+
+            @if (Model.ReturnCondition == "Lost")
+            {
+                <div class="alert alert-danger">
+
+                    <h5>Lost Book</h5>
+
+                    Lost book replacement charge applied.
+
+                </div>
+            }
+
+            @if (Model.IsNonMemberBorrow)
+            {
+                <div class="card mt-3 border-success">
+
+                    <div class="card-header bg-success text-white">
+                        Refund Calculation
                     </div>
 
                     <div class="card-body">
 
-                        @if (Model.IsNonMemberBorrow)
-                        {
-                            <p>
-                                Security Deposit:
-                                <strong>
-                                    ₹@Model.SecurityDeposit
-                                </strong>
-                            </p>
-
-                            <p>
-                                Borrow Fee:
-                                <strong>
-                                    ₹@Model.BorrowFee
-                                </strong>
-                            </p>
-                        }
-
                         <p>
-                            Late Fine:
+                            Deposit Paid:
                             <strong>
-                                ₹@(Model.DaysLate* Model.FinePerDay)
+                                ₹@depositAmount
                             </strong>
                         </p>
-
-                        <p>
-                            Damage Charge:
-                            <strong>
-                                ₹@Model.DamageCharge
-                            </strong>
-                        </p>
-
-                        <p>
-                            Lost Book Charge:
-                            <strong>
-                                ₹@Model.LostBookCharge
-                            </strong>
-                        </p>
-
-                        <p>
-                            Extra Charge:
-                            <strong class="text-danger">
-                                ₹@Model.ExtraCharge
-                            </strong>
-                        </p>
-
-                        <hr />
 
                         <p>
                             Total Charges:
                             <strong>
-                                ₹@Model.FineAmount
+                                ₹@totalCharges
                             </strong>
                         </p>
 
@@ -139,129 +268,104 @@
                             </strong>
                         </p>
 
+                        <p>
+                            Extra Charge:
+                            <strong class="text-danger">
+                                ₹@Model.ExtraCharge
+                            </strong>
+                        </p>
+
                     </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <hr />
-
-        @if (Model.IsNonMemberBorrow)
-        {
-            if (Model.ExtraCharge > 0)
-            {
-                <div class="alert alert-danger">
-
-                    <h5>
-                        Additional Payment Required
-                    </h5>
-
-                    Deposit was not sufficient to cover
-                    fines and charges.
-
-                    <br />
-
-                    Customer paid additional:
-
-                    <strong>
-                        ₹@Model.ExtraCharge
-                    </strong>
 
                 </div>
             }
             else
             {
-                <div class="alert alert-success">
+                <div class="alert alert-primary">
 
                     <h5>
-                        Refund Eligible
+                        Member Fine Summary
                     </h5>
 
-                    Refund Amount:
+                    Members do not pay security deposit.
+
+                    <br />
+
+                    Total Fine:
 
                     <strong>
-                        ₹@Model.RefundAmount
+                        ₹@totalCharges
                     </strong>
 
                 </div>
             }
-        }
-        else
-        {
-            <div class="alert alert-info">
 
-                <h5>
-                    Member Return Summary
-                </h5>
+            <hr />
 
-                Members do not pay deposit.
+            @if (!Model.RefundProcessed
+                        && Model.IsNonMemberBorrow
+                        && Model.RefundAmount > 0
+                        && Model.ExtraCharge == 0)
+            {
+                <form asp-action="ProcessRefund"
+                      method="post">
 
-                <br />
+                    @Html.AntiForgeryToken()
 
-                Total Fine Collected:
+                    <input type="hidden"
+                           name="id"
+                           value="@Model.Id" />
 
-                <strong>
-                    ₹@Model.FineAmount
-                </strong>
+                    <button type="submit"
+                            class="btn btn-success">
 
-            </div>
-        }
+                        Process Razorpay Refund
 
-        @if (!Model.RefundProcessed &&
-                Model.IsNonMemberBorrow &&
-                Model.RefundAmount > 0)
-        {
-            <form asp-action="ProcessRefund"
-                  method="post">
+                    </button>
 
-                @Html.AntiForgeryToken()
+                    <a asp-action="Index"
+                       class="btn btn-secondary">
 
-                <input type="hidden"
-                       name="id"
-                       value="@Model.Id" />
+                        Back
 
-                <button class="btn btn-success">
+                    </a>
 
-                    Process Razorpay Refund
+                </form>
+            }
 
-                </button>
+            @if (Model.RefundProcessed)
+            {
+                <div class="alert alert-success mt-4">
 
-                <a asp-action="Index"
-                   class="btn btn-secondary">
+                    <h5>
+                        Refund Successfully Processed
+                    </h5>
 
-                    Back
+                    <table class="table table-bordered mt-3">
 
-                </a>
+                        <tr>
+                            <th>Refund Amount</th>
+                            <td>₹@Model.RefundAmount</td>
+                        </tr>
 
-            </form>
-        }
-        else if (Model.RefundProcessed)
-        {
-            <div class="alert alert-success mt-3">
+                        <tr>
+                            <th>Refund Id</th>
+                            <td>@Model.RazorpayRefundId</td>
+                        </tr>
 
-                Refund processed successfully.
+                        <tr>
+                            <th>Refund Date</th>
+                            <td>
+                                @Model.RefundDate?.ToString("dd MMM yyyy hh:mm tt")
+                            </td>
+                        </tr>
 
-                <br />
+                    </table>
 
-                Refund ID:
+                </div>
+            }
 
-                <strong>
-                    @Model.RazorpayRefundId
-                </strong>
-
-                <br />
-
-                Date:
-
-                <strong>
-                    @Model.RefundDate?.ToString("dd MMM yyyy hh:mm tt")
-                </strong>
-
-            </div>
-        }
+        </div>
 
     </div>
 

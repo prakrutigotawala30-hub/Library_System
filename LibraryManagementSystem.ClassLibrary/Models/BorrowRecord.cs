@@ -87,6 +87,9 @@ namespace LibraryManagementSystem.ClassLibrary.Models
 
         public string? RazorpayPaymentId { get; set; }
 
+        public string? RazorpayOrderId { get; set; }
+
         public string? RazorpayRefundId { get; set; }
+
     }
 }

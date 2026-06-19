@@ -34,6 +34,16 @@ namespace LibraryManagementSystem.ClassLibrary.Models
         [Column(TypeName = "decimal(18,2)")]
         public decimal TotalAmount { get; set; }
 
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal BorrowFee { get; set; }
+
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal SecurityDeposit { get; set; }
+
+        public string? RazorpayPaymentId { get; set; }
+
+        public string? RazorpayOrderId { get; set; }
+
 
     }
 }

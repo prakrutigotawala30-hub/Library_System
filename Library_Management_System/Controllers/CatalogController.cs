@@ -332,13 +332,8 @@ namespace Library_Management_System.Controllers
             if (member == null)
                 return NotFound();
 
-            bool hasMembership = await _context.Memberships
-                .AnyAsync(m =>
-                m.MemberId == member.Id &&
-                m.IsActive &&
-                m.EndDate >= DateTime.UtcNow);
-
-            var book = await _context.Books.FindAsync(bookId);
+            var book = await _context.Books
+                .FirstOrDefaultAsync(x => x.Id == bookId);
 
             if (book == null)
                 return NotFound();
@@ -349,20 +344,46 @@ namespace Library_Management_System.Controllers
                 return RedirectToAction("Details", new { id = bookId });
             }
 
+            bool hasMembership = await _context.Memberships
+                .AnyAsync(m =>
+                    m.MemberId == member.Id &&
+                    m.IsActive &&
+                    m.EndDate >= DateTime.UtcNow);
+
+            var settings = await _context.LibrarySettings
+                .FirstOrDefaultAsync();
+
+            decimal finePerDay =
+                settings?.FinePerDay ?? 10;
+
             var borrow = new BorrowRecord
             {
                 BookId = bookId,
                 MemberId = member.Id,
+                ApplicationUserId = userId,
+
                 IssuedOn = DateTime.Now,
+                DueDate = DateTime.Now.AddDays(5),
+
                 Status = "Issued",
+                ReturnStatus = "Pending",
+
+                FinePerDay = finePerDay,
                 FineAmount = 0,
-                FinePaid = false,
                 DaysLate = 0,
-                RenewCount = 0
+                RenewCount = 0,
+
+                FinePaid = false,
+
+                DamageCharge = 0,
+                LostBookCharge = 0,
+                ExtraCharge = 0,
+                RefundAmount = 0,
+                RefundProcessed = false
             };
 
             // =====================================
-            // NON-MEMBER BORROW
+            // NON MEMBER
             // =====================================
 
             if (!hasMembership)
@@ -370,9 +391,33 @@ namespace Library_Management_System.Controllers
                 borrow.IsNonMemberBorrow = true;
 
                 borrow.BorrowFee = 50;
-                borrow.SecurityDeposit = book.DepositAmount;
 
-                borrow.DueDate = DateTime.Now.AddDays(5);
+                borrow.SecurityDeposit =
+                    book.DepositAmount;
+
+                // If payment already exists in Reservation
+                var reservation = await _context.Reservations
+                    .Where(r =>
+                        r.BookId == bookId &&
+                        r.MemberId == userId &&
+                        r.Status == ReservationStatus.Waiting)
+                    .OrderByDescending(r => r.ReservedOn)
+                    .FirstOrDefaultAsync();
+
+                if (reservation != null)
+                {
+                    borrow.BorrowFee =
+                        reservation.BorrowFee;
+
+                    borrow.SecurityDeposit =
+                        reservation.SecurityDeposit;
+
+                    borrow.RazorpayPaymentId =
+                        reservation.RazorpayPaymentId;
+
+                    borrow.RazorpayOrderId =
+                        reservation.RazorpayOrderId;
+                }
             }
             else
             {
@@ -380,8 +425,6 @@ namespace Library_Management_System.Controllers
 
                 borrow.BorrowFee = 0;
                 borrow.SecurityDeposit = 0;
-
-                borrow.DueDate = DateTime.Now.AddDays(5);
             }
 
             _context.BorrowRecords.Add(borrow);
@@ -393,9 +436,7 @@ namespace Library_Management_System.Controllers
             await _context.SaveChangesAsync();
 
             TempData["Success"] =
-                borrow.IsNonMemberBorrow
-                ? "Book issued successfully. Borrow Fee ₹20 and Security Deposit ₹300 applied."
-                : "Book issued successfully.";
+                "Book issued successfully.";
 
             return RedirectToAction("Index");
         }

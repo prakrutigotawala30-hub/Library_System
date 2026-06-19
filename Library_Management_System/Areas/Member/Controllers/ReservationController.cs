@@ -324,37 +324,58 @@ namespace Library_Management_System.Areas.Member.Controllers
     string razorpayOrderId,
     string razorpaySignature)
         {
-            try
+            var userId =
+                User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var book = await _context.Books
+                .FirstOrDefaultAsync(x => x.Id == bookId);
+
+            if (book == null)
+                return NotFound();
+
+            decimal borrowFee =
+                50 * quantity;
+
+            decimal securityDeposit =
+                book.DepositAmount * quantity;
+
+            var reservation = new Reservation
             {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                BookId = bookId,
+                MemberId = userId,
 
-                
+                Quantity = quantity,
 
-                var reservation = new Reservation
-                {
-                    BookId = bookId,
-                    MemberId = userId,
-                    Quantity = quantity,
-                    ReservedOn = DateTime.Now,
-                    Status = ReservationStatus.Waiting
-                };
+                ReservedOn = DateTime.Now,
 
-                _context.Reservations.Add(reservation);
+                BorrowFee = borrowFee,
 
-                await _context.SaveChangesAsync();
+                SecurityDeposit = securityDeposit,
 
-                TempData["Success"] =
-                    $"Payment Successful. Payment Id: {razorpayPaymentId}";
+                TotalAmount =
+        borrowFee + securityDeposit,
 
-                return RedirectToAction(nameof(Index));
-            }
-            catch (Exception ex)
-            {
-                TempData["Error"] =
-                    "Payment Verification Failed.";
+                PaymentRequired = true,
 
-                return RedirectToAction(nameof(Index));
-            }
+                IsPaymentCompleted = true,
+
+                RazorpayPaymentId =
+        razorpayPaymentId,
+
+                RazorpayOrderId =
+        razorpayOrderId,
+
+                Status = ReservationStatus.Waiting
+            };
+
+            _context.Reservations.Add(reservation);
+
+            await _context.SaveChangesAsync();
+
+            TempData["Success"] =
+                "Reservation created successfully.";
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

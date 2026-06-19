@@ -66,9 +66,13 @@ namespace LibraryManagementSystem.Controllers
             }
 
             // Update status
-            payment.PaymentStatus = "Approved";
-            payment.Membership.IsActive = true;
+            // payment.PaymentStatus = "Approved";
+            // payment.Membership.MembershipStatus = "Active";
 
+            payment.PaymentStatus = "Approved";
+
+            payment.Membership.IsActive = true;
+            payment.Membership.MembershipStatus = "Active";
             var member = payment.Membership.Member;
 
             var user = await _userManager.FindByIdAsync(
@@ -136,7 +140,9 @@ namespace LibraryManagementSystem.Controllers
 
             // Update status
             payment.PaymentStatus = "Rejected";
+
             payment.Membership.IsActive = false;
+            payment.Membership.MembershipStatus = "Expired";
 
             var member = payment.Membership.Member;
 

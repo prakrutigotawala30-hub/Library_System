@@ -151,8 +151,8 @@ public async Task<IActionResult> Issue(BorrowRecord Record, int borrowDays)
         borrowDays = settings.DefaultLoanDays;
 
     Record.IssuedOn = DateTime.Now;
-    Record.DueDate = DateTime.Now.AddDays(5);
-    Record.Status = "Issued";
+            Record.DueDate = DateTime.Now.AddDays(5);
+            Record.Status = "Issued";
 
     Record.FinePerDay = settings.FinePerDay;
     Record.FineAmount = 0;

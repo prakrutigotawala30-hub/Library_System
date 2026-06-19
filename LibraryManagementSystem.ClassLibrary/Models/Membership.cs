@@ -23,8 +23,9 @@ namespace LibraryManagementSystem.ClassLibrary.Models
         public DateTime StartDate { get; set; } = DateTime.Now;
         [Required]
         public DateTime EndDate { get; set; }
-        
-        public bool IsActive { get; set; } = false;
+
+        public bool IsActive { get; set; } = true;
+        public string MembershipStatus { get; set; } = "Pending";
 
         public bool IsRenewed { get; set; } = false;
 

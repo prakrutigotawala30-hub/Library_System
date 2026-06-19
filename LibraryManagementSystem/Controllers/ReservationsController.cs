@@ -148,42 +148,68 @@ namespace LibraryManagementSystem.Controllers
 
             for (int i = 0; i < quantity; i++)
             {
-                decimal borrowFee = 0;
-                decimal securityDeposit = 0;
-                bool isNonMemberBorrow = false;
-
-                if (reservation.PaymentRequired)
-                {
-                    borrowFee = 50m;
-                    securityDeposit = reservation.Book.DepositAmount;
-                    isNonMemberBorrow = true;
-                }
-
                 _context.BorrowRecords.Add(new BorrowRecord
                 {
                     BookId = reservation.BookId,
+
                     MemberId = member.Id,
 
-                    IssuedOn = DateTime.Now,
-                    DueDate = DateTime.Now.AddDays(5),
+                    ApplicationUserId =
+                        reservation.MemberId,
 
-                    FinePerDay = settings.FinePerDay,
+                    IssuedOn = DateTime.Now,
+
+                    DueDate =
+                        DateTime.Now.AddDays(
+                            5),
+
+                    FinePerDay =
+                        settings.FinePerDay,
+
                     FineAmount = 0,
+
                     DaysLate = 0,
+
+                    RenewCount = 0,
 
                     Status = "Issued",
 
-                    BorrowFee = borrowFee,
-                    SecurityDeposit = securityDeposit,
-                    IsNonMemberBorrow = isNonMemberBorrow,
+                    ReturnStatus = "Pending",
+
+                    FinePaid = false,
+
+                    // =========================
+                    // COPY PAYMENT DATA
+                    // =========================
+
+                    BorrowFee =
+                        reservation.BorrowFee,
+
+                    SecurityDeposit =
+                        reservation.SecurityDeposit,
+
+                    RazorpayPaymentId =
+                        reservation.RazorpayPaymentId,
+
+                    RazorpayOrderId =
+                        reservation.RazorpayOrderId,
+
+                    IsNonMemberBorrow =
+                        reservation.PaymentRequired,
+
+                    // =========================
+                    // RETURN / REFUND
+                    // =========================
 
                     RefundAmount = 0,
+
                     RefundProcessed = false,
 
                     DamageCharge = 0,
+
                     LostBookCharge = 0,
 
-                    ReturnStatus = "Pending"
+                    ExtraCharge = 0
                 });
             }
 
