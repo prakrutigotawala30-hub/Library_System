@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Library_Management_System.Areas.Member.Controllers
 {
+
     [Area("Member")]
     [Authorize(Roles = "Member,User")]
     public class PaymentController : Controller
