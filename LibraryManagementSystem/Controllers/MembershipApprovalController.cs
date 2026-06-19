@@ -101,7 +101,7 @@ namespace LibraryManagementSystem.Controllers
                 {
                     MemberId = user.Id,
                     Message = $"Congratulations! Your {payment.Membership.MembershipType} membership has been approved. You can now access all member features.",
-                    Link = "/Area/Member/Dashboard/Index",
+                    Link = "/Account/Login",
                     IsRead = false,
                     CreatedOn = DateTime.Now
                 });

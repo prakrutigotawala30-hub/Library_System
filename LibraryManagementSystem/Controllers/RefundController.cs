@@ -156,7 +156,7 @@ namespace LibraryManagementSystem.Controllers
                         Message =
                             $"Your refund of ₹{record.RefundAmount} has been processed successfully for '{record.Book?.Title}'. Refund ID: {record.RazorpayRefundId}",
 
-                        Link = "/Member/Notifications",
+                        Link = "/Member/BorrowHistory",
 
                         IsRead = false,
 

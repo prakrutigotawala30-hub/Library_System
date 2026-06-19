@@ -448,5 +448,83 @@ namespace LibraryManagementSystem.Controllers
 
             return View(model);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> MostWishlisted()
+        {
+            var data = await _context.Wishlists
+                .Where(x => x.BookId != null)
+                .Include(x => x.Book)
+                    .ThenInclude(x => x.Author)
+                .GroupBy(x => x.BookId)
+                .Select(g => new
+                {
+                    Book = g.First().Book,
+                    Count = g.Count()
+                })
+                .OrderByDescending(x => x.Count)
+                .Take(20)
+                .ToListAsync();
+
+            var model = data
+                .Select(x => Tuple.Create(x.Book!, x.Count))
+                .ToList();
+
+            return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> OverdueBooks()
+        {
+            var overdueBooks = await _context.BorrowRecords
+                .Include(x => x.Book)
+                .Include(x => x.Member)
+                .Where(x =>
+                    x.Status == "Issued" &&
+                    x.ReturnedOn == null &&
+                    x.DueDate < DateTime.Now)
+                .OrderBy(x => x.DueDate)
+                .ToListAsync();
+
+            return View(overdueBooks);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> TopBorrowers()
+        {
+            var model = await _context.BorrowRecords
+                .Include(x => x.ApplicationUser)
+                .Where(x => x.ApplicationUser != null)
+                .GroupBy(x => new
+                {
+                    x.ApplicationUserId,
+                    x.ApplicationUser.FullName
+                })
+                .Select(g => new TopBorrowerViewModel
+                {
+                    MemberName = g.Key.FullName,
+                    TotalBooks = g.Count()
+                })
+                .OrderByDescending(x => x.TotalBooks)
+                .Take(20)
+                .ToListAsync();
+
+            return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> NeverBorrowed()
+        {
+            var books = await _context.Books
+                .Include(b => b.Author)
+                .Include(b => b.Category)
+                .Where(b => !_context.BorrowRecords
+                    .Any(br => br.BookId == b.Id))
+                .OrderBy(b => b.Title)
+                .ToListAsync();
+
+            return View(books);
+        }
+
     }
 }

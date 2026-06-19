@@ -242,7 +242,7 @@ button,
   border-color: transparent;
 }
 
-.theme-toggle-btn,
+/*.theme-toggle-btn,
 #themeToggle {
   width: 48px;
   height: 48px;
@@ -255,9 +255,10 @@ button,
   background: linear-gradient( 135deg, var(--primary), var(--primary-light) ) !important;
   color: white !important;
   transition: .3s ease;
+  right:315px;
   position: relative;
   z-index: 9999;
-}
+}*/
 
   .theme-toggle-btn:hover,
   #themeToggle:hover {
@@ -521,7 +522,7 @@ body.light-mode .btn-dark {
   transition: 0.3s ease;
   position: fixed;
   bottom: 27px;
-  right: 340px;
+  right: 315px;
   z-index: 9999;
 }
 
