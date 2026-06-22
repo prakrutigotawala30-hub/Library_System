@@ -1,5 +1,6 @@
 @{
     ViewData["Title"] = "Rules";
+    Layout = "~/Views/Shared/_PublicLayout.cshtml";
 }
 
 <style>
@@ -14,7 +15,7 @@
     .rules-section {
         min-height: 100vh;
         padding: 90px 0;
-        background: radial-gradient(circle at top right, rgba(168, 85, 247, 0.25), transparent 35%), radial-gradient(circle at bottom left, rgba(99, 102, 241, 0.18), transparent 40%), linear-gradient(135deg, #faf5ff, #eef2ff);
+        background: radial-gradient(circle at top right, rgba(124,58,237,.18), transparent 35%), radial-gradient(circle at bottom left, rgba(236,72,153,.10), transparent 35%), linear-gradient(135deg, #050816, #0b1120, #111827);
     }
 
     /* HEADER */
@@ -40,33 +41,72 @@
     /* CARD */
     .rule-card {
         height: 100%;
-        padding: 30px 28px;
-        border-radius: 26px;
+        padding: 28px 24px;
+        border-radius: 24px;
         background: rgba(255,255,255,0.06);
         border: 1px solid rgba(255,255,255,0.08);
         backdrop-filter: blur(18px);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-        transition: 0.3s ease;
+        box-shadow: 0 10px 30px rgba(0,0,0,.35);
+        transition: all .3s ease;
+        text-align: center;
         position: relative;
         overflow: hidden;
     }
 
-        /* hover effect */
         .rule-card:hover {
-            transform: translateY(-6px);
-            border-color: rgba(139,92,246,0.35);
-            box-shadow: 0 20px 45px rgba(0,0,0,0.45);
+            transform: translateY(-8px);
+            border-color: rgba(139,92,246,.45);
+            box-shadow: 0 20px 45px rgba(124,58,237,.25);
         }
 
-        /* subtle glow */
+        .rule-card h4 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #c084fc;
+            margin-bottom: 14px;
+            justify-content: center;
+        }
+
+        .rule-card p {
+            color: #d1d5db;
+            font-size: 15px;
+            line-height: 1.8;
+        }
+
         .rule-card::before {
             content: "";
             position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(255,255,255,0.06), transparent 60%);
-            pointer-events: none;
+            top: -50%;
+            right: -50%;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient( rgba(124,58,237,.25), transparent 70% );
         }
+        body.light-mode .rule-card {
+    background: #ffffff !important;
+    border: 1px solid #e5e7eb !important;
+    box-shadow: 0 10px 25px rgba(0,0,0,.08);
+}
 
+body.light-mode .rule-card:hover {
+    border-color: #7c3aed !important;
+    box-shadow: 0 15px 35px rgba(124,58,237,.15);
+}
+
+body.light-mode .rule-card h4 {
+    color: #7c3aed !important;
+}
+
+body.light-mode .rule-card p {
+    color: #6b7280 !important;
+}
+
+body.light-mode .rule-card::before {
+    background: radial-gradient(
+        rgba(124,58,237,.12),
+        transparent 70%
+    );
+}
         /* TITLE */
         .rule-card h4 {
             color: #c084fc;
@@ -114,6 +154,44 @@
                 font-size: 16px;
             }
     }
+    /* ===================================
+       LIGHT MODE
+    =================================== */
+
+    body.light-mode .rules-section {
+        background: radial-gradient(circle at top right, rgba(168,85,247,.15), transparent 35%), radial-gradient(circle at bottom left, rgba(99,102,241,.10), transparent 40%), linear-gradient(135deg,#faf5ff,#eef2ff);
+    }
+
+    body.light-mode .rules-header h1 {
+        color: #111827 !important;
+    }
+
+    body.light-mode .rules-header p {
+        color: #6b7280 !important;
+    }
+
+    body.light-mode .rule-card {
+        background: #ffffff !important;
+        border: 1px solid #e5e7eb !important;
+        box-shadow: 0 10px 25px rgba(0,0,0,.08);
+    }
+
+        body.light-mode .rule-card:hover {
+            border-color: rgba(124,58,237,.35) !important;
+            box-shadow: 0 15px 35px rgba(124,58,237,.12);
+        }
+
+        body.light-mode .rule-card h4 {
+            color: #7c3aed !important;
+        }
+
+        body.light-mode .rule-card p {
+            color: #6b7280 !important;
+        }
+
+        body.light-mode .rule-card::before {
+            background: linear-gradient( 135deg, rgba(124,58,237,.04), transparent 60% );
+        }
 </style>
 
 <section class="rules-section">
@@ -134,7 +212,7 @@
 
         <!-- RULES -->
 
-        <div class="row g-4">
+        <div class="row g-4 row-cols-1 row-cols-md-2 row-cols-lg-4">
 
             <div class="col-md-6">
 

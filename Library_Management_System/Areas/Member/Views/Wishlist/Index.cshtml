@@ -118,6 +118,52 @@
         border-radius: 12px;
         text-decoration: none;
     }
+    /* =========================
+       LIGHT MODE
+    ========================= */
+
+    body.light-mode {
+        background: #f8fafc;
+        color: #111827;
+    }
+
+        body.light-mode .wishlist-subtitle,
+        body.light-mode .book-author {
+            color: #6b7280;
+        }
+
+        body.light-mode .book-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 10px 25px rgba(0,0,0,.08);
+        }
+
+            body.light-mode .book-card:hover {
+                border-color: #7c3aed;
+                box-shadow: 0 20px 40px rgba(124,58,237,.15);
+            }
+
+        body.light-mode .book-image {
+            background: #f3f4f6;
+        }
+
+        body.light-mode .book-title {
+            color: #111827;
+        }
+
+        body.light-mode .empty-box {
+            border: 2px dashed #d1d5db;
+            background: #ffffff;
+            box-shadow: 0 10px 25px rgba(0,0,0,.05);
+        }
+
+            body.light-mode .empty-box h2 {
+                color: #111827;
+            }
+
+            body.light-mode .empty-box p {
+                color: #6b7280;
+            }
 </style>
 
 <section class="wishlist-page">

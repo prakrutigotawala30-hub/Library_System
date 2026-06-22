@@ -1,6 +1,6 @@
 @{
     ViewData["Title"] = "Library Hours";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_PublicLayout.cshtml";
 }
 
 <style>
@@ -35,7 +35,7 @@
     .hours-section {
         min-height: 100vh;
         padding: 90px 0;
-        background: radial-gradient(circle at top right, rgba(168, 85, 247, 0.25), transparent 35%), radial-gradient(circle at bottom left, rgba(99, 102, 241, 0.18), transparent 40%), linear-gradient(135deg, #faf5ff, #eef2ff);
+        background: radial-gradient(circle at top right, rgba(124,58,237,.20), transparent 35%), radial-gradient(circle at bottom left, rgba(99,102,241,.15), transparent 40%), var(--bg);
     }
 
     .hours-header {
@@ -133,6 +133,35 @@
             padding: 16px;
             font-size: 14px;
         }
+    }
+    /* =========================
+       LIGHT MODE
+    ========================= */
+
+    body.light-mode .hours-section {
+        background: radial-gradient(circle at top right, rgba(124,58,237,.12), transparent 35%), radial-gradient(circle at bottom left, rgba(99,102,241,.08), transparent 40%), #f8fafc;
+    }
+
+    body.light-mode .hours-card {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 10px 25px rgba(0,0,0,.08);
+    }
+
+    body.light-mode .hours-header h1 {
+        color: #7c3aed !important;
+    }
+
+    body.light-mode .hours-header p {
+        color: #6b7280 !important;
+    }
+
+    body.light-mode .hours-table tbody td {
+        color: #374151 !important;
+    }
+
+    body.light-mode .hours-table tbody tr:hover {
+        background: rgba(124,58,237,.05);
     }
 </style>
 

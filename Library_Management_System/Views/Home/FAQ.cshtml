@@ -1,6 +1,6 @@
 @{
     ViewData["Title"] = "FAQ";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_PublicLayout.cshtml";
 }
 
 <style>
@@ -33,7 +33,7 @@
     .faq-section {
         padding: 90px 0;
         min-height: 100vh;
-        background: radial-gradient(circle at top right, rgba(168, 85, 247, 0.25), transparent 35%), radial-gradient(circle at bottom left, rgba(99, 102, 241, 0.18), transparent 40%), linear-gradient(135deg, #faf5ff, #eef2ff);
+        background: radial-gradient(circle at top right, rgba(124,58,237,.18), transparent 35%), radial-gradient(circle at bottom left, rgba(236,72,153,.10), transparent 35%), linear-gradient(135deg, #050816, #0b1120, #111827);
     }
 
     .faq-header {
@@ -130,6 +130,61 @@
             font-size: 15px;
             padding: 20px;
         }
+    }
+    /* ===================================
+       LIGHT MODE
+    =================================== */
+
+    body.light-mode .faq-section {
+        background: radial-gradient(circle at top right, rgba(168,85,247,.15), transparent 35%), radial-gradient(circle at bottom left, rgba(99,102,241,.10), transparent 40%), linear-gradient(135deg,#faf5ff,#eef2ff);
+    }
+
+    body.light-mode .faq-header h1 {
+        color: #111827 !important;
+    }
+
+    body.light-mode .faq-header p {
+        color: #6b7280 !important;
+    }
+
+    body.light-mode .custom-accordion .accordion-item {
+        background: #ffffff !important;
+        border: 1px solid #e5e7eb !important;
+        box-shadow: 0 10px 25px rgba(0,0,0,.08);
+    }
+
+    body.light-mode .custom-accordion .accordion-button {
+        color: #111827 !important;
+        background: #ffffff !important;
+    }
+
+        body.light-mode .custom-accordion .accordion-button.collapsed {
+            color: #111827 !important;
+        }
+
+        body.light-mode .custom-accordion .accordion-button:not(.collapsed) {
+            background: linear-gradient(90deg,#7c3aed,#9333ea) !important;
+            color: white !important;
+        }
+
+    body.light-mode .custom-accordion .accordion-body {
+        background: #ffffff !important;
+        color: #6b7280 !important;
+    }
+
+    body.light-mode .custom-accordion .accordion-item:hover {
+        border-color: rgba(124,58,237,.35) !important;
+        box-shadow: 0 15px 35px rgba(124,58,237,.12);
+    }
+
+    /* Accordion Arrow */
+
+    body.light-mode .accordion-button::after {
+        filter: brightness(0);
+    }
+
+    body.light-mode .accordion-button:not(.collapsed)::after {
+        filter: brightness(0) invert(1);
     }
 </style>
 

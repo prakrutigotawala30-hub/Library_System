@@ -1,6 +1,6 @@
 @{
     ViewData["Title"] = "Privacy Policy";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_PublicLayout.cshtml";
 }
 
 <style>
@@ -16,7 +16,7 @@
     .privacy-section {
         min-height: 100vh;
         padding: 90px 0;
-        background: radial-gradient(circle at top right, rgba(168, 85, 247, 0.25), transparent 35%), radial-gradient(circle at bottom left, rgba(99, 102, 241, 0.18), transparent 40%), linear-gradient(135deg, #faf5ff, #eef2ff);
+        background: radial-gradient(circle at top right, rgba(124,58,237,.18), transparent 35%), radial-gradient(circle at bottom left, rgba(236,72,153,.10), transparent 35%), linear-gradient(135deg, #050816, #0b1120, #111827);
     }
 
     /* HEADER */
@@ -40,60 +40,76 @@
             line-height: 1.7;
         }
 
-    /* CARD */
     .privacy-card {
-        background: rgba(255,255,255,0.06);
-        border: 1px solid rgba(255,255,255,0.08);
+        height: 100%;
+        background: rgba(255,255,255,.06);
+        border: 1px solid rgba(255,255,255,.08);
         border-radius: 28px;
-        padding: 45px;
+        padding: 32px;
         backdrop-filter: blur(18px);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-        transition: 0.3s ease;
+        box-shadow: 0 12px 30px rgba(0,0,0,.30);
+        transition: all .35s ease;
+        position: relative;
+        overflow: hidden;
     }
 
         .privacy-card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(139,92,246,0.25);
+            transform: translateY(-8px);
+            border-color: rgba(139,92,246,.35);
+            box-shadow: 0 25px 50px rgba(124,58,237,.20);
         }
 
-        /* HEADINGS */
+        .privacy-card::before {
+            content: "";
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: rgba(124,58,237,.10);
+        }
+
         .privacy-card h3 {
             color: #ffffff;
-            font-size: 26px;
+            font-size: 22px;
+            margin-bottom: 18px;
             font-weight: 700;
-            margin-top: 30px;
-            margin-bottom: 14px;
         }
 
-            .privacy-card h3:first-child {
-                margin-top: 0;
-            }
-
-        /* TEXT */
-        .privacy-card p {
+        .privacy-card p,
+        .privacy-card li {
             color: #d1d5db;
             line-height: 1.9;
-            font-size: 16px;
-            margin-bottom: 14px;
+            margin-bottom: 0;
         }
-
-        /* LIST */
-        .privacy-card ul {
-            padding-left: 18px;
-            margin-bottom: 20px;
-        }
-
-            .privacy-card ul li {
-                color: #d1d5db;
-                margin-bottom: 10px;
-                line-height: 1.8;
-            }
 
     /* HIGHLIGHT */
     .highlight-text {
         color: #a855f7;
         font-weight: 600;
     }
+
+    .update-box {
+        text-align: center;
+        padding: 35px;
+        border-radius: 24px;
+        background: rgba(255,255,255,.06);
+        border: 1px solid rgba(255,255,255,.08);
+        backdrop-filter: blur(18px);
+    }
+
+        .update-box span {
+            display: block;
+            color: #9ca3af;
+            margin-bottom: 8px;
+        }
+
+        .update-box h4 {
+            color: #a855f7;
+            font-size: 28px;
+            font-weight: 700;
+        }
 
     /* MOBILE */
     @@media (max-width: 768px) {
@@ -118,7 +134,72 @@
                 font-size: 22px;
             }
     }
+    /* =========================
+       LIGHT MODE
+    ========================= */
 
+    body.light-mode .privacy-section {
+        background: radial-gradient(circle at top right, rgba(168,85,247,.15), transparent 35%), radial-gradient(circle at bottom left, rgba(99,102,241,.10), transparent 40%), linear-gradient(135deg,#faf5ff,#eef2ff);
+    }
+
+    body.light-mode .privacy-header h1 {
+        color: #111827 !important;
+    }
+
+    body.light-mode .privacy-header p {
+        color: #6b7280 !important;
+    }
+
+    body.light-mode .privacy-card {
+        background: #ffffff !important;
+        border: 1px solid #e5e7eb !important;
+        box-shadow: 0 10px 25px rgba(0,0,0,.08);
+    }
+
+        body.light-mode .privacy-card h3 {
+            color: #111827 !important;
+        }
+
+        body.light-mode .privacy-card p,
+        body.light-mode .privacy-card li {
+            color: #6b7280 !important;
+        }
+
+    body.light-mode .highlight-text {
+        color: #7c3aed !important;
+    }
+    body.light-mode .privacy-section {
+        background: radial-gradient(circle at top right, rgba(168,85,247,.15), transparent 35%), radial-gradient(circle at bottom left, rgba(99,102,241,.10), transparent 40%), linear-gradient(135deg,#faf5ff,#eef2ff);
+    }
+
+    body.light-mode .privacy-header h1 {
+        color: #111827 !important;
+    }
+
+    body.light-mode .privacy-header p {
+        color: #6b7280 !important;
+    }
+
+    body.light-mode .privacy-card,
+    body.light-mode .update-box {
+        background: #ffffff !important;
+        border: 1px solid #e5e7eb !important;
+        box-shadow: 0 10px 25px rgba(0,0,0,.08);
+    }
+
+        body.light-mode .privacy-card h3 {
+            color: #111827 !important;
+        }
+
+        body.light-mode .privacy-card p,
+        body.light-mode .privacy-card li,
+        body.light-mode .update-box span {
+            color: #6b7280 !important;
+        }
+
+        body.light-mode .update-box h4 {
+            color: #7c3aed !important;
+        }
 </style>
 
 <section class="privacy-section">
@@ -141,68 +222,79 @@
 
         <!-- CONTENT -->
 
-        <div class="privacy-card">
+        <div class="row g-4">
 
-            <h3>Information Collection</h3>
+            <div class="col-lg-6">
+                <div class="privacy-card">
+                    <h3>🔒 Information Collection</h3>
+                    <p>
+                        BookVerse Library collects essential user information
+                        such as names, email addresses, student details,
+                        and borrowing records to provide library services.
+                    </p>
+                </div>
+            </div>
 
-            <p>
-                BookVerse Library collects essential user information
-                such as names, email addresses, student details,
-                and borrowing records to provide library services.
-            </p>
+            <div class="col-lg-6">
+                <div class="privacy-card">
+                    <h3>⚙️ How We Use Information</h3>
+                    <ul>
+                        <li>Manage book borrowing and returns</li>
+                        <li>Send notifications and reminders</li>
+                        <li>Improve library services</li>
+                        <li>Maintain account security</li>
+                    </ul>
+                </div>
+            </div>
 
-            <h3>How We Use Information</h3>
+            <div class="col-lg-6">
+                <div class="privacy-card">
+                    <h3>🛡️ Data Protection</h3>
+                    <p>
+                        We use secure authentication systems,
+                        encrypted storage and access controls
+                        to protect user information.
+                    </p>
+                </div>
+            </div>
 
-            <p>
-                The collected information is used to:
-            </p>
+            <div class="col-lg-6">
+                <div class="privacy-card">
+                    <h3>🍪 Cookies & Tracking</h3>
+                    <p>
+                        Cookies may be used for login sessions,
+                        personalization and website performance.
+                    </p>
+                </div>
+            </div>
 
-            <ul>
-                <li>Manage book borrowing and returns</li>
-                <li>Send notifications and reminders</li>
-                <li>Improve library services and user experience</li>
-                <li>Maintain account security and records</li>
-            </ul>
+            <div class="col-lg-6">
+                <div class="privacy-card">
+                    <h3>👤 User Responsibility</h3>
+                    <p>
+                        Users are responsible for protecting
+                        account credentials and maintaining
+                        account confidentiality.
+                    </p>
+                </div>
+            </div>
 
-            <h3>Data Protection</h3>
+            <div class="col-lg-6">
+                <div class="privacy-card">
+                    <h3>📄 Policy Updates</h3>
+                    <p>
+                        BookVerse Library may update this policy.
+                        Continued use of the system indicates
+                        acceptance of updated policies.
+                    </p>
+                </div>
+            </div>
 
-            <p>
-                We use secure systems and authentication methods
-                to protect user data from unauthorized access,
-                misuse, or disclosure.
-            </p>
+        </div>
 
-            <h3>Cookies & Tracking</h3>
-
-            <p>
-                Our system may use cookies for login sessions,
-                personalization, and improving website performance.
-            </p>
-
-            <h3>User Responsibility</h3>
-
-            <p>
-                Users are responsible for maintaining the confidentiality
-                of their account credentials and activities performed
-                under their accounts.
-            </p>
-
-            <h3>Policy Updates</h3>
-
-            <p>
-                BookVerse Library reserves the right to update
-                this privacy policy whenever necessary.
-                Continued use of the system indicates acceptance
-                of updated policies.
-            </p>
-
-            <p class="mt-4">
-                <span class="highlight-text">
-                    Last Updated:
-                </span>
-                May 2026
-            </p>
-
+        <div class="update-box mt-5">
+            <span>Last Updated</span>
+            <h4>May 2026</h4>
         </div>
 
     </div>

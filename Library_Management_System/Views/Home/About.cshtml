@@ -1,6 +1,6 @@
 @{
     ViewData["Title"] = "About";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_PublicLayout.cshtml";
 }
 
 <style>
@@ -35,7 +35,7 @@
         padding: 90px 0;
         display: flex;
         align-items: center;
-        background: radial-gradient(circle at top right, rgba(168, 85, 247, 0.25), transparent 35%), radial-gradient(circle at bottom left, rgba(99, 102, 241, 0.18), transparent 40%), linear-gradient(135deg, #faf5ff, #eef2ff);
+        background: radial-gradient(circle at top right, rgba(168,85,247,.20), transparent 35%), radial-gradient(circle at bottom left, rgba(99,102,241,.15), transparent 40%), var(--bg);
     }
 
     .about-header {
@@ -130,6 +130,41 @@
                 font-size: 24px;
             }
     }
+    /* ====================================
+       LIGHT MODE FIX
+    ==================================== */
+
+    body.light-mode .about-section,
+    html[data-theme="light"] .about-section {
+        background: radial-gradient(circle at top right, rgba(168,85,247,.15), transparent 35%), radial-gradient(circle at bottom left, rgba(99,102,241,.10), transparent 40%), linear-gradient(135deg,#faf5ff,#eef2ff);
+    }
+
+    body.light-mode .about-card,
+    html[data-theme="light"] .about-card {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 10px 25px rgba(0,0,0,.08);
+    }
+
+        body.light-mode .about-card:hover,
+        html[data-theme="light"] .about-card:hover {
+            border-color: rgba(124,58,237,.35);
+            box-shadow: 0 15px 35px rgba(124,58,237,.15);
+        }
+
+        body.light-mode .about-header h1,
+        body.light-mode .about-card h3,
+        html[data-theme="light"] .about-header h1,
+        html[data-theme="light"] .about-card h3 {
+            color: #111827 !important;
+        }
+
+        body.light-mode .about-header p,
+        body.light-mode .about-card p,
+        html[data-theme="light"] .about-header p,
+        html[data-theme="light"] .about-card p {
+            color: #6b7280 !important;
+        }
 </style>
 
 <section class="about-section">

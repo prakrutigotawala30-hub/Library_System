@@ -226,6 +226,96 @@
             grid-template-columns: 1fr;
         }
     }
+    /* =========================================
+       LIGHT MODE
+    ========================================= */
+
+    body.light-mode {
+        background: #f8fafc;
+        color: #111827;
+    }
+
+        body.light-mode .payment-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 20px 50px rgba(0,0,0,.08);
+        }
+
+        body.light-mode .title {
+            background: linear-gradient(135deg,#7c3aed,#d946ef);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        body.light-mode .price {
+            color: #7c3aed;
+        }
+
+        body.light-mode .info {
+            color: #6b7280;
+        }
+
+        body.light-mode .method-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+        }
+
+            body.light-mode .method-card span {
+                color: #111827;
+            }
+
+            body.light-mode .method-card.active {
+                background: rgba(124,58,237,.08);
+                border-color: #7c3aed;
+            }
+
+        body.light-mode .method-icon {
+            border: 1px solid #e5e7eb;
+        }
+
+        body.light-mode .dynamic-box {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+        }
+
+        body.light-mode .dynamic-title {
+            color: #7c3aed;
+        }
+
+        body.light-mode .dynamic-input,
+        body.light-mode .upload-input {
+            background: #ffffff;
+            border: 1px solid #d1d5db;
+            color: #111827;
+        }
+
+            body.light-mode .dynamic-input:focus,
+            body.light-mode .upload-input:focus {
+                border-color: #7c3aed;
+                box-shadow: 0 0 0 4px rgba(124,58,237,.12);
+            }
+
+        body.light-mode .upi-box {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+        }
+
+            body.light-mode .upi-box div:first-child {
+                color: #6b7280;
+            }
+
+        body.light-mode .upi-id {
+            color: #7c3aed;
+        }
+
+        body.light-mode .pay-btn {
+            background: linear-gradient(135deg,#7c3aed,#d946ef);
+            color: #ffffff;
+        }
+
+            body.light-mode .pay-btn:hover {
+                box-shadow: 0 15px 35px rgba(124,58,237,.20);
+            }
 </style>
 
 
