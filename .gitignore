@@ -26,3 +26,6 @@ Thumbs.db
 
 # Typo guard — the real one is `.gitignore`
 .gitignore.txt
+
+# Local publish output
+_publish/
