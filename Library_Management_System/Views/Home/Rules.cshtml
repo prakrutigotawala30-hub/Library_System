@@ -82,49 +82,86 @@
             height: 150px;
             background: radial-gradient( rgba(124,58,237,.25), transparent 70% );
         }
-        body.light-mode .rule-card {
-    background: #ffffff !important;
-    border: 1px solid #e5e7eb !important;
-    box-shadow: 0 10px 25px rgba(0,0,0,.08);
-}
 
-body.light-mode .rule-card:hover {
-    border-color: #7c3aed !important;
-    box-shadow: 0 15px 35px rgba(124,58,237,.15);
-}
+    .rule-card {
+        min-height: 260px;
+        padding: 35px 30px;
+        border-radius: 24px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
 
-body.light-mode .rule-card h4 {
-    color: #7c3aed !important;
-}
+    .rule-icon {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 20px;
+        border-radius: 50%;
+        background: rgba(124,58,237,.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 34px;
+        border: 1px solid rgba(124,58,237,.25);
+    }
 
-body.light-mode .rule-card p {
-    color: #6b7280 !important;
-}
+    .rule-card h4 {
+        justify-content: center;
+        font-size: 22px;
+        margin-bottom: 15px;
+    }
 
-body.light-mode .rule-card::before {
-    background: radial-gradient(
-        rgba(124,58,237,.12),
-        transparent 70%
-    );
-}
-        /* TITLE */
-        .rule-card h4 {
-            color: #c084fc;
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+    .rule-card p {
+        font-size: 16px;
+        line-height: 1.9;
+    }
+
+    body.light-mode .rule-icon {
+        background: rgba(124,58,237,.08);
+        border: 1px solid rgba(124,58,237,.15);
+    }
+
+    body.light-mode .rule-card {
+        background: #ffffff !important;
+        border: 1px solid #e5e7eb !important;
+        box-shadow: 0 10px 25px rgba(0,0,0,.08);
+    }
+
+        body.light-mode .rule-card:hover {
+            border-color: #7c3aed !important;
+            box-shadow: 0 15px 35px rgba(124,58,237,.15);
         }
 
-        /* TEXT */
-        .rule-card p {
-            color: #d1d5db;
-            line-height: 1.8;
-            font-size: 15.5px;
-            margin: 0;
+        body.light-mode .rule-card h4 {
+            color: #7c3aed !important;
         }
+
+        body.light-mode .rule-card p {
+            color: #6b7280 !important;
+        }
+
+        body.light-mode .rule-card::before {
+            background: radial-gradient( rgba(124,58,237,.12), transparent 70% );
+        }
+    /* TITLE */
+    .rule-card h4 {
+        color: #c084fc;
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* TEXT */
+    .rule-card p {
+        color: #d1d5db;
+        line-height: 1.8;
+        font-size: 15.5px;
+        margin: 0;
+    }
 
     /* GRID SPACING IMPROVEMENT */
     .row.g-4 > div {
@@ -155,8 +192,8 @@ body.light-mode .rule-card::before {
             }
     }
     /* ===================================
-       LIGHT MODE
-    =================================== */
+           LIGHT MODE
+        =================================== */
 
     body.light-mode .rules-section {
         background: radial-gradient(circle at top right, rgba(168,85,247,.15), transparent 35%), radial-gradient(circle at bottom left, rgba(99,102,241,.10), transparent 40%), linear-gradient(135deg,#faf5ff,#eef2ff);
@@ -212,62 +249,51 @@ body.light-mode .rule-card::before {
 
         <!-- RULES -->
 
-        <div class="row g-4 row-cols-1 row-cols-md-2 row-cols-lg-4">
+        <div class="row g-4 justify-content-center">
 
             <div class="col-md-6">
-
                 <div class="rule-card">
-
-                    <h4>📚 Borrowing Limit</h4>
-
+                    <div class="rule-icon">📚</div>
+                    <h4>Borrowing Limit</h4>
                     <p>
-                        Students can borrow a maximum of 3 books at a time.
+                        Library members can borrow up to <strong>3 books</strong> at a time.
+                        Please return books before the due date so that other readers can
+                        access the same resources.
                     </p>
-
                 </div>
-
             </div>
 
             <div class="col-md-6">
-
                 <div class="rule-card">
-
-                    <h4>⏰ Late Fine</h4>
-
+                    <div class="rule-icon">⏰</div>
+                    <h4>Late Fine Policy</h4>
                     <p>
-                        ₹5 fine will be charged per day after the due date.
+                        A fine of <strong>₹10 per day</strong> will be charged for each overdue
+                        book. Timely returns help maintain smooth library operations.
                     </p>
-
                 </div>
-
             </div>
 
             <div class="col-md-6">
-
                 <div class="rule-card">
-
-                    <h4>🤫 Maintain Silence</h4>
-
+                    <div class="rule-icon">🤫</div>
+                    <h4>Maintain Silence</h4>
                     <p>
-                        Keep silence inside the library to maintain a peaceful environment.
+                        Please keep noise levels low and avoid disturbances. A quiet
+                        environment allows everyone to focus on reading and learning.
                     </p>
-
                 </div>
-
             </div>
 
             <div class="col-md-6">
-
                 <div class="rule-card">
-
-                    <h4>📖 Book Care</h4>
-
+                    <div class="rule-icon">📖</div>
+                    <h4>Care of Books</h4>
                     <p>
-                        Handle books carefully and avoid damaging library resources.
+                        Handle books responsibly. Do not tear pages, write inside books,
+                        or damage library property. Damaged books may incur charges.
                     </p>
-
                 </div>
-
             </div>
 
         </div>
