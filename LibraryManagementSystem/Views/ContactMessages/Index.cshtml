@@ -1,10 +1,11 @@
-﻿@model IEnumerable<LibraryManagementSystem.ClassLibrary.Models.ContactMessage>
+@model IEnumerable<LibraryManagementSystem.ClassLibrary.Models.ContactMessage>
 
 @{
     ViewData["Title"] = "Contact Messages";
     var unreadCount = ViewBag.UnreadCount as int? ?? 0;
 }
-
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
     .table thead th {
@@ -36,7 +37,10 @@
 
     <div class="row align-items-center mb-3">
         <div class="col-md-12">
-            <h2 class="m-0">ðŸ“¨ Contact Messages</h2>
+            <h2 class="m-0">
+                <i class="bi bi-envelope-fill me-2"></i>
+                Contact Messages
+            </h2>
             @if (unreadCount > 0)
             {
                 <small class="text-muted">@unreadCount unread</small>

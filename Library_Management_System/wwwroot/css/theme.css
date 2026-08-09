@@ -522,7 +522,7 @@ body.light-mode .btn-dark {
   transition: 0.3s ease;
   position: fixed;
   bottom: 27px;
-  right: 315px;
+  right: 340px;
   z-index: 9999;
 }
 
