@@ -331,6 +331,20 @@
             transition: .3s;
         }
 
+        /* THEME ICON VISIBILITY - show only one of the moon/sun pair
+           (without this both icons render on top of each other) */
+        .theme-light-icon {
+            display: none;
+        }
+
+        body.light-theme .theme-dark-icon {
+            display: none;
+        }
+
+        body.light-theme .theme-light-icon {
+            display: block;
+        }
+
     /* LIGHT MODE */
 
     body.light-mode {
@@ -388,7 +402,7 @@
         justify-content: center;
         position: relative;
         font-size: 24px;
-        color: white;
+        color: var(--text-color);
         transition: .3s;
     }
 
